@@ -9,7 +9,7 @@ Forge was created with the motivation to address a critical need in the data sci
 ## How to setup repository
 
 1. Ensure `node` and `npm` is installed
-2. Run `npm install` command from your terminal to install the necessary depedencies
+2. Run `npm install` command from your terminal to install the necessary dependencies
 3. Populate `/config/config.json` file. See the section on **Config File** below for more details on how to populate the fields
 4. Create a schema json file and point it from the `config.json`. This schema is required to generate the documents. See the section on **Schema** below for
    more details on how to populate the fields
@@ -167,7 +167,7 @@ Generates a nested object with recursive type properties. Allows you to generate
         "options": {
           "properties": [
             {
-              "fieldName": "zipcode",
+              "fieldName": "zipCode",
               "type": "numeric-string",
               "isNullable": true,
               "nullablePercentage": 0.2
@@ -196,7 +196,7 @@ This creates the following:
   "isSingle": false,
   "dateOfBirth": "2019-06-13T12:11:13+05:00",
   "address": {
-    "zipcode": "571242",
+    "zipCode": "571242",
     "city": "Singapore"
   }
 }
@@ -283,7 +283,7 @@ The following example generates an array of object of random length 0~5:
       "options": {
         "properties": [
           {
-            "fieldName": "zipcode",
+            "fieldName": "zipCode",
             "type": "numeric-string",
             "isNullable": true,
             "nullablePercentage": 0.2
