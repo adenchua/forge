@@ -2,6 +2,7 @@
 data
 output
 data_output
+schema.json
 
 # Logs
 logs
