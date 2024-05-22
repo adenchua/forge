@@ -1,7 +1,7 @@
 {
-  "schemaPath": "",
-  "outputFolderPath": "",
-  "nullablePercentage": 0.3,
+  "schemaPath": "schema.json",
+  "outputDir": "data",
+  "nullablePercentage": 0.2,
   "documentCount": 10,
   "references": {}
 }

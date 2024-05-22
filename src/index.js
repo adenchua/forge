@@ -1,5 +1,52 @@
-import { fakerEN } from '@faker-js/faker';
+import fs from "fs";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
-const name = fakerEN.animal.bird();
+import configJson from "../config/config.json" assert { type: "json" };
+import SchemaParser from "./SchemaParserClass.js";
 
-console.log('name', name);
+function getTodayDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  let month = today.getMonth() + 1;
+  let day = today.getDate();
+
+  if (day < 10) day = "0" + day;
+  if (month < 10) month = "0" + month;
+
+  const formattedToday = year + "-" + month + "-" + day;
+
+  return formattedToday;
+}
+
+function writeDocument(outputDir, jsonDocument) {
+  // if folder doesnt exist, create one
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+
+  const uniqueFileId = uuidv4();
+
+  const outputPath = path.join(outputDir, `${Date.now()}-${uniqueFileId}.json`);
+  const stringifiedDocument = JSON.stringify(jsonDocument);
+  fs.writeFileSync(outputPath, stringifiedDocument, "utf8");
+}
+
+function init() {
+  const uniqueFolderId = uuidv4();
+  const { schemaPath, nullablePercentage, documentCount, outputDir, references } = configJson;
+  const schema = JSON.parse(fs.readFileSync(schemaPath));
+  const targetFolder = path.join(outputDir, getTodayDate(), uniqueFolderId);
+
+  console.info(`Succesfully retrieved schema from: '${schemaPath}'. Performing validation...`);
+  console.info(`Validation successful! Generating ${documentCount} documents to ${targetFolder}`);
+
+  for (let i = 0; i < documentCount; i++) {
+    const newDocument = new SchemaParser(schema, nullablePercentage, references).getDocument();
+    writeDocument(targetFolder, newDocument);
+  }
+
+  console.info(`Succesfully generated ${documentCount} documents!`);
+}
+
+init();

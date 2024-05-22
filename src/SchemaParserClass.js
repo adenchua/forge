@@ -31,12 +31,18 @@ class SchemaParser {
       const type = value.type;
       const isNullable = value.isNullable;
       const nullablePercentage = value.nullablePercentage;
+      const options = value.options;
 
-      this.#resultDocument[fieldName] = this.#parseType(type, isNullable, nullablePercentage, { ...value });
+      this.#resultDocument[fieldName] = this.#parseType(
+        type,
+        isNullable,
+        nullablePercentage,
+        options,
+      );
     }
   }
 
-  #parseType(type, isNullable, nullablePercentage, { options, properties }) {
+  #parseType(type, isNullable, nullablePercentage, options) {
     const _isNullable = isNullable || nullablePercentage || false;
     // if provided, override global nullablePercentage value
     const _nullablePercentage = nullablePercentage || this.#nullablePercentage;
@@ -56,7 +62,7 @@ class SchemaParser {
       case "iso-timestamp":
         return this.#getIsoTimestamp(options);
       case "object":
-        return this.#getObject(properties);
+        return this.#getObject(options);
       case "delimited-string":
         return this.#getDelimitedString(options);
       case "text":
@@ -72,16 +78,24 @@ class SchemaParser {
     }
   }
 
-  #getObject(properties) {
+  #getObject(options) {
+    const { properties } = options;
     const result = {};
+
     for (let property of properties) {
       const {
         fieldName,
         type,
         isNullable: propertyIsNullable,
         nullablePercentage: propertyNullablePercentage,
+        options: propertyOptions,
       } = property;
-      result[fieldName] = this.#parseType(type, propertyIsNullable, propertyNullablePercentage, { ...property });
+      result[fieldName] = this.#parseType(
+        type,
+        propertyIsNullable,
+        propertyNullablePercentage,
+        propertyOptions,
+      );
     }
 
     return result;
@@ -156,11 +170,11 @@ class SchemaParser {
     if (schema == null) {
       throw new Error("ARRAY_SCHEMA_NOT_PROVIDED");
     }
-    const { type } = schema;
+    const { type, options: schemaOptions } = schema;
     const numberOfItems = Math.floor(Math.random() * (max - min + 1) + min);
 
     for (let i = 0; i < numberOfItems; i++) {
-      const item = this.#parseType(type, false, 0, { ...schema });
+      const item = this.#parseType(type, false, 0, schemaOptions);
       result.push(item);
     }
 
@@ -168,7 +182,6 @@ class SchemaParser {
   }
 
   getDocument() {
-    console.log(this.#resultDocument);
     return this.#resultDocument;
   }
 }
