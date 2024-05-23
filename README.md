@@ -122,6 +122,34 @@ The reference array must not be an empty array
 
 ---
 
+### # Enum Array
+
+Picks a random subset array from an array. Options must not be an empty array and must be provided.
+
+```json
+{
+  "type": "enum-array",
+  "options": ["apple", "banana", "pear"],
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+You may also use a referenced array for the options. The following example uses `sampleArray` array defined at the `config.json`:
+
+```json
+{
+  "type": "enum",
+  "options": "#ref.sampleArray",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+The reference array must not be an empty array
+
+---
+
 ### # ISO8601 Date String
 
 Generates an `ISO8601` date string. When no options are provided, it generates a date from the past. You may provide `dateFrom` and `dateTo` options to return a date within the range.
@@ -523,6 +551,55 @@ for a fixed file extension. The following example generates a random `.jpg` file
   "options": {
     "extension": "jpg"
   },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Social Media Post
+
+Returns a random social media post. Takes in an optional `minWordCount` and `maxWordCount` to determine the minimum and maximum number of words returned. If not provided, the default ranges from `1` to `120`.
+
+Takes in an optional `hashtagPercentage` for chance of hashtags to be added to the post. Defaults to `0.3` (30%).
+
+Takes in an optional `urlPercentage` for chance of url to be added to the end of the post. Defaults to `0.05` (5%).
+
+Lastly, takes in an optional array of languages. One random language from the list will be chosen to generate the post. Defaults to `EN` if languages is not provided. To specify a single language, provide an array with only the language. e.g (`['FR']` will generate posts in the French language)
+
+| permitted language keys | translation        |
+| ----------------------- | ------------------ |
+| `CN`                    | Simplified Chinese |
+| `DE`                    | German             |
+| `FR`                    | French             |
+| `EN`                    | English            |
+| `KO`                    | Korean             |
+
+```json
+{
+  "type": "social-media-post",
+  "options": {
+    "languages": ["EN", "CN"],
+    "minWordCount": 1,
+    "maxWordCount": 120,
+    "hashtagPercentage": 0.3,
+    "urlPercentage": 0.05
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # ID
+
+Returns a random alphanumeric ID. e.g `b171cac326a79abdd0ad3afb`
+
+```json
+{
+  "type": "id",
   "isNullable": false,
   "nullablePercentage": 0
 }

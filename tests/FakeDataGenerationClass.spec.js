@@ -484,7 +484,7 @@ describe("Testing function generateFile from FakeDataGenerationClass", function 
     expect(extension).to.not.be.null;
   });
 
-  it("1. Given a file extension, it should return a valid string with a same extension", function () {
+  it("2. Given a file extension, it should return a valid string with a same extension", function () {
     const fakeDataGenerator = new FakeDataGenerator();
     const fileExtensionInput = "jpeg";
 
@@ -493,5 +493,123 @@ describe("Testing function generateFile from FakeDataGenerationClass", function 
 
     expect(response).to.be.a("string");
     expect(extension).to.equal("jpeg");
+  });
+});
+
+describe("Testing function generateSocialMediaPost from FakeDataGenerationClass", function () {
+  it("1. Given no parameters, it should return a string between 1 and 120 words", function () {
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    const response = fakeDataGenerator.generateSocialMediaPost();
+    const words = response.split(" ");
+
+    expect(response).to.be.a("string");
+    expect(words).length.to.be.greaterThanOrEqual(1).and.lessThanOrEqual(120);
+  });
+
+  it("2. Given 100% for hashtagPercentage, the string should contain at least 1 hashtag", function () {
+    const fakeDataGenerator = new FakeDataGenerator();
+    const oneHundredPercentHashtag = 1.0;
+
+    const response = fakeDataGenerator.generateSocialMediaPost(
+      null,
+      null,
+      null,
+      oneHundredPercentHashtag,
+      null,
+    );
+
+    expect(response).to.be.a("string");
+    expect(response).to.contain("#");
+  });
+
+  it("3. Given 100% for urlPercentage, the string should contain a URL", function () {
+    const fakeDataGenerator = new FakeDataGenerator();
+    const oneHundredPercentUrl = 1.0;
+
+    const response = fakeDataGenerator.generateSocialMediaPost(
+      null,
+      null,
+      null,
+      null,
+      oneHundredPercentUrl,
+    );
+    const url = response.split(" ").pop();
+
+    expect(response).to.be.a("string");
+    expect(isValidUrl(url)).to.be.true;
+  });
+
+  it("4. Given 'minWordCount' of 1 and 'maxWordCount' of 1, the returned string have a length of 1", function () {
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    const response = fakeDataGenerator.generateSocialMediaPost(null, 1, 1, null, null);
+    const totalLength = response.split(" ");
+
+    expect(response).to.be.a("string");
+    expect(totalLength).to.have.lengthOf(1);
+  });
+
+  it("5. Given 'minWordCount' of 1 and 'maxWordCount' of 1 and 100% for urlPercentage, the returned string have a length of 1 and is the URL", function () {
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    const response = fakeDataGenerator.generateSocialMediaPost(null, 1, 1, null, 1);
+    const totalLength = response.split(" ");
+
+    expect(response).to.be.a("string");
+    expect(totalLength).to.have.lengthOf(1);
+    expect(isValidUrl(response)).to.be.true;
+  });
+
+  it("6. Given 'minWordCount' of 1 and 'maxWordCount' of 1 and 100% for hashtag, the returned string have a length of 1 and is a hashtag", function () {
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    const response = fakeDataGenerator.generateSocialMediaPost(null, 1, 1, 1, null);
+    const totalLength = response.split(" ");
+
+    expect(response).to.be.a("string");
+    expect(totalLength).to.have.lengthOf(1);
+    expect(response).to.contain("#");
+  });
+
+  it("7. Given 'minWordCount' of 1 and 'maxWordCount' of 1 and 100% for hashtag and 100% for URL, the returned string have a length of 1 and is a URL", function () {
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    const response = fakeDataGenerator.generateSocialMediaPost(null, 1, 1, 1, 1);
+    const totalLength = response.split(" ");
+
+    expect(response).to.be.a("string");
+    expect(totalLength).to.have.lengthOf(1);
+    expect(isValidUrl(response)).to.be.true;
+  });
+});
+
+describe("Testing function generateId from FakeDataGenerationClass", function () {
+  it("1. It should return a string", function () {
+    const fakeDataGenerator = new FakeDataGenerator();
+    const response = fakeDataGenerator.generateId();
+
+    expect(response).to.be.a("string");
+  });
+});
+
+describe("Testing function generateEnumArray from FakeDataGenerationClass", function () {
+  it("1. Given an empty array, it should throw error 'ENUM_OPTIONS_MUST_NOT_BE_EMPTY'", function () {
+    const emptyArray = [];
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    expect(() => fakeDataGenerator.generateEnumArray(emptyArray)).to.throw(
+      "ENUM_OPTIONS_MUST_NOT_BE_EMPTY",
+    );
+  });
+
+  it("2. Given an array with one element, it should return an array with zero or one element", function () {
+    const arrayWithOneElement = ["test"];
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    const response = fakeDataGenerator.generateEnumArray(arrayWithOneElement);
+
+    expect(response).to.be.a("array");
+    expect(response).length.to.be.greaterThanOrEqual(0).and.lessThanOrEqual(1);
   });
 });

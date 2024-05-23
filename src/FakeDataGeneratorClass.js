@@ -1,11 +1,21 @@
 import { faker } from "@faker-js/faker";
+import { faker as fakerDE } from "@faker-js/faker/locale/de";
+import { faker as fakerFR } from "@faker-js/faker/locale/fr";
+import { faker as fakerKO } from "@faker-js/faker/locale/ko";
+import { faker as fakerCN } from "@faker-js/faker/locale/zh_CN";
 import { subYears } from "date-fns";
+
+import { randomIntFromInterval } from "./utils/mathRandomUtils.js";
 
 class FakeDataGenerator {
   constructor() {}
 
   #isValidGender(gender) {
-    return !["male", "female"].includes(gender);
+    return ["male", "female"].includes(gender);
+  }
+
+  #isValidNonEmptyArray(array) {
+    return array != null && Array.isArray(array) && array.length > 0;
   }
 
   generateISOTimestamp(dateFrom, dateTo) {
@@ -25,10 +35,18 @@ class FakeDataGenerator {
   }
 
   generateEnum(enumOptions) {
-    if (enumOptions == null || !Array.isArray(enumOptions) || enumOptions.length === 0) {
+    if (!this.#isValidNonEmptyArray(enumOptions)) {
       throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");
     }
     return faker.helpers.arrayElement(enumOptions);
+  }
+
+  generateEnumArray(enumOptions) {
+    if (!this.#isValidNonEmptyArray(enumOptions)) {
+      throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");
+    }
+
+    return faker.helpers.arrayElements(enumOptions);
   }
 
   generateBoolean() {
@@ -41,8 +59,7 @@ class FakeDataGenerator {
     const numberOfSubDomains = Math.floor(Math.random() * 6);
 
     for (let i = 0; i < numberOfSubDomains; i++) {
-      // append 1~5 dash delimited words for each sub-domain.
-      const subDomain = this.generateText(1, 5).split(" ").join("-");
+      const subDomain = faker.lorem.slug({ min: 1, max: 5 });
       const randomNumber = this.generateNumber(0, 100);
 
       // to make URLs more realistic, numbers may be present to the sub-domain
@@ -100,21 +117,21 @@ class FakeDataGenerator {
   }
 
   generatePersonFirstName(gender) {
-    if (gender != null && this.#isValidGender(gender)) {
+    if (gender != null && !this.#isValidGender(gender)) {
       throw new Error("INVALID_GENDER_PROVIDED");
     }
     return faker.person.firstName(gender);
   }
 
   generatePersonLastName(gender) {
-    if (gender != null && this.#isValidGender(gender)) {
+    if (gender != null && !this.#isValidGender(gender)) {
       throw new Error("INVALID_GENDER_PROVIDED");
     }
     return faker.person.lastName(gender);
   }
 
   generatePersonFullName(gender) {
-    if (gender != null && this.#isValidGender(gender)) {
+    if (gender != null && !this.#isValidGender(gender)) {
       throw new Error("INVALID_GENDER_PROVIDED");
     }
     return faker.person.fullName({ gender });
@@ -138,6 +155,57 @@ class FakeDataGenerator {
 
   generateFile(extension) {
     return faker.system.commonFileName(extension);
+  }
+
+  generateSocialMediaPost(
+    language,
+    minWordCount = 1,
+    maxWordCount = 120,
+    hashtagPercentage = 0.3,
+    urlPercentage = 0.05,
+  ) {
+    let min = Math.min(minWordCount, maxWordCount);
+    let max = Math.max(minWordCount, maxWordCount);
+
+    // only faker with correctly working locales are added to this map
+    const languagesToFakerMap = {
+      CN: fakerCN,
+      KO: fakerKO,
+      FR: fakerFR,
+      DE: fakerDE,
+      EN: faker,
+    };
+
+    // fall back to english should the language provided is invalid
+    const fakerModule = languagesToFakerMap[language] || faker;
+
+    let wordsArray = fakerModule.word.words({ count: { min, max } }).split(" ");
+
+    // chance of replacing words with hashtags
+    const attachHashtags = Math.random() < hashtagPercentage;
+
+    // chance of adding a link to the end of the post
+    const attachLink = Math.random() < urlPercentage;
+
+    if (attachHashtags) {
+      // minimally 1 hashtag, up to total number of words
+      const hashtagCount = randomIntFromInterval(1, wordsArray.length);
+      wordsArray = wordsArray.slice(hashtagCount); // remove words to make space for hashtags
+      for (let i = 0; i < hashtagCount; i++) {
+        wordsArray.push("#" + fakerModule.word.sample());
+      }
+    }
+
+    if (attachLink) {
+      wordsArray.shift(); // remove first word to make space for URL
+      wordsArray.push(this.generateURL());
+    }
+
+    return wordsArray.join(" ");
+  }
+
+  generateId() {
+    return faker.database.mongodbObjectId();
   }
 }
 

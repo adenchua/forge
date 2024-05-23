@@ -59,6 +59,8 @@ class SchemaParser {
         return this.#getBoolean();
       case "enum":
         return this.#getEnum(options);
+      case "enum-array":
+        return this.#getEnumArray(options);
       case "iso-timestamp":
         return this.#getIsoTimestamp(options);
       case "object":
@@ -99,6 +101,10 @@ class SchemaParser {
         return this.#getImageUrl();
       case "file":
         return this.#getFile(options);
+      case "social-media-post":
+        return this.#getSocialMediaPost(options);
+      case "id":
+        return this.#getId();
       default:
         throw new Error("INVALID_TYPE_ERROR");
     }
@@ -140,6 +146,17 @@ class SchemaParser {
       return this.#dataGenerator.generateEnum(referenceValue);
     }
     return this.#dataGenerator.generateEnum(enumOptions);
+  }
+
+  #getEnumArray(enumOptions) {
+    if (enumOptions.includes("#ref")) {
+      const referenceValue = this.#getReferenceValue(enumOptions);
+      if (!Array.isArray(referenceValue)) {
+        throw new Error("REFERENCED_VALUE_MUST_BE_AN_ARRAY");
+      }
+      return this.#dataGenerator.generateEnumArray(referenceValue);
+    }
+    return this.#dataGenerator.generateEnumArray(enumOptions);
   }
 
   #getIsoTimestamp(options) {
@@ -265,6 +282,34 @@ class SchemaParser {
     const { extension } = options || {};
 
     return this.#dataGenerator.generateFile(extension);
+  }
+
+  #getSocialMediaPost(options) {
+    const {
+      languages = ["EN"],
+      minWordCount,
+      maxWordCount,
+      hashtagPercentage,
+      urlPercentage,
+    } = options || {};
+
+    let selectedLanguage = "EN";
+
+    if (languages.length > 0) {
+      selectedLanguage = this.#dataGenerator.generateEnum(languages);
+    }
+
+    return this.#dataGenerator.generateSocialMediaPost(
+      selectedLanguage,
+      minWordCount,
+      maxWordCount,
+      hashtagPercentage,
+      urlPercentage,
+    );
+  }
+
+  #getId() {
+    return this.#dataGenerator.generateId();
   }
 
   getDocument() {
