@@ -103,6 +103,14 @@ class FakeDataGenerator {
   generateCountryCode() {
     return faker.location.countryCode();
   }
+
+  generateImageUrl() {
+    return faker.image.url();
+  }
+
+  generateFile(extension) {
+    return faker.system.commonFileName(extension);
+  }
 }
 
 export default FakeDataGenerator;

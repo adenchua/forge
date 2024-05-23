@@ -95,6 +95,10 @@ class SchemaParser {
         return this.#getCountry();
       case "country-code":
         return this.#getCountryCode();
+      case "url-image":
+        return this.#getImageUrl();
+      case "file":
+        return this.#getFile(options);
       default:
         throw new Error("INVALID_TYPE_ERROR");
     }
@@ -251,6 +255,16 @@ class SchemaParser {
     }
 
     return result;
+  }
+
+  #getImageUrl() {
+    return this.#dataGenerator.generateImageUrl();
+  }
+
+  #getFile(options) {
+    const { extension } = options || {};
+
+    return this.#dataGenerator.generateFile(extension);
   }
 
   getDocument() {

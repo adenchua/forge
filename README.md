@@ -493,3 +493,35 @@ Returns a random country code.
 ```
 
 ---
+
+### # Image URL
+
+Returns a random image URL. e.g. `https://loremflickr.com/640/480?lock=1234`
+
+```json
+{
+  "type": "url-image",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # File
+
+Returns a random file with a file extension. An optional `extension` parameter may be provided
+for a fixed file extension. The following example generates a random `.jpg` file, e.g. `dollar.jpg`
+
+```json
+{
+  "type": "file",
+  "options": {
+    "extension": "jpg"
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
