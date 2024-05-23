@@ -23,8 +23,8 @@ class FakeDataGenerator {
     return faker.internet.url();
   }
 
-  generateNumericString(min, max) {
-    return String(faker.number.int({ min, max }));
+  generateNumericString(min, max, allowLeadingZeros = false) {
+    return faker.string.numeric({ length: { min, max }, allowLeadingZeros });
   }
 
   generateText(minWordCount = 5, maxWordCount = 120) {
@@ -39,6 +39,50 @@ class FakeDataGenerator {
     }
 
     return result.join(delimiter);
+  }
+
+  generateNumber(min, max) {
+    return faker.number.int({ min, max });
+  }
+
+  generateFloat(min, max) {
+    return faker.number.float({ min, max });
+  }
+
+  generatePersonUsername() {
+    return faker.internet.userName();
+  }
+
+  generatePersonGender() {
+    return faker.person.sexType();
+  }
+
+  generatePersonBio() {
+    return faker.person.bio();
+  }
+
+  generatePersonFirstName(gender) {
+    return faker.person.firstName(gender);
+  }
+
+  generatePersonLastName(gender) {
+    return faker.person.lastName(gender);
+  }
+
+  generatePersonFullName(gender) {
+    return faker.person.fullName({ gender });
+  }
+
+  generateEmail() {
+    return faker.internet.email();
+  }
+
+  generateCountry() {
+    return faker.location.country();
+  }
+
+  generateCountryCode() {
+    return faker.location.countryCode();
   }
 }
 

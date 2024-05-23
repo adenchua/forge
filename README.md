@@ -250,14 +250,15 @@ Generates random words. When no options are provided, it generates between `5` t
 
 ### # Numeric String
 
-Generates a numeric string of certain length. When no options are provided, it generates a random number (in string) between `0` to `Number.MAX_SAFE_INTEGER`. A `min` and `max` option may be provided to set the minimum and maximum number respectively.
+Generates a numeric string of certain length. When no options are provided, it generates numeric string of length 1. A `min` and `max` option may be provided to set the minimum and maximum length respectively. An `allowLeadingZeroes` boolean option is provided to allow left-padded zeroes in the string.
 
 ```json
 {
   "type": "numeric-string",
   "options": {
     "min": 1,
-    "max": 10000
+    "max": 10000,
+    "allowLeadingZeroes": false
   },
   "isNullable": false,
   "nullablePercentage": 0
@@ -312,6 +313,177 @@ Generates a URL string.
 ```json
 {
   "type": "url",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Number
+
+Generates a number. A `min` and `max` option may be provided to generate a number between the minimum and maximum range (inclusive). If no options are provided, a number between `0` and `Number.MAX_SAFE_INTEGER` is returned
+
+```json
+{
+  "type": "number",
+  "options": {
+    "min": 0,
+    "max": 1
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Float
+
+Generates a float. A `min` and `max` option may be provided to generate a number between the minimum and maximum range (inclusive). If no options are provided, a number between `0` and `1` is returned
+
+```json
+{
+  "type": "float",
+  "options": {
+    "min": 0,
+    "max": 1
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Username
+
+Returns a random username.
+
+```json
+{
+  "type": "username",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Gender
+
+Returns a random gender.
+
+```json
+{
+  "type": "gender",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # User Bio
+
+Returns a random internet user bio. e.g. "oatmeal advocate, veteran 🐠"
+
+```json
+{
+  "type": "user-bio",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # First Name
+
+Returns a random first name. A `gender` option may be specified to return a first name of that sex. Gender must be `male` or `female`
+
+```json
+{
+  "type": "first-name",
+  "options": {
+    "gender": "male"
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Last Name
+
+Returns a random last name. A `gender` option may be specified to return a last name of that sex. Gender must be `male` or `female`
+
+```json
+{
+  "type": "last-name",
+  "options": {
+    "gender": "male"
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Full Name
+
+Returns a random full name. A `gender` option may be specified to return a name of that sex. Gender must be `male` or `female`
+
+```json
+{
+  "type": "full-name",
+  "options": {
+    "gender": "male"
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Email
+
+Returns a random email.
+
+```json
+{
+  "type": "email",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Country
+
+Returns a random country.
+
+```json
+{
+  "type": "country",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Country Code
+
+Returns a random country code.
+
+```json
+{
+  "type": "country-code",
   "isNullable": false,
   "nullablePercentage": 0
 }

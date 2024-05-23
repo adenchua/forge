@@ -73,6 +73,28 @@ class SchemaParser {
         return this.#getUrl();
       case "array":
         return this.#getArray(options);
+      case "number":
+        return this.#getNumber(options);
+      case "float":
+        return this.#getFloat(options);
+      case "username":
+        return this.#getPersonUsername();
+      case "gender":
+        return this.#getPersonGender();
+      case "user-bio":
+        return this.#getPersonBio();
+      case "first-name":
+        return this.#getPersonFirstName(options);
+      case "last-name":
+        return this.#getPersonLastName(options);
+      case "full-name":
+        return this.#getPersonFullName(options);
+      case "email":
+        return this.#getEmail();
+      case "country":
+        return this.#getCountry();
+      case "country-code":
+        return this.#getCountryCode();
       default:
         throw new Error("INVALID_TYPE_ERROR");
     }
@@ -160,8 +182,57 @@ class SchemaParser {
   }
 
   #getNumericString(options) {
+    const { min, max, allowLeadingZeroes } = options || {};
+    return this.#dataGenerator.generateNumericString(min, max, allowLeadingZeroes);
+  }
+
+  #getNumber(options) {
     const { min, max } = options || {};
-    return this.#dataGenerator.generateNumericString(min, max);
+    return this.#dataGenerator.generateNumber(min, max);
+  }
+
+  #getFloat(options) {
+    const { min, max } = options || {};
+    return this.#dataGenerator.generateNumber(min, max);
+  }
+
+  #getPersonUsername() {
+    return this.#dataGenerator.generatePersonUsername();
+  }
+
+  #getPersonGender() {
+    return this.#dataGenerator.generatePersonGender();
+  }
+
+  #getPersonBio() {
+    return this.#dataGenerator.generatePersonBio();
+  }
+
+  #getPersonFirstName(options) {
+    const { gender } = options;
+    return this.#dataGenerator.generatePersonFirstName(gender);
+  }
+
+  #getPersonLastName(options) {
+    const { gender } = options;
+    return this.#dataGenerator.generatePersonLastName(gender);
+  }
+
+  #getPersonFullName(options) {
+    const { gender } = options;
+    return this.#dataGenerator.generatePersonFullName(gender);
+  }
+
+  #getEmail() {
+    return this.#dataGenerator.generateEmail();
+  }
+
+  #getCountry() {
+    return this.#dataGenerator.generateCountry();
+  }
+
+  #getCountryCode() {
+    return this.#dataGenerator.generateCountryCode();
   }
 
   #getArray(options) {
