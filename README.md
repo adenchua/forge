@@ -96,7 +96,7 @@ Returns a boolean at random
 
 ### # Enum
 
-Picks a random item from an array
+Picks a random item from an array. Options must not be an empty array and must be provided
 
 ```json
 {
@@ -118,13 +118,17 @@ You may also use a referenced array for the options. The following example uses 
 }
 ```
 
+The reference array must not be an empty array
+
 ---
 
 ### # ISO8601 Date String
 
 Generates an `ISO8601` date string. When no options are provided, it generates a date from the past. You may provide `dateFrom` and `dateTo` options to return a date within the range.
 
-Do note that both values need to be provided for the range function to work:
+If only `dateFrom` option is provided, it will return a date from then until today.
+
+If only `dateTo` option is provided, it will return a random date up to that date and 10 years ago.
 
 ```json
 {
@@ -375,7 +379,7 @@ Returns a random username.
 
 ### # Gender
 
-Returns a random gender.
+Returns a random gender: `male` or `female`
 
 ```json
 {

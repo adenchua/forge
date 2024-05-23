@@ -5,15 +5,18 @@
   "description": "Fake (but realistic) data generator for testing &amp; development",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha 'tests/**/*.spec.js' --exit",
     "start": "node src/index.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@faker-js/faker": "^8.4.1"
+    "@faker-js/faker": "^8.4.1",
+    "chai": "^5.1.1",
+    "mocha": "^10.4.0"
   },
   "dependencies": {
+    "date-fns": "^3.6.0",
     "uuid": "^9.0.1"
   }
 }

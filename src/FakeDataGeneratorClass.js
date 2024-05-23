@@ -1,17 +1,33 @@
 import { faker } from "@faker-js/faker";
+import { subYears } from "date-fns";
 
 class FakeDataGenerator {
   constructor() {}
 
+  #isValidGender(gender) {
+    return !["male", "female"].includes(gender);
+  }
+
   generateISOTimestamp(dateFrom, dateTo) {
-    if (dateFrom == null || dateTo == null) {
+    let from = dateFrom;
+
+    if (from == null && dateTo == null) {
       return faker.date.past();
     }
 
-    return faker.date.between({ from: dateFrom, to: dateTo });
+    if (from == null && dateTo != null) {
+      // prevent faker from throwing an error,
+      // the dateFrom will give a range from before 10 years of dateTo
+      from = subYears(new Date(dateTo), 10);
+    }
+
+    return faker.date.between({ from, to: dateTo });
   }
 
   generateEnum(enumOptions) {
+    if (enumOptions == null || !Array.isArray(enumOptions) || enumOptions.length === 0) {
+      throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");
+    }
     return faker.helpers.arrayElement(enumOptions);
   }
 
@@ -42,12 +58,15 @@ class FakeDataGenerator {
     return faker.internet.url({ appendSlash: true }) + subDomains.join("/");
   }
 
-  generateNumericString(min, max, allowLeadingZeros = false) {
+  generateNumericString(min = 1, max = 1, allowLeadingZeros = false) {
     return faker.string.numeric({ length: { min, max }, allowLeadingZeros });
   }
 
   generateText(minWordCount = 5, maxWordCount = 120) {
-    return faker.word.words({ count: { min: minWordCount, max: maxWordCount } });
+    let min = Math.min(minWordCount, maxWordCount);
+    let max = Math.max(minWordCount, maxWordCount);
+
+    return faker.word.words({ count: { min, max } });
   }
 
   generateDelimitedString(delimiter, ...enumOptionsArgs) {
@@ -81,14 +100,23 @@ class FakeDataGenerator {
   }
 
   generatePersonFirstName(gender) {
+    if (gender != null && this.#isValidGender(gender)) {
+      throw new Error("INVALID_GENDER_PROVIDED");
+    }
     return faker.person.firstName(gender);
   }
 
   generatePersonLastName(gender) {
+    if (gender != null && this.#isValidGender(gender)) {
+      throw new Error("INVALID_GENDER_PROVIDED");
+    }
     return faker.person.lastName(gender);
   }
 
   generatePersonFullName(gender) {
+    if (gender != null && this.#isValidGender(gender)) {
+      throw new Error("INVALID_GENDER_PROVIDED");
+    }
     return faker.person.fullName({ gender });
   }
 
