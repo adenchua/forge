@@ -566,15 +566,15 @@ Takes in an optional `hashtagPercentage` for chance of hashtags to be added to t
 
 Takes in an optional `urlPercentage` for chance of url to be added to the end of the post. Defaults to `0.05` (5%).
 
-Lastly, takes in an optional array of languages. One random language from the list will be chosen to generate the post. Defaults to `EN` if languages is not provided. To specify a single language, provide an array with only the language. e.g (`['FR']` will generate posts in the French language)
+Lastly, takes in an optional array of `languages`. One random language from the list will be chosen to generate the post. Defaults to `EN` if `languages` is not provided. To specify a single language, provide an array with only the language. e.g (`['FR']` will generate posts in the French language)
 
-| permitted language keys | translation        |
-| ----------------------- | ------------------ |
-| `CN`                    | Simplified Chinese |
-| `DE`                    | German             |
-| `FR`                    | French             |
-| `EN`                    | English            |
-| `KO`                    | Korean             |
+| permitted `languages` keys | translation        |
+| -------------------------- | ------------------ |
+| `CN`                       | Simplified Chinese |
+| `DE`                       | German             |
+| `FR`                       | French             |
+| `EN`                       | English            |
+| `KO`                       | Korean             |
 
 ```json
 {
