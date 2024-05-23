@@ -70,7 +70,7 @@ class SchemaParser {
       case "numeric-string":
         return this.#getNumericString(options);
       case "url":
-        return this.#getUrl();
+        return this.#getUrl(options);
       case "array":
         return this.#getArray(options);
       case "number":
@@ -177,8 +177,9 @@ class SchemaParser {
     return this.#dataGenerator.generateText(min, max);
   }
 
-  #getUrl() {
-    return this.#dataGenerator.generateURL();
+  #getUrl(options) {
+    const { allowNumbers } = options || {};
+    return this.#dataGenerator.generateURL(allowNumbers);
   }
 
   #getNumericString(options) {

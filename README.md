@@ -308,11 +308,14 @@ The following example generates an array of object of random length 0~5:
 
 ### # URL
 
-Generates a URL string.
+Generates a URL string. A `allowNumbers` option may be provided to determine if the URL allow numbers in the sub-path. Sets to `true` by default.
 
 ```json
 {
   "type": "url",
+  "options": {
+    "allowNumbers": true
+  },
   "isNullable": false,
   "nullablePercentage": 0
 }

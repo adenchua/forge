@@ -19,8 +19,27 @@ class FakeDataGenerator {
     return faker.datatype.boolean();
   }
 
-  generateURL() {
-    return faker.internet.url();
+  generateURL(allowNumbers = true) {
+    const subDomains = [];
+    // append 0~5 subdomains to the back of the URL
+    const numberOfSubDomains = Math.floor(Math.random() * 6);
+
+    for (let i = 0; i < numberOfSubDomains; i++) {
+      // append 1~5 dash delimited words for each sub-domain.
+      const subDomain = this.generateText(1, 5).split(" ").join("-");
+      const randomNumber = this.generateNumber(0, 100);
+
+      // to make URLs more realistic, numbers may be present to the sub-domain
+      // 5% chance to push a number instead of the text sub-domain
+      if (allowNumbers && Math.random() < 0.05) {
+        subDomains.push(randomNumber);
+        continue;
+      }
+
+      subDomains.push(subDomain);
+    }
+
+    return faker.internet.url({ appendSlash: true }) + subDomains.join("/");
   }
 
   generateNumericString(min, max, allowLeadingZeros = false) {
