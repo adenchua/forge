@@ -33,30 +33,7 @@ describe("Testing function generateISOTimestamp from FakeDataGenerationClass", f
     expect(isBeforeToday).to.be.true;
   });
 
-  it("3. Given a valid 'dateFrom' and a null 'dateTo', it should return a random ISO date after the 'dateFrom'", function () {
-    const fakeDataGenerator = new FakeDataGenerator();
-    const validDateFrom = "2024-01-01";
-
-    const isoDateResponse = fakeDataGenerator.generateISOTimestamp(validDateFrom, null);
-    const isAfterDateFrom = isAfter(new Date(isoDateResponse), new Date(validDateFrom));
-
-    expect(isAfterDateFrom).to.be.true;
-  });
-
-  it("4. Given a null 'dateFrom' and a valid 'dateTo', it should return a ISO date between 10 years to 'dateTo'", function () {
-    const fakeDataGenerator = new FakeDataGenerator();
-    const validDateTo = "2024-01-01";
-    const date10YearsBefore = "2014-01-01";
-
-    const isoDateResponse = fakeDataGenerator.generateISOTimestamp(null, validDateTo);
-    const isBetween10Years =
-      isAfter(new Date(isoDateResponse), new Date(date10YearsBefore)) &&
-      isBefore(new Date(isoDateResponse), new Date(validDateTo));
-
-    expect(isBetween10Years).to.be.true;
-  });
-
-  it("5. Given a valid 'dateFrom' and 'dateTo', it should return an ISO date between the range", function () {
+  it("3. Given a valid 'dateFrom' and 'dateTo', it should return an ISO date between the range", function () {
     const fakeDataGenerator = new FakeDataGenerator();
     const validDateFrom = "2014-01-01";
     const validDateTo = "2024-01-01";

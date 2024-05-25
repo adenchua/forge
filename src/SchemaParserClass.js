@@ -1,4 +1,5 @@
 import FakeDataGenerator from "./FakeDataGeneratorClass.js";
+import { errorCodes } from "./utils/errorCodes.js";
 
 class SchemaParser {
   #dataGenerator = new FakeDataGenerator();
@@ -20,7 +21,7 @@ class SchemaParser {
     const [, referenceKey] = referenceString.split("#ref.");
     const result = this.#references[referenceKey];
     if (result == null) {
-      throw new Error("REFERENCE_KEY_INVALID");
+      throw new Error(errorCodes.invalidReferenceKey);
     }
 
     return result;
@@ -106,7 +107,7 @@ class SchemaParser {
       case "id":
         return this.#getId();
       default:
-        throw new Error("INVALID_TYPE_ERROR");
+        throw new Error(errorCodes.invalidType);
     }
   }
 
@@ -138,22 +139,25 @@ class SchemaParser {
   }
 
   #getEnum(enumOptions) {
+    if (enumOptions == null) {
+      throw new Error(errorCodes.nullEnumOptionsError);
+    }
+
     if (enumOptions.includes("#ref")) {
       const referenceValue = this.#getReferenceValue(enumOptions);
-      if (!Array.isArray(referenceValue)) {
-        throw new Error("REFERENCED_VALUE_MUST_BE_AN_ARRAY");
-      }
       return this.#dataGenerator.generateEnum(referenceValue);
     }
+
     return this.#dataGenerator.generateEnum(enumOptions);
   }
 
   #getEnumArray(enumOptions) {
+    if (enumOptions == null) {
+      throw new Error(errorCodes.nullEnumOptionsError);
+    }
+
     if (enumOptions.includes("#ref")) {
       const referenceValue = this.#getReferenceValue(enumOptions);
-      if (!Array.isArray(referenceValue)) {
-        throw new Error("REFERENCED_VALUE_MUST_BE_AN_ARRAY");
-      }
       return this.#dataGenerator.generateEnumArray(referenceValue);
     }
     return this.#dataGenerator.generateEnumArray(enumOptions);
@@ -161,6 +165,13 @@ class SchemaParser {
 
   #getIsoTimestamp(options) {
     const { dateFrom, dateTo } = options || {};
+    const missingDateFrom = dateFrom == null && dateTo != null;
+    const missingDateTo = dateFrom != null && dateTo == null;
+
+    if (missingDateFrom || missingDateTo) {
+      throw new Error(errorCodes.invalidDateRange);
+    }
+
     return this.#dataGenerator.generateISOTimestamp(dateFrom, dateTo);
   }
 
@@ -261,7 +272,7 @@ class SchemaParser {
     const result = [];
     const { schema, min, max } = options || {};
     if (schema == null) {
-      throw new Error("ARRAY_SCHEMA_NOT_PROVIDED");
+      throw new Error(errorCodes.invalidArraySchema);
     }
     const { type, options: schemaOptions } = schema;
     const numberOfItems = Math.floor(Math.random() * (max - min + 1) + min);

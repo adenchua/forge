@@ -19,19 +19,11 @@ class FakeDataGenerator {
   }
 
   generateISOTimestamp(dateFrom, dateTo) {
-    let from = dateFrom;
-
-    if (from == null && dateTo == null) {
-      return faker.date.past();
+    if (dateFrom == null && dateTo == null) {
+      return faker.date.past().toISOString();
     }
 
-    if (from == null && dateTo != null) {
-      // prevent faker from throwing an error,
-      // the dateFrom will give a range from before 10 years of dateTo
-      from = subYears(new Date(dateTo), 10);
-    }
-
-    return faker.date.between({ from, to: dateTo });
+    return faker.date.between({ from: dateFrom, to: dateTo }).toISOString();
   }
 
   generateEnum(enumOptions) {
@@ -46,7 +38,8 @@ class FakeDataGenerator {
       throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");
     }
 
-    return faker.helpers.arrayElements(enumOptions);
+    // min 0 option needed for a chance to return no elements
+    return faker.helpers.arrayElements(enumOptions, { min: 0, max: enumOptions.length });
   }
 
   generateBoolean() {
