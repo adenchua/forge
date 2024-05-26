@@ -316,4 +316,23 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
     expect(isValid(new Date(resultDocument.test))).to.be.true;
     expect(resultDocument.test).to.equal("2001-01-01T00:00:00.000Z");
   });
+
+  it("6. Given a 100% null percentage, it should return the correct key with a null value", function () {
+    const maxNullablePercentage = 1;
+    const schema = {
+      test: {
+        type: "iso-timestamp",
+        isNullable: true,
+        nullablePercentage: maxNullablePercentage,
+      },
+    };
+    const schemaParser = new SchemaParser(schema, 0, {});
+
+    const resultDocument = schemaParser.getDocument();
+
+    expect(resultDocument).to.haveOwnProperty("test");
+    expect(resultDocument.test).to.be.null;
+  });
 });
+
+describe("Testing delimited-string type for SchemaParserClass", function () {});
