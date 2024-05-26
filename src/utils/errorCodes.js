@@ -4,4 +4,5 @@ export const errorCodes = {
   invalidReferenceKey: "REFERENCE_KEY_DOES_NOT_EXIST",
   invalidType: "INVALID_TYPE_ERROR",
   invalidArraySchema: "ARRAY_SCHEMA_NOT_PROVIDED",
+  invalidMinMax: "MIN_MAX_OPTIONS_MUST_BE_A_NUMBER",
 };

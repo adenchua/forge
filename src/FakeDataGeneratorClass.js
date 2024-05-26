@@ -3,7 +3,6 @@ import { faker as fakerDE } from "@faker-js/faker/locale/de";
 import { faker as fakerFR } from "@faker-js/faker/locale/fr";
 import { faker as fakerKO } from "@faker-js/faker/locale/ko";
 import { faker as fakerCN } from "@faker-js/faker/locale/zh_CN";
-import { subYears } from "date-fns";
 
 import { randomIntFromInterval } from "./utils/mathRandomUtils.js";
 
@@ -46,7 +45,7 @@ class FakeDataGenerator {
     return faker.datatype.boolean();
   }
 
-  generateURL(allowNumbers = true) {
+  generateURL(allowNumbers = false) {
     const subDomains = [];
     // append 0~5 subdomains to the back of the URL
     const numberOfSubDomains = Math.floor(Math.random() * 6);
@@ -77,16 +76,6 @@ class FakeDataGenerator {
     let max = Math.max(minWordCount, maxWordCount);
 
     return faker.word.words({ count: { min, max } });
-  }
-
-  generateDelimitedString(delimiter, ...enumOptionsArgs) {
-    const result = [];
-
-    for (const enumOptions of enumOptionsArgs) {
-      result.push(this.generateEnum(enumOptions));
-    }
-
-    return result.join(delimiter);
   }
 
   generateNumber(min, max) {

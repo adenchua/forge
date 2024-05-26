@@ -66,8 +66,6 @@ class SchemaParser {
         return this.#getIsoTimestamp(options);
       case "object":
         return this.#getObject(options);
-      case "delimited-string":
-        return this.#getDelimitedString(options);
       case "text":
         return this.#getText(options);
       case "numeric-string":
@@ -175,38 +173,12 @@ class SchemaParser {
     return this.#dataGenerator.generateISOTimestamp(dateFrom, dateTo);
   }
 
-  #getDelimitedString(options) {
-    const { arrayOfOptions, delimiter } = options || {};
-    const enumOptions = [];
-
-    for (const option of arrayOfOptions) {
-      if (Array.isArray(option)) {
-        enumOptions.push(option);
-        continue;
-      }
-
-      if (String(option).includes("#ref")) {
-        const referenceOption = this.#getReferenceValue(option);
-
-        if (Array.isArray(referenceOption)) {
-          enumOptions.push(referenceOption);
-        } else {
-          enumOptions.push([referenceOption]);
-        }
-        continue;
-      }
-
-      if (!Array.isArray(option)) {
-        enumOptions.push([option]);
-      }
-    }
-
-    return this.#dataGenerator.generateDelimitedString(delimiter, ...enumOptions);
-  }
-
   #getText(options) {
     const { min, max } = options || {};
-    return this.#dataGenerator.generateText(min, max);
+    const minWordCount = min ?? 5;
+    const maxWordCount = max ?? 120;
+
+    return this.#dataGenerator.generateText(minWordCount, maxWordCount);
   }
 
   #getUrl(options) {
@@ -215,8 +187,8 @@ class SchemaParser {
   }
 
   #getNumericString(options) {
-    const { min, max, allowLeadingZeroes } = options || {};
-    return this.#dataGenerator.generateNumericString(min, max, allowLeadingZeroes);
+    const { min, max, allowLeadingZeros } = options || {};
+    return this.#dataGenerator.generateNumericString(min, max, allowLeadingZeros);
   }
 
   #getNumber(options) {
@@ -226,7 +198,7 @@ class SchemaParser {
 
   #getFloat(options) {
     const { min, max } = options || {};
-    return this.#dataGenerator.generateNumber(min, max);
+    return this.#dataGenerator.generateFloat(min, max);
   }
 
   #getPersonUsername() {
@@ -242,17 +214,17 @@ class SchemaParser {
   }
 
   #getPersonFirstName(options) {
-    const { gender } = options;
+    const { gender } = options || {};
     return this.#dataGenerator.generatePersonFirstName(gender);
   }
 
   #getPersonLastName(options) {
-    const { gender } = options;
+    const { gender } = options || {};
     return this.#dataGenerator.generatePersonLastName(gender);
   }
 
   #getPersonFullName(options) {
-    const { gender } = options;
+    const { gender } = options || {};
     return this.#dataGenerator.generatePersonFullName(gender);
   }
 
@@ -274,6 +246,11 @@ class SchemaParser {
     if (schema == null) {
       throw new Error(errorCodes.invalidArraySchema);
     }
+
+    if (min === null || max === null) {
+      throw new Error(errorCodes.invalidMinMax);
+    }
+
     const { type, options: schemaOptions } = schema;
     const numberOfItems = Math.floor(Math.random() * (max - min + 1) + min);
 

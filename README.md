@@ -232,32 +232,6 @@ This creates the following:
 
 ---
 
-### # Delimited String
-
-Generates a delimited string. Useful for creating random IDs. The following example creates a three part delimited string.
-
-For provided arrays, it will choose a random item (similar to how `enum` type works).
-
-For a single specified value, it will always add the value to the position provided (in this case, "Honda" will be in the middle).
-
-Lastly, you could reference an array using `#ref.` parameter.
-
-```json
-{
-  "type": "delimited-string",
-  "options": {
-    "delimiter": "-",
-    "arrayOfOptions": [["apple", "banana", "pear"], "Honda", "#ref.sampleArray"]
-  },
-  "isNullable": false,
-  "nullablePercentage": 0
-}
-```
-
-The above generates one of such string: `pear-Honda-test`
-
----
-
 ### # Text
 
 Generates random words. When no options are provided, it generates between `5` to `120` words. A `min` and `max` option may be provided to set the minimum and maximum word count respectively.
@@ -278,7 +252,7 @@ Generates random words. When no options are provided, it generates between `5` t
 
 ### # Numeric String
 
-Generates a numeric string of certain length. When no options are provided, it generates numeric string of length 1. A `min` and `max` option may be provided to set the minimum and maximum length respectively. An `allowLeadingZeroes` boolean option is provided to allow left-padded zeroes in the string.
+Generates a numeric string of certain length. When no options are provided, it generates numeric string of length 1. A `min` and `max` option may be provided to set the minimum and maximum length respectively. An `allowLeadingZeros` boolean option is provided to allow left-padded zeroes in the string.
 
 ```json
 {
@@ -286,7 +260,7 @@ Generates a numeric string of certain length. When no options are provided, it g
   "options": {
     "min": 1,
     "max": 10000,
-    "allowLeadingZeroes": false
+    "allowLeadingZeros": false
   },
   "isNullable": false,
   "nullablePercentage": 0
@@ -336,13 +310,13 @@ The following example generates an array of object of random length 0~5:
 
 ### # URL
 
-Generates a URL string. A `allowNumbers` option may be provided to determine if the URL allow numbers in the sub-path. Sets to `true` by default.
+Generates a URL string. A `allowNumbers` option may be provided to determine if the URL allow numbers in the sub-path. Sets to `false` by default.
 
 ```json
 {
   "type": "url",
   "options": {
-    "allowNumbers": true
+    "allowNumbers": false
   },
   "isNullable": false,
   "nullablePercentage": 0

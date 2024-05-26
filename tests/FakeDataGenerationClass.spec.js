@@ -1,17 +1,9 @@
 import { expect } from "chai";
-import { isBefore, isValid, isAfter } from "date-fns";
+import { isAfter, isBefore, isValid } from "date-fns";
 import { describe, it } from "mocha";
 
 import FakeDataGenerator from "../src/FakeDataGeneratorClass.js";
-
-const isValidUrl = (string) => {
-  try {
-    new URL(string);
-    return true;
-  } catch (err) {
-    return false;
-  }
-};
+import { isValidUrl } from "./testUtils.js";
 
 describe("Testing function generateISOTimestamp from FakeDataGenerationClass", function () {
   it("1. Given a null 'dateFrom' and 'dateTo', it should return a valid ISO date", function () {
@@ -155,37 +147,6 @@ describe("Testing function generateText from FakeDataGenerationClass", function 
     const numberOfWords = response.split(" ");
 
     expect(numberOfWords).to.have.lengthOf(10);
-  });
-});
-
-describe("Testing function generateDelimitedString from FakeDataGenerationClass", function () {
-  it("1. Given one array with one element, it should return the same element string", function () {
-    const delimiter = "-";
-    const enumOptions = [["hello"]];
-    const fakeDataGenerator = new FakeDataGenerator();
-
-    const response = fakeDataGenerator.generateDelimitedString(delimiter, enumOptions);
-
-    expect(response).to.be.a("string");
-    expect(response).to.equal("hello");
-  });
-
-  it("2. Given three arrays with one element, it should return the correct delimited string", function () {
-    const delimiter = "-";
-    const inputArray1 = ["hello"];
-    const inputArray2 = ["world"];
-    const inputArray3 = [4];
-    const fakeDataGenerator = new FakeDataGenerator();
-
-    const response = fakeDataGenerator.generateDelimitedString(
-      delimiter,
-      inputArray1,
-      inputArray2,
-      inputArray3,
-    );
-
-    expect(response).to.be.a("string");
-    expect(response).to.equal("hello-world-4");
   });
 });
 
