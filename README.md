@@ -202,7 +202,7 @@ Generates a nested object with recursive type properties. Allows you to generate
             },
             {
               "fieldName": "city",
-              "type": "city",
+              "type": "country",
               "isNullable": true,
               "nullablePercentage": 0.4
             }
@@ -293,7 +293,7 @@ The following example generates an array of object of random length 0~5:
           },
           {
             "fieldName": "city",
-            "type": "city",
+            "type": "country",
             "isNullable": true,
             "nullablePercentage": 0.4
           }
