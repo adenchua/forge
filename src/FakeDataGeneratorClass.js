@@ -141,13 +141,13 @@ class FakeDataGenerator {
 
   generateSocialMediaPost(
     language,
-    minWordCount = 1,
-    maxWordCount = 120,
+    min = 1,
+    max = 120,
     hashtagPercentage = 0.3,
     urlPercentage = 0.05,
   ) {
-    let min = Math.min(minWordCount, maxWordCount);
-    let max = Math.max(minWordCount, maxWordCount);
+    let minWordCount = Math.min(min, max);
+    let maxWordCount = Math.max(min, max);
 
     // only faker with correctly working locales are added to this map
     const languagesToFakerMap = {
@@ -161,7 +161,9 @@ class FakeDataGenerator {
     // fall back to english should the language provided is invalid
     const fakerModule = languagesToFakerMap[language] || faker;
 
-    let wordsArray = fakerModule.word.words({ count: { min, max } }).split(" ");
+    let wordsArray = fakerModule.word
+      .words({ count: { min: minWordCount, max: maxWordCount } })
+      .split(" ");
 
     // chance of replacing words with hashtags
     const attachHashtags = Math.random() < hashtagPercentage;

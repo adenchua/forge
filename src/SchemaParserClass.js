@@ -273,24 +273,22 @@ class SchemaParser {
   }
 
   #getSocialMediaPost(options) {
-    const {
-      languages = ["EN"],
-      minWordCount,
-      maxWordCount,
-      hashtagPercentage,
-      urlPercentage,
-    } = options || {};
+    const { languages = ["EN"], min, max, hashtagPercentage, urlPercentage } = options || {};
 
-    let selectedLanguage = "EN";
-
-    if (languages.length > 0) {
-      selectedLanguage = this.#dataGenerator.generateEnum(languages);
+    if (languages === null) {
+      throw new Error(errorCodes.nullLanguageError);
     }
+
+    if (languages.length === 0) {
+      throw new Error(errorCodes.emptyLanguagesError);
+    }
+
+    const selectedLanguage = this.#dataGenerator.generateEnum(languages);
 
     return this.#dataGenerator.generateSocialMediaPost(
       selectedLanguage,
-      minWordCount,
-      maxWordCount,
+      min,
+      max,
       hashtagPercentage,
       urlPercentage,
     );

@@ -530,13 +530,15 @@ for a fixed file extension. The following example generates a random `.jpg` file
 
 ### # Social Media Post
 
-Returns a random social media post. Takes in an optional `minWordCount` and `maxWordCount` to determine the minimum and maximum number of words returned. If not provided, the default ranges from `1` to `120`.
+Returns a random social media post. Takes in an optional `min` and `max` to determine the minimum and maximum number of words returned. If not provided, the default ranges from `1` to `120`.
 
 Takes in an optional `hashtagPercentage` for chance of hashtags to be added to the post. Defaults to `0.3` (30%).
 
 Takes in an optional `urlPercentage` for chance of url to be added to the end of the post. Defaults to `0.05` (5%).
 
-Lastly, takes in an optional array of `languages`. One random language from the list will be chosen to generate the post. Defaults to `EN` if `languages` is not provided. To specify a single language, provide an array with only the language. e.g (`['FR']` will generate posts in the French language)
+Lastly, takes in an optional array of `languages` where it defaults to `EN` if `languages` is not provided.
+
+One random language from the list will be chosen to generate the post. To specify a single language, provide an array with only the language. e.g (`['FR']` will generate posts in the French language)
 
 | permitted `languages` keys | translation        |
 | -------------------------- | ------------------ |

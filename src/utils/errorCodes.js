@@ -5,4 +5,6 @@ export const errorCodes = {
   invalidType: "INVALID_TYPE_ERROR",
   invalidArraySchema: "ARRAY_SCHEMA_NOT_PROVIDED",
   invalidMinMax: "MIN_MAX_OPTIONS_MUST_BE_A_NUMBER",
+  nullLanguageError: "LANGUAGES_MUST_NOT_BE_NULL",
+  emptyLanguagesError: "LANGUAGES_MUST_NOT_BE_EMPTY",
 };

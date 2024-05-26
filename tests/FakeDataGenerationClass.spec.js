@@ -3,7 +3,7 @@ import { isAfter, isBefore, isValid } from "date-fns";
 import { describe, it } from "mocha";
 
 import FakeDataGenerator from "../src/FakeDataGeneratorClass.js";
-import { isValidUrl } from "./testUtils.js";
+import { isValidEmail, isValidUrl } from "./testUtils.js";
 
 describe("Testing function generateISOTimestamp from FakeDataGenerationClass", function () {
   it("1. Given a null 'dateFrom' and 'dateTo', it should return a valid ISO date", function () {
@@ -367,11 +367,6 @@ describe("Testing function generatePersonFullName from FakeDataGenerationClass",
 describe("Testing function generateEmail from FakeDataGenerationClass", function () {
   it("1. It should return a valid email string", function () {
     const fakeDataGenerator = new FakeDataGenerator();
-    const emailRegExp =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const isValidEmail = (email) => {
-      return !!String(email).toLowerCase().match(emailRegExp);
-    };
 
     const response = fakeDataGenerator.generateEmail();
 
