@@ -99,4 +99,40 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
 
     expect(resultDocument.test).to.be.null;
   });
+
+  it("7. Given a valid reference 'dateFrom' and 'dateTo' option, it should return the correct date", function () {
+    const validDate = "2001-01-01T00:00:00.000Z";
+    const schema = {
+      test: {
+        type: "iso-timestamp",
+        options: {
+          dateFrom: "#ref.date",
+          dateTo: "#ref.date",
+        },
+      },
+    };
+    const schemaParser = new SchemaParser(schema, 0, {
+      date: validDate,
+    });
+
+    const resultDocument = schemaParser.getDocument();
+    expect(resultDocument.test).to.equal("2001-01-01T00:00:00.000Z");
+  });
+
+  it("8. Given a invalid reference 'dateFrom' and 'dateTo' option, it should throw an error 'REFERENCE_KEY_DOES_NOT_EXIST'", function () {
+    const schema = {
+      test: {
+        type: "iso-timestamp",
+        options: {
+          dateFrom: "#ref.date",
+          dateTo: "#ref.date",
+        },
+      },
+    };
+    const emptyReference = {};
+
+    expect(() => new SchemaParser(schema, 0, emptyReference)).to.throw(
+      "REFERENCE_KEY_DOES_NOT_EXIST",
+    );
+  });
 });

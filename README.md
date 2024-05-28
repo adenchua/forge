@@ -8,6 +8,8 @@ Forge was created with the motivation to address a critical need in the data sci
 
 ## How to setup repository
 
+> :warning: This repository supports Node versions `18` and above
+
 1. Ensure `node` and `npm` is installed
 2. Run `npm install` command from your terminal to install the necessary dependencies
 3. Populate `/config/config.json` file. See the section on **Config File** below for more details on how to populate the fields
@@ -166,6 +168,20 @@ Generates an `ISO8601` date string. When no options are provided, it generates a
 }
 ```
 
+You may also use a referenced date for the options. The following example uses `date` reference defined at the `config.json`:
+
+```json
+{
+  "type": "iso-timestamp",
+  "options": {
+    "dateFrom": "#ref.date",
+    "dateTo": "#ref.date"
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
 ---
 
 ### # Object
@@ -248,6 +264,20 @@ Generates random words. When no options are provided, it generates between `5` t
 }
 ```
 
+You may also use a referenced `min` and `max` for the options. The following example uses `min` reference defined at the `config.json`:
+
+```json
+{
+  "type": "text",
+  "options": {
+    "min": "#ref.min",
+    "max": 120
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
 ---
 
 ### # Numeric String
@@ -260,6 +290,21 @@ Generates a numeric string of certain length. When no options are provided, it g
   "options": {
     "min": 1,
     "max": 10000,
+    "allowLeadingZeros": false
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+You may also use a referenced `min` and `max` for the options. The following example uses `min` reference defined at the `config.json`:
+
+```json
+{
+  "type": "numeric-string",
+  "options": {
+    "min": "#ref.min",
+    "max": 120,
     "allowLeadingZeros": false
   },
   "isNullable": false,
@@ -341,6 +386,20 @@ Generates a number. A `min` and `max` option may be provided to generate a numbe
 }
 ```
 
+You may also use a referenced `min` and `max` for the options. The following example uses `min` reference defined at the `config.json`:
+
+```json
+{
+  "type": "number",
+  "options": {
+    "min": "#ref.min",
+    "max": 120
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
 ---
 
 ### # Float
@@ -352,7 +411,21 @@ Generates a float. A `min` and `max` option may be provided to generate a number
   "type": "float",
   "options": {
     "min": 0,
-    "max": 1
+    "max": 1.0
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+You may also use a referenced `min` and `max` for the options. The following example uses `min` reference defined at the `config.json`:
+
+```json
+{
+  "type": "float",
+  "options": {
+    "min": "#ref.min",
+    "max": 1.0
   },
   "isNullable": false,
   "nullablePercentage": 0

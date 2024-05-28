@@ -66,4 +66,40 @@ describe("Testing number type for SchemaParserClass", function () {
     const resultDocument = schemaParser.getDocument();
     expect(resultDocument.test).to.be.null;
   });
+
+  it("5. Given a valid reference 'min' and 'max' option, it should return the correct value", function () {
+    const schema = {
+      test: {
+        type: "number",
+        options: {
+          min: "#ref.key1",
+          max: "#ref.key2",
+        },
+      },
+    };
+    const schemaParser = new SchemaParser(schema, 0, {
+      key1: 1,
+      key2: 1,
+    });
+
+    const resultDocument = schemaParser.getDocument();
+    expect(resultDocument.test).to.equal(1);
+  });
+
+  it("6. Given a invalid reference 'min' and 'max' option, it should throw an error 'REFERENCE_KEY_DOES_NOT_EXIST'", function () {
+    const schema = {
+      test: {
+        type: "number",
+        options: {
+          min: "#ref.key1",
+          max: "#ref.key2",
+        },
+      },
+    };
+    const emptyReference = {};
+
+    expect(() => new SchemaParser(schema, 0, emptyReference)).to.throw(
+      "REFERENCE_KEY_DOES_NOT_EXIST",
+    );
+  });
 });

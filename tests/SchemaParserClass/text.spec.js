@@ -73,4 +73,41 @@ describe("Testing text type for SchemaParserClass", function () {
 
     expect(resultDocument.test).to.be.null;
   });
+
+  it("5. Given a valid reference 'min' and 'max' option, it should return the text of correct length", function () {
+    const schema = {
+      test: {
+        type: "text",
+        options: {
+          min: "#ref.key1",
+          max: "#ref.key2",
+        },
+      },
+    };
+    const schemaParser = new SchemaParser(schema, 0, {
+      key1: 1,
+      key2: 1,
+    });
+
+    const resultDocument = schemaParser.getDocument();
+    const words = resultDocument.test.split(" ");
+    expect(words).to.have.lengthOf(1);
+  });
+
+  it("6. Given a invalid reference 'min' and 'max' option, it should throw an error 'REFERENCE_KEY_DOES_NOT_EXIST'", function () {
+    const schema = {
+      test: {
+        type: "text",
+        options: {
+          min: "#ref.key1",
+          max: "#ref.key2",
+        },
+      },
+    };
+    const emptyReference = {};
+
+    expect(() => new SchemaParser(schema, 0, emptyReference)).to.throw(
+      "REFERENCE_KEY_DOES_NOT_EXIST",
+    );
+  });
 });

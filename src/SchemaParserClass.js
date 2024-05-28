@@ -17,6 +17,10 @@ class SchemaParser {
     this.#initialize();
   }
 
+  #containsReference(value) {
+    return value != null && String(value).includes("#ref");
+  }
+
   #getReferenceValue(referenceString) {
     const [, referenceKey] = referenceString.split("#ref.");
     const result = this.#references[referenceKey];
@@ -141,7 +145,7 @@ class SchemaParser {
       throw new Error(errorCodes.nullEnumOptionsError);
     }
 
-    if (enumOptions.includes("#ref")) {
+    if (this.#containsReference(enumOptions)) {
       const referenceValue = this.#getReferenceValue(enumOptions);
       return this.#dataGenerator.generateEnum(referenceValue);
     }
@@ -154,7 +158,7 @@ class SchemaParser {
       throw new Error(errorCodes.nullEnumOptionsError);
     }
 
-    if (enumOptions.includes("#ref")) {
+    if (this.#containsReference(enumOptions)) {
       const referenceValue = this.#getReferenceValue(enumOptions);
       return this.#dataGenerator.generateEnumArray(referenceValue);
     }
@@ -170,13 +174,32 @@ class SchemaParser {
       throw new Error(errorCodes.invalidDateRange);
     }
 
-    return this.#dataGenerator.generateISOTimestamp(dateFrom, dateTo);
+    let df = dateFrom;
+    let dt = dateTo;
+
+    if (this.#containsReference(df)) {
+      df = this.#getReferenceValue(dateFrom);
+    }
+
+    if (this.#containsReference(dt)) {
+      dt = this.#getReferenceValue(dateTo);
+    }
+
+    return this.#dataGenerator.generateISOTimestamp(df, dt);
   }
 
   #getText(options) {
     const { min, max } = options || {};
-    const minWordCount = min ?? 5;
-    const maxWordCount = max ?? 120;
+    let minWordCount = min ?? 5;
+    let maxWordCount = max ?? 120;
+
+    if (this.#containsReference(minWordCount)) {
+      minWordCount = this.#getReferenceValue(minWordCount);
+    }
+
+    if (this.#containsReference(maxWordCount)) {
+      maxWordCount = this.#getReferenceValue(maxWordCount);
+    }
 
     return this.#dataGenerator.generateText(minWordCount, maxWordCount);
   }
@@ -188,17 +211,50 @@ class SchemaParser {
 
   #getNumericString(options) {
     const { min, max, allowLeadingZeros } = options || {};
-    return this.#dataGenerator.generateNumericString(min, max, allowLeadingZeros);
+    let minLength = min;
+    let maxLength = max;
+
+    if (this.#containsReference(minLength)) {
+      minLength = this.#getReferenceValue(minLength);
+    }
+
+    if (this.#containsReference(maxLength)) {
+      maxLength = this.#getReferenceValue(maxLength);
+    }
+
+    return this.#dataGenerator.generateNumericString(minLength, maxLength, allowLeadingZeros);
   }
 
   #getNumber(options) {
     const { min, max } = options || {};
-    return this.#dataGenerator.generateNumber(min, max);
+    let minNumber = min;
+    let maxNumber = max;
+
+    if (this.#containsReference(minNumber)) {
+      minNumber = this.#getReferenceValue(minNumber);
+    }
+
+    if (this.#containsReference(maxNumber)) {
+      maxNumber = this.#getReferenceValue(maxNumber);
+    }
+
+    return this.#dataGenerator.generateNumber(minNumber, maxNumber);
   }
 
   #getFloat(options) {
     const { min, max } = options || {};
-    return this.#dataGenerator.generateFloat(min, max);
+    let minNumber = min;
+    let maxNumber = max;
+
+    if (this.#containsReference(minNumber)) {
+      minNumber = this.#getReferenceValue(minNumber);
+    }
+
+    if (this.#containsReference(maxNumber)) {
+      maxNumber = this.#getReferenceValue(maxNumber);
+    }
+
+    return this.#dataGenerator.generateFloat(minNumber, maxNumber);
   }
 
   #getPersonUsername() {
