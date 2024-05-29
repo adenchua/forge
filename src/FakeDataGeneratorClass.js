@@ -25,6 +25,14 @@ class FakeDataGenerator {
     return faker.date.between({ from: dateFrom, to: dateTo }).toISOString();
   }
 
+  generatePastISOTimestamp(days, referenceISODate) {
+    return faker.date.recent({ days, refDate: referenceISODate }).toISOString();
+  }
+
+  generateFutureISOTimestamp(days, referenceISODate) {
+    return faker.date.soon({ days, refDate: referenceISODate }).toISOString();
+  }
+
   generateEnum(enumOptions) {
     if (!this.#isValidNonEmptyArray(enumOptions)) {
       throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");

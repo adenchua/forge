@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { isAfter, isBefore, isValid } from "date-fns";
+import { isAfter, isBefore, isValid, differenceInCalendarDays } from "date-fns";
 import { describe, it } from "mocha";
 
 import FakeDataGenerator from "../src/FakeDataGeneratorClass.js";
@@ -544,5 +544,31 @@ describe("Testing function generateEnumArray from FakeDataGenerationClass", func
 
     expect(response).to.be.a("array");
     expect(response).length.to.be.greaterThanOrEqual(0).and.lessThanOrEqual(1);
+  });
+});
+
+describe("Testing function generatePastISOTimestamp from FakeDataGenerationClass", function () {
+  it("1. Given 10 days and a reference date, it should return a timestamp from the reference date up to 10 days ago", function () {
+    const days = 10;
+    const referenceDate = "2024-01-01";
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    const response = fakeDataGenerator.generatePastISOTimestamp(days, referenceDate);
+
+    expect(isBefore(response, referenceDate)).to.be.true;
+    expect(differenceInCalendarDays(referenceDate, response)).to.be.lessThanOrEqual(10);
+  });
+});
+
+describe("Testing function generateFutureISOTimestamp from FakeDataGenerationClass", function () {
+  it("1. Given 10 days and a reference date, it should return a timestamp future from the reference date up to 10 days later", function () {
+    const days = 10;
+    const referenceDate = "2024-01-01";
+    const fakeDataGenerator = new FakeDataGenerator();
+
+    const response = fakeDataGenerator.generateFutureISOTimestamp(days, referenceDate);
+
+    expect(isAfter(response, referenceDate)).to.be.true;
+    expect(differenceInCalendarDays(response, referenceDate)).to.be.lessThanOrEqual(10);
   });
 });

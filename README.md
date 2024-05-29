@@ -50,19 +50,22 @@ A valid schema json file needs to be provided for the application to generate do
 ```json
 // schema.json
 {
-  "sentiment": {
-    "type": "enum",
-    "options": ["Negative", "Neutral", "Positive"],
-    "isNullable": false,
-    "nullablePercentage": 0
-  },
-  "randomText": {
-    "type": "text",
-    "options": {
-      "min": 1,
-      "max": 5
+  "schema": {
+    "sentiment": {
+      "type": "enum",
+      "options": ["Negative", "Neutral", "Positive"],
+      "isNullable": false,
+      "nullablePercentage": 0
+    },
+    "randomText": {
+      "type": "text",
+      "options": {
+        "min": 1,
+        "max": 5
+      }
     }
-  }
+  },
+  "derivatives": {}
 }
 ```
 

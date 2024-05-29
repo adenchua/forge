@@ -20,7 +20,7 @@ function getTodayDate() {
 }
 
 function writeDocument(outputDir, jsonDocument) {
-  // if folder doesnt exist, create one
+  // if folder doesn't exist, create one
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
@@ -35,14 +35,20 @@ function writeDocument(outputDir, jsonDocument) {
 function init() {
   const uniqueFolderId = uuidv4();
   const { schemaPath, nullablePercentage, documentCount, outputDir, references } = configJson;
-  const schema = JSON.parse(fs.readFileSync(schemaPath));
+  const schemaFile = JSON.parse(fs.readFileSync(schemaPath));
+  const { schema, derivatives } = schemaFile;
   const targetFolder = path.join(outputDir, getTodayDate(), uniqueFolderId);
 
-  console.info(`Succesfully retrieved schema from: '${schemaPath}'. Performing validation...`);
+  console.info(`Successfully retrieved schema from: '${schemaPath}'. Performing validation...`);
   console.info(`Validation successful! Generating ${documentCount} documents to ${targetFolder}`);
 
   for (let i = 0; i < documentCount; i++) {
-    const newDocument = new SchemaParser(schema, nullablePercentage, references).getDocument();
+    const newDocument = new SchemaParser(
+      schema,
+      nullablePercentage,
+      references,
+      derivatives,
+    ).getDocument();
     writeDocument(targetFolder, newDocument);
   }
 
