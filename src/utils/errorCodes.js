@@ -8,4 +8,5 @@ export const errorCodes = {
   invalidMinMax: "MIN_MAX_OPTIONS_MUST_BE_A_NUMBER",
   nullLanguageError: "LANGUAGES_MUST_NOT_BE_NULL",
   emptyLanguagesError: "LANGUAGES_MUST_NOT_BE_EMPTY",
+  unsupportedFormatStringError: "UNSUPPORTED_FORMAT_STRING_TYPE",
 };

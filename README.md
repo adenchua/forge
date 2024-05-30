@@ -45,7 +45,7 @@ A valid config json file needs to be provided for the application. An example if
 
 ## Schema
 
-A valid schema json file needs to be provided for the application to generate documents. An example is shown below:
+A valid schema json file needs to be provided for the application to generate documents, with two keys, `schema` and `derivatives`. An example is shown below:
 
 ```json
 // schema.json
@@ -65,9 +65,31 @@ A valid schema json file needs to be provided for the application to generate do
       }
     }
   },
-  "derivatives": {}
+  "derivatives": {
+    "sentimentWithText": {
+      "type": "string-interpolation",
+      "options": {
+        "string": "{}-{}",
+        "referenceKeys": ["sentiment", "randomText"]
+      }
+    }
+  }
 }
 ```
+
+The above example may generate the following document:
+
+```json
+{
+  "sentiment": "Positive",
+  "randomText": "how are you today",
+  "sentimentWithText": "Positive-how are you today"
+}
+```
+
+### Schema Object
+
+The `schema` object generates the result document with the type of data defined in each field.
 
 | field                | explanation                                                                                                                                                                                 | required                |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
@@ -76,14 +98,7 @@ A valid schema json file needs to be provided for the application to generate do
 | `isNullable`         | Determines if this field may be `null`. If `nullablePercentage` is not provided, it follows the global `nullablePercentage` defined in the config file. Defaults to `false` if not provided | No                      |
 | `nullablePercentage` | Percentage of this field to be `null`. Overrides the global `nullablePercentage` if provided. Accepts a value from `0` to `1`. If this field is provided, it sets `isNullable` to `true`.   | No                      |
 
-The above example may generate the following document:
-
-```json
-{
-  "sentiment": "Positive",
-  "randomText": "how are you today"
-}
-```
+---
 
 ### # Boolean
 
@@ -652,5 +667,150 @@ Returns a random alphanumeric ID. e.g `b171cac326a79abdd0ad3afb`
   "nullablePercentage": 0
 }
 ```
+
+---
+
+### # Format-String
+
+Replaces a string format with generated values.
+
+Takes in two compulsory options, a `string` value and `properties` array, with an example below:
+
+```json
+{
+  "type": "format-string",
+  "options": {
+    "string": "{}_{}",
+    "properties": [
+      {
+        "type": "numeric-string",
+        "options": {
+          "min": 8,
+          "max": 8
+        }
+      },
+      {
+        "type": "enum",
+        "options": ["apple"]
+      }
+    ]
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+The example above generates a `{numeric-string}_{enum}` result, e.g. `12345678_apple`.
+
+`string` takes in a formatted string where each `{}` represents the generated property (ordered item in `properties`) to be replaced with, while each item in the `properties` array takes in `type` and `options` key.
+
+Invalid `type` include: `object`, `enum-array`, `array` and `format-string`.
+
+---
+
+### Derived Values Object
+
+After creating the result document with the `schema` object, each field in the `derivatives` object is derived based on the data generated previously
+
+```json
+// schema.json
+{
+  "schema": {
+   ...
+  },
+  "derivatives": {
+    "sentimentWithText": {
+      "type": "string-interpolation",
+      "options": {
+        "string": "{}-{}",
+        "referenceKeys": ["sentiment", "randomText"]
+      }
+    }
+  }
+}
+```
+
+### # String Interpolation
+
+Replaces a string format with reference values.
+
+Takes in two compulsory options, a `string` value and `referenceKeys` array, with an example below:
+
+```json
+{
+  "type": "string-interpolation",
+  "options": {
+    "string": "{}_{}",
+    "referenceKeys": ["keyA", "keyB"]
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+The example above generates a `{keyA}_{keyB}` result, e.g. `12345678_apple`.
+
+`string` takes in a formatted string where each `{}` is replaced by the referenced key's value defined in the `referencedKeys` array. (ordered list)
+
+---
+
+### # Copy
+
+Copies a value from a reference key `keyA` to this field:
+
+```json
+{
+  "type": "copy",
+  "options": {
+    "referenceKey": "keyA"
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
+### # Date Before
+
+Creates a date before a date field from a reference key:
+
+```json
+{
+  "type": "date-before",
+  "options": {
+    "referenceKey": "keyA",
+    "options": {
+      "days": 10
+    }
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+The example above creates a date from a range of 0~10 days before the date of `keyA`.
+
+---
+
+### # Date After
+
+Creates a date after a date field from a reference key:
+
+```json
+{
+  "type": "date-after",
+  "options": {
+    "referenceKey": "keyA",
+    "options": {
+      "days": 10
+    }
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+The example above creates a date from a range of 0~10 days after the date of `keyA`.
 
 ---

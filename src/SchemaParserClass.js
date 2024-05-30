@@ -165,6 +165,8 @@ class SchemaParser {
         return this.#getSocialMediaPost(options);
       case "id":
         return this.#getId();
+      case "format-string":
+        return this.#getFormattedString(options);
       default:
         throw new Error(errorCodes.invalidType);
     }
@@ -409,6 +411,29 @@ class SchemaParser {
 
   #getId() {
     return this.#dataGenerator.generateId();
+  }
+
+  #getFormattedString(options) {
+    const { string, properties } = options || {};
+    let result = string;
+
+    for (let property of properties) {
+      const { type, options: propertyOptions } = property;
+
+      if (
+        type === "format-string" ||
+        type === "enum-array" ||
+        type === "array" ||
+        type === "object"
+      ) {
+        throw new Error(errorCodes.unsupportedFormatStringError);
+      }
+
+      const value = this.#parseSchemaType(type, false, 0, propertyOptions);
+      result = result.replace("{}", value);
+    }
+
+    return result;
   }
 
   getDocument() {
