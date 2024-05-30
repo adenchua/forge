@@ -91,7 +91,7 @@ class FakeDataGenerator {
   }
 
   generateFloat(min, max) {
-    return faker.number.float({ min, max });
+    return faker.number.float({ min, max, fractionDigits: 2 });
   }
 
   generatePersonUsername() {
