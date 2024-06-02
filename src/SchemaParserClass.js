@@ -1,6 +1,7 @@
 import DerivativesParserClass from "./DerivativesParserClass.js";
 import FakeDataGenerator from "./FakeDataGeneratorClass.js";
 import { errorCodes } from "./utils/errorCodes.js";
+import { containsReferenceString, getReferenceValue } from "./utils/referenceUtils.js";
 
 class SchemaParser {
   #dataGenerator = new FakeDataGenerator();
@@ -19,20 +20,6 @@ class SchemaParser {
 
     // builds the result document
     this.#initialize();
-  }
-
-  #containsReference(value) {
-    return value != null && String(value).includes("#ref");
-  }
-
-  #getReferenceValue(referenceString) {
-    const [, referenceKey] = referenceString.split("#ref.");
-    const result = this.#references[referenceKey];
-    if (result == null) {
-      throw new Error(errorCodes.invalidReferenceKey);
-    }
-
-    return result;
   }
 
   #initialize() {
@@ -204,8 +191,8 @@ class SchemaParser {
       throw new Error(errorCodes.nullEnumOptionsError);
     }
 
-    if (this.#containsReference(enumOptions)) {
-      const referenceValue = this.#getReferenceValue(enumOptions);
+    if (containsReferenceString(enumOptions)) {
+      const referenceValue = getReferenceValue(enumOptions, this.#references);
       return this.#dataGenerator.generateEnum(referenceValue);
     }
 
@@ -217,8 +204,8 @@ class SchemaParser {
       throw new Error(errorCodes.nullEnumOptionsError);
     }
 
-    if (this.#containsReference(enumOptions)) {
-      const referenceValue = this.#getReferenceValue(enumOptions);
+    if (containsReferenceString(enumOptions)) {
+      const referenceValue = getReferenceValue(enumOptions, this.#references);
       return this.#dataGenerator.generateEnumArray(referenceValue);
     }
     return this.#dataGenerator.generateEnumArray(enumOptions);
@@ -236,12 +223,12 @@ class SchemaParser {
     let df = dateFrom;
     let dt = dateTo;
 
-    if (this.#containsReference(df)) {
-      df = this.#getReferenceValue(dateFrom);
+    if (containsReferenceString(df)) {
+      df = getReferenceValue(dateFrom, this.#references);
     }
 
-    if (this.#containsReference(dt)) {
-      dt = this.#getReferenceValue(dateTo);
+    if (containsReferenceString(dt)) {
+      dt = getReferenceValue(dateTo, this.#references);
     }
 
     return this.#dataGenerator.generateISOTimestamp(df, dt);
@@ -252,12 +239,12 @@ class SchemaParser {
     let minWordCount = min ?? 5;
     let maxWordCount = max ?? 120;
 
-    if (this.#containsReference(minWordCount)) {
-      minWordCount = this.#getReferenceValue(minWordCount);
+    if (containsReferenceString(minWordCount)) {
+      minWordCount = getReferenceValue(minWordCount, this.#references);
     }
 
-    if (this.#containsReference(maxWordCount)) {
-      maxWordCount = this.#getReferenceValue(maxWordCount);
+    if (containsReferenceString(maxWordCount)) {
+      maxWordCount = getReferenceValue(maxWordCount, this.#references);
     }
 
     return this.#dataGenerator.generateText(minWordCount, maxWordCount);
@@ -273,12 +260,12 @@ class SchemaParser {
     let minLength = min;
     let maxLength = max;
 
-    if (this.#containsReference(minLength)) {
-      minLength = this.#getReferenceValue(minLength);
+    if (containsReferenceString(minLength)) {
+      minLength = getReferenceValue(minLength, this.#references);
     }
 
-    if (this.#containsReference(maxLength)) {
-      maxLength = this.#getReferenceValue(maxLength);
+    if (containsReferenceString(maxLength)) {
+      maxLength = getReferenceValue(maxLength, this.#references);
     }
 
     return this.#dataGenerator.generateNumericString(minLength, maxLength, allowLeadingZeros);
@@ -289,12 +276,12 @@ class SchemaParser {
     let minNumber = min;
     let maxNumber = max;
 
-    if (this.#containsReference(minNumber)) {
-      minNumber = this.#getReferenceValue(minNumber);
+    if (containsReferenceString(minNumber)) {
+      minNumber = getReferenceValue(minNumber, this.#references);
     }
 
-    if (this.#containsReference(maxNumber)) {
-      maxNumber = this.#getReferenceValue(maxNumber);
+    if (containsReferenceString(maxNumber)) {
+      maxNumber = getReferenceValue(maxNumber, this.#references);
     }
 
     return this.#dataGenerator.generateNumber(minNumber, maxNumber);
@@ -305,12 +292,12 @@ class SchemaParser {
     let minNumber = min;
     let maxNumber = max;
 
-    if (this.#containsReference(minNumber)) {
-      minNumber = this.#getReferenceValue(minNumber);
+    if (containsReferenceString(minNumber)) {
+      minNumber = getReferenceValue(minNumber, this.#references);
     }
 
-    if (this.#containsReference(maxNumber)) {
-      maxNumber = this.#getReferenceValue(maxNumber);
+    if (containsReferenceString(maxNumber)) {
+      maxNumber = getReferenceValue(maxNumber, this.#references);
     }
 
     return this.#dataGenerator.generateFloat(minNumber, maxNumber);

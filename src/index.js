@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import configJson from "../config/config.json" assert { type: "json" };
 import SchemaParser from "./SchemaParserClass.js";
+import SchemaValidator from "./SchemaValidatorClass.js";
 
 function getTodayDate() {
   const today = new Date();
@@ -40,6 +41,17 @@ function init() {
   const targetFolder = path.join(outputDir, getTodayDate(), uniqueFolderId);
 
   console.info(`Successfully retrieved schema from: '${schemaPath}'. Performing validation...`);
+  console.info("-----------------------------------------------------------------------------");
+
+  const validator = new SchemaValidator(schema, derivatives, references);
+  validator.validateSchema();
+  const isValidSchema = validator.getValidity();
+  console.info("-----------------------------------------------------------------------------");
+
+  if (!isValidSchema) {
+    return;
+  }
+
   console.info(`Validation successful! Generating ${documentCount} documents to ${targetFolder}`);
 
   for (let i = 0; i < documentCount; i++) {
