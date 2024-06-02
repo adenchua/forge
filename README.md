@@ -644,8 +644,8 @@ One random language from the list will be chosen to generate the post. To specif
   "type": "social-media-post",
   "options": {
     "languages": ["EN", "CN"],
-    "minWordCount": 1,
-    "maxWordCount": 120,
+    "min": 1,
+    "max": 120,
     "hashtagPercentage": 0.3,
     "urlPercentage": 0.05
   },
