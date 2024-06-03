@@ -30,6 +30,48 @@ const VALID_TYPES = [
   "format-string",
 ];
 
+export function validateType(type, options, fieldName, references) {
+  switch (type) {
+    case "enum":
+      return validateEnum(fieldName, options, references);
+    case "enum-array":
+      return validateEnumArray(fieldName, options, references);
+    case "iso-timestamp":
+      return validateIsoTimestamp(fieldName, options, references);
+    case "text":
+      return validateText(fieldName, options, references);
+    case "numeric-string":
+      return validateNumericString(fieldName, options, references);
+    case "url":
+      return validateUrl(fieldName, options);
+    case "array":
+      return validateArray(fieldName, options, references);
+    case "number":
+      return validateNumber(fieldName, options, references);
+    case "float":
+      return validateFloat(fieldName, options, references);
+    case "first-name":
+      return validateFirstName(fieldName, options);
+    case "last-name":
+      return validateLastName(fieldName, options);
+    case "full-name":
+      return validateFullName(fieldName, options);
+    case "object":
+      return validateObject(fieldName, options, references);
+    case "file":
+      return validateFile(fieldName, options);
+    case "social-media-post":
+      return validateSocialMediaPost(fieldName, options);
+    case "format-string":
+      return validateFormatString(fieldName, options);
+    case "id":
+      return true; // no need for validation since no user input
+    default:
+      console.error(`Invalid type '${type}' for field: ${fieldName}`);
+      return false;
+  }
+}
+
 function isValidNonEmptyArray(value) {
   return value !== null && Array.isArray(value) && value.length > 0;
 }
@@ -49,7 +91,7 @@ function isString(value) {
 function checkReferenceValue(referenceString, references, fieldName) {
   const [, referenceKey] = referenceString.split("#ref.");
   if (!references.hasOwnProperty(referenceKey)) {
-    console.error(`Invalid reference key ${referenceKey} for field: ${fieldName}`);
+    console.error(`Invalid reference key '${referenceKey}' for field: ${fieldName}`);
     return false;
   }
 
@@ -57,7 +99,12 @@ function checkReferenceValue(referenceString, references, fieldName) {
 }
 
 function checkObjectProperty(object, property, fieldName) {
-  if (object == null || !object.hasOwnProperty(property)) {
+  if (object == null) {
+    console.error(`Missing 'options' property for field: ${fieldName}`);
+    return false;
+  }
+
+  if (!object.hasOwnProperty(property)) {
     console.error(`Missing '${property}' property for field: ${fieldName}`);
     return false;
   }
@@ -67,7 +114,7 @@ function checkObjectProperty(object, property, fieldName) {
 
 function checkBoolean(property, value, fieldName) {
   if (!isBoolean(value)) {
-    console.error(`${property} must be a boolean type for field: ${fieldName}`);
+    console.error(`'${property}' must be a boolean type for field: ${fieldName}`);
     return false;
   }
 
@@ -76,7 +123,7 @@ function checkBoolean(property, value, fieldName) {
 
 function checkNumber(property, value, fieldName) {
   if (!isNumber(value)) {
-    console.error(`${property} provided is not a number for field: ${fieldName}`);
+    console.error(`'${property}' provided is not a number for field: ${fieldName}`);
     return false;
   }
 
@@ -85,7 +132,7 @@ function checkNumber(property, value, fieldName) {
 
 function checkString(property, value, fieldName) {
   if (!isString(value)) {
-    console.error(`${property} provided is not a string for field: ${fieldName}`);
+    console.error(`'${property}' provided is not a string for field: ${fieldName}`);
     return false;
   }
 
@@ -94,7 +141,7 @@ function checkString(property, value, fieldName) {
 
 function checkNonEmptyArray(property, value, fieldName) {
   if (!isValidNonEmptyArray(value)) {
-    console.error(`${property} must be a non-empty array for field: ${fieldName}`);
+    console.error(`'${property}' must be a non-empty array for field: ${fieldName}`);
     return false;
   }
 
@@ -103,12 +150,12 @@ function checkNonEmptyArray(property, value, fieldName) {
 
 function checkIfOneValueIsNull(property1, property2, value1, value2, fieldName) {
   if (value1 === undefined && value2 !== undefined) {
-    console.error(`${property2} is provided but ${property1} is null for field: ${fieldName}`);
+    console.error(`'${property2}' is provided but '${property1}' is null for field: ${fieldName}`);
     return false;
   }
 
   if (value1 !== undefined && value2 === undefined) {
-    console.error(`${property1} is provided but ${property2} is null for field: ${fieldName}`);
+    console.error(`'${property1}' is provided but '${property2}' is null for field: ${fieldName}`);
     return false;
   }
 
@@ -117,7 +164,7 @@ function checkIfOneValueIsNull(property1, property2, value1, value2, fieldName) 
 
 function checkInvalidISODate(property, value, fieldName) {
   if (!isValid(new Date(value))) {
-    console.error(`${property} is an invalid ISO8601 format for field: ${fieldName}`);
+    console.error(`'${property}' is an invalid ISO8601 format for field: ${fieldName}`);
     return false;
   }
 
@@ -126,7 +173,7 @@ function checkInvalidISODate(property, value, fieldName) {
 
 function checkIfMinIsGreaterThanMax(min, max, fieldName) {
   if (min > max) {
-    console.error(`min is greater than max for field: ${fieldName}`);
+    console.error(`'min' is greater than 'max' for field: ${fieldName}`);
     return false;
   }
 
@@ -139,7 +186,7 @@ export function validateSchemaField(fieldName, schemaObject) {
   flag = checkObjectProperty(schemaObject, "type", fieldName);
 
   if (schemaObject != null && !VALID_TYPES.includes(schemaObject.type)) {
-    console.error(`Invalid type ${schemaObject.type} supplied for field: ${fieldName}`);
+    console.error(`Invalid type '${schemaObject.type}' supplied for field: ${fieldName}`);
     flag = false;
   }
 
@@ -194,7 +241,7 @@ export function validateIsoTimestamp(fieldName, options, references) {
   flag = checkInvalidISODate("dateTo", dateTo, fieldName) && flag;
 
   if (flag && differenceInCalendarDays(dateTo, dateFrom) < 0) {
-    console.error(`dateTo is earlier than dateFrom for field: ${fieldName}`);
+    console.error(`'dateTo' is earlier than 'dateFrom' for field: ${fieldName}`);
     return false;
   }
 
@@ -341,13 +388,17 @@ export function validateFullName(fieldName, options) {
   return validateFirstName(fieldName, options);
 }
 
-export function validateArray(fieldName, options) {
+export function validateArray(fieldName, options, references = {}) {
   let flag = true;
   const { schema, min, max } = options || {};
+  const { type, options: schemaOptions } = schema || {};
 
   flag = checkObjectProperty(options, "schema", fieldName) && flag;
   flag = checkObjectProperty(options, "min", fieldName) && flag;
   flag = checkObjectProperty(options, "max", fieldName) && flag;
+
+  flag = checkObjectProperty(schema, "type", fieldName) && flag;
+  flag = validateType(type, schemaOptions, fieldName, references) && flag;
 
   flag = checkNumber("min", min, fieldName) && flag;
   flag = checkNumber("max", max, fieldName) && flag;
@@ -399,7 +450,7 @@ export function validateSocialMediaPost(fieldName, options) {
   return flag;
 }
 
-export function validateObject(fieldName, options) {
+export function validateObject(fieldName, options, references = {}) {
   let flag = true;
   const { properties } = options || {};
 
@@ -411,7 +462,9 @@ export function validateObject(fieldName, options) {
 
   if (properties !== undefined && isValidNonEmptyArray(properties)) {
     properties.forEach((property) => {
-      flag = validateSchemaField(`${fieldName}.properties`, property) && flag;
+      flag = checkObjectProperty(property, "type", fieldName) && flag;
+      flag = checkObjectProperty(property, "fieldName", fieldName) && flag;
+      flag = validateType(property.type, property.options, fieldName, references) && flag;
     });
   }
 
@@ -449,7 +502,7 @@ export function validateFormatString(fieldName, options) {
         type === "array" ||
         type === "object"
       ) {
-        console.error(`format-string does not support type: ${type} for field: ${fieldName}`);
+        console.error(`format-string does not support type: '${type}' for field: ${fieldName}`);
         flag = false;
       }
     });

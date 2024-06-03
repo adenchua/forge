@@ -6,16 +6,16 @@ import {
   validateEnum,
   validateFile,
   validateFirstName,
+  validateFormatString,
   validateIsoTimestamp,
   validateNumber,
   validateNumericString,
+  validateObject,
   validateSchemaField,
+  validateSocialMediaPost,
   validateText,
   validateUrl,
-} from "../src/utils/validators/schemaValidator";
-import { validateSocialMediaPost } from "../src/utils/validators/schemaValidator";
-import { validateObject } from "../src/utils/validators/schemaValidator";
-import { validateFormatString } from "../src/utils/validators/schemaValidator";
+} from "../src/utils/validators/schemaValidator.js";
 
 describe("Testing utility function: validateSchemaField", function () {
   it("1. Given a valid schema object, it should return true", function () {
@@ -567,7 +567,7 @@ describe("Testing utility function: validateSocialMediaPost", function () {
 
 describe("Testing utility function: validateObject", function () {
   it("1. Given valid properties option, it should return true", function () {
-    const properties = [{ type: "iso-timestamp" }];
+    const properties = [{ type: "iso-timestamp", fieldName: "testField" }];
 
     const response = validateObject("test", { properties }, {});
 
@@ -588,10 +588,26 @@ describe("Testing utility function: validateObject", function () {
     expect(response).to.be.false;
   });
 
-  it("4. Given properties with invalid items, it should return false", function () {
-    const invalidPropertyItems = [{ type: "iso-timestampp" }];
+  it("4. Given properties with invalid item type, it should return false", function () {
+    const properties = [{ type: "iso-timestampp", fieldName: "test" }];
 
-    const response = validateObject("test", { properties: invalidPropertyItems }, {});
+    const response = validateObject("test", { properties }, {});
+
+    expect(response).to.be.false;
+  });
+
+  it("5. Given properties with valid 'type' but without 'fieldName', it should return false", function () {
+    const properties = [{ type: "iso-timestamp" }];
+
+    const response = validateObject("test", { properties }, {});
+
+    expect(response).to.be.false;
+  });
+
+  it("6. Given properties without 'type', it should return false", function () {
+    const properties = [{ fieldName: "date" }];
+
+    const response = validateObject("test", { properties }, {});
 
     expect(response).to.be.false;
   });
