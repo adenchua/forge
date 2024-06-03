@@ -65,7 +65,7 @@ function init() {
     writeDocument(targetFolder, newDocument);
   }
 
-  console.info(`Succesfully generated ${documentCount} documents!`);
+  console.info(`Successfully generated ${documentCount} documents!`);
 }
 
 init();
