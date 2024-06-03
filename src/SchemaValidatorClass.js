@@ -16,7 +16,7 @@ import {
   validateSocialMediaPost,
   validateText,
   validateUrl,
-} from "./utils/validators/schemaValidator";
+} from "./utils/validators/schemaValidator.js";
 
 class SchemaValidator {
   #schemaObject = null;
@@ -79,7 +79,10 @@ class SchemaValidator {
         return validateSocialMediaPost(fieldName, options);
       case "format-string":
         return validateFormatString(fieldName, options);
+      case "id":
+        return true; // no need for validation since no user input
       default:
+        console.error(`Invalid type ${type} for field: ${fieldName}`);
         return false;
     }
   }

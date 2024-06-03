@@ -42,13 +42,14 @@ function init() {
 
   console.info(`Successfully retrieved schema from: '${schemaPath}'. Performing validation...`);
   console.info("-----------------------------------------------------------------------------");
-
+  console.info("Errors found:");
   const validator = new SchemaValidator(schema, derivatives, references);
   validator.validateSchema();
   const isValidSchema = validator.getValidity();
   console.info("-----------------------------------------------------------------------------");
 
   if (!isValidSchema) {
+    console.error("Something is wrong with the provided schema, exiting program...");
     return;
   }
 
