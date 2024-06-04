@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 import { differenceInCalendarDays } from "date-fns";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing derivatives from SchemaParserClass", function () {
+describe("Testing derivatives from DocumentFactoryClass", function () {
   it("1. Given a valid schema and a valid derivatives 'string-interpolation' type, it should return the correct response", function () {
     const schema = {
       field1: {
@@ -27,9 +27,9 @@ describe("Testing derivatives from SchemaParserClass", function () {
       },
     };
 
-    const schemaParser = new SchemaParser(schema, 0, {}, derivatives);
+    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("combinedFields");
     expect(resultDocument.combinedFields).to.equal("one-two");
@@ -52,9 +52,9 @@ describe("Testing derivatives from SchemaParserClass", function () {
       },
     };
 
-    const schemaParser = new SchemaParser(schema, 0, {}, derivatives);
+    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("copiedField");
     expect(resultDocument.copiedField).to.equal("one");
@@ -81,9 +81,9 @@ describe("Testing derivatives from SchemaParserClass", function () {
       },
     };
 
-    const schemaParser = new SchemaParser(schema, 0, {}, derivatives);
+    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("dateField");
     expect(resultDocument.dateField).to.be.a("string");
@@ -114,9 +114,9 @@ describe("Testing derivatives from SchemaParserClass", function () {
       },
     };
 
-    const schemaParser = new SchemaParser(schema, 0, {}, derivatives);
+    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("dateField");
     expect(resultDocument.dateField).to.be.a("string");
@@ -147,6 +147,8 @@ describe("Testing derivatives from SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {}, derivatives)).to.throw("INVALID_DERIVATIVES_TYPE");
+    expect(() => new DocumentFactory(schema, 0, {}, derivatives)).to.throw(
+      "INVALID_DERIVATIVES_TYPE",
+    );
   });
 });

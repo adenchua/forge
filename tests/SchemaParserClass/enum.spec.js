@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing enum type for SchemaParserClass", function () {
+describe("Testing enum type for DocumentFactoryClass", function () {
   it("1. Given a schema with enum type with a valid options array, the result document should have the enum property", function () {
     const validOptions = ["apple", "banana", "pear"];
     const schemaWithEnum = {
@@ -12,9 +12,9 @@ describe("Testing enum type for SchemaParserClass", function () {
         options: validOptions,
       },
     };
-    const schemaParser = new SchemaParser(schemaWithEnum, 0, {});
+    const documentFactory = new DocumentFactory(schemaWithEnum, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("string");
@@ -30,7 +30,7 @@ describe("Testing enum type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schemaWithEnum, 0, {})).to.throw(
+    expect(() => new DocumentFactory(schemaWithEnum, 0, {})).to.throw(
       "ENUM_OPTIONS_MUST_NOT_BE_EMPTY",
     );
   });
@@ -43,7 +43,9 @@ describe("Testing enum type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schemaWithEnum, 0, {})).to.throw("ENUM_OPTIONS_MUST_NOT_BE_NULL");
+    expect(() => new DocumentFactory(schemaWithEnum, 0, {})).to.throw(
+      "ENUM_OPTIONS_MUST_NOT_BE_NULL",
+    );
   });
 
   it("4. Given a schema with enum type with a valid referenced options, the result document should have the enum property", function () {
@@ -54,9 +56,9 @@ describe("Testing enum type for SchemaParserClass", function () {
         options: "#ref.sampleArray",
       },
     };
-    const schemaParser = new SchemaParser(schemaWithEnum, 0, references);
+    const documentFactory = new DocumentFactory(schemaWithEnum, 0, references);
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.equal("apple");
   });
@@ -70,7 +72,7 @@ describe("Testing enum type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schemaWithEnum, 0, referenceWithEmptyArray)).to.throw(
+    expect(() => new DocumentFactory(schemaWithEnum, 0, referenceWithEmptyArray)).to.throw(
       "ENUM_OPTIONS_MUST_NOT_BE_EMPTY",
     );
   });
@@ -84,7 +86,7 @@ describe("Testing enum type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schemaWithEnum, 0, emptyReference)).to.throw(
+    expect(() => new DocumentFactory(schemaWithEnum, 0, emptyReference)).to.throw(
       "REFERENCE_KEY_DOES_NOT_EXIST",
     );
   });
@@ -100,9 +102,9 @@ describe("Testing enum type for SchemaParserClass", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const schemaParser = new SchemaParser(schemaWithEnum, 0, {});
+    const documentFactory = new DocumentFactory(schemaWithEnum, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });

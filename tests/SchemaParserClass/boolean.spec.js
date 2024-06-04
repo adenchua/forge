@@ -1,18 +1,18 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing boolean type for SchemaParserClass", function () {
+describe("Testing boolean type for DocumentFactoryClass", function () {
   it("1. Given a schema Given boolean type, the result document should have the boolean property", function () {
     const schemaGivenBoolean = {
       test: {
         type: "boolean",
       },
     };
-    const schemaParser = new SchemaParser(schemaGivenBoolean, 0, {});
+    const documentFactory = new DocumentFactory(schemaGivenBoolean, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("boolean");
@@ -27,9 +27,9 @@ describe("Testing boolean type for SchemaParserClass", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const schemaParser = new SchemaParser(schemaGivenBoolean, 0, {});
+    const documentFactory = new DocumentFactory(schemaGivenBoolean, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });

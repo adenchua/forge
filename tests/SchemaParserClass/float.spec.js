@@ -1,18 +1,18 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing float type for SchemaParserClass", function () {
+describe("Testing float type for DocumentFactoryClass", function () {
   it("1. Given no parameters, it should return the correct property with a float value", function () {
     const schema = {
       test: {
         type: "float",
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("number");
@@ -29,9 +29,9 @@ describe("Testing float type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.equal(1.0);
   });
@@ -46,12 +46,12 @@ describe("Testing float type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {
+    const documentFactory = new DocumentFactory(schema, 0, {
       key1: 1.0,
       key2: 1.0,
     });
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     expect(resultDocument.test).to.equal(1.0);
   });
 
@@ -67,7 +67,7 @@ describe("Testing float type for SchemaParserClass", function () {
     };
     const emptyReference = {};
 
-    expect(() => new SchemaParser(schema, 0, emptyReference)).to.throw(
+    expect(() => new DocumentFactory(schema, 0, emptyReference)).to.throw(
       "REFERENCE_KEY_DOES_NOT_EXIST",
     );
   });

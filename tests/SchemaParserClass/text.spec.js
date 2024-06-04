@@ -1,16 +1,16 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing text type for SchemaParserClass", function () {
+describe("Testing text type for DocumentFactoryClass", function () {
   it("1. Given no parameters with type text, it should return the correct result document with minimum of 5 words and maximum of 120 words", function () {
     const schema = {
       test: { type: "text" },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test?.split(" ");
 
     expect(resultDocument).to.haveOwnProperty("test");
@@ -28,9 +28,9 @@ describe("Testing text type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test?.split(" ");
 
     expect(words).to.have.lengthOf(1);
@@ -46,9 +46,9 @@ describe("Testing text type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test?.split(" ");
 
     expect(words).to.have.length.greaterThanOrEqual(5).and.lessThanOrEqual(120);
@@ -67,9 +67,9 @@ describe("Testing text type for SchemaParserClass", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });
@@ -84,12 +84,12 @@ describe("Testing text type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {
+    const documentFactory = new DocumentFactory(schema, 0, {
       key1: 1,
       key2: 1,
     });
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test.split(" ");
     expect(words).to.have.lengthOf(1);
   });
@@ -106,7 +106,7 @@ describe("Testing text type for SchemaParserClass", function () {
     };
     const emptyReference = {};
 
-    expect(() => new SchemaParser(schema, 0, emptyReference)).to.throw(
+    expect(() => new DocumentFactory(schema, 0, emptyReference)).to.throw(
       "REFERENCE_KEY_DOES_NOT_EXIST",
     );
   });

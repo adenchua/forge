@@ -1,19 +1,19 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
 import { isValidUrl } from "../testUtils.js";
-describe("Testing social-media-post type for SchemaParserClass", function () {
+describe("Testing social-media-post type for DocumentFactoryClass", function () {
   it("1. Given a valid schema, it should return the correct response", function () {
     const schema = {
       test: {
         type: "social-media-post",
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("string");
@@ -28,9 +28,9 @@ describe("Testing social-media-post type for SchemaParserClass", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });
@@ -45,7 +45,7 @@ describe("Testing social-media-post type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {})).to.throw("LANGUAGES_MUST_NOT_BE_NULL");
+    expect(() => new DocumentFactory(schema, 0, {})).to.throw("LANGUAGES_MUST_NOT_BE_NULL");
   });
 
   it("4. Given an empty array languages option, it should throw an error 'LANGUAGES_MUST_NOT_BE_EMPTY'", function () {
@@ -58,7 +58,7 @@ describe("Testing social-media-post type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {})).to.throw("LANGUAGES_MUST_NOT_BE_EMPTY");
+    expect(() => new DocumentFactory(schema, 0, {})).to.throw("LANGUAGES_MUST_NOT_BE_EMPTY");
   });
 
   it("5. Given a min and max of 1, it should return a result with one word", function () {
@@ -71,9 +71,9 @@ describe("Testing social-media-post type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test.split(" ");
 
     expect(resultDocument.test).to.be.a("string");
@@ -90,9 +90,9 @@ describe("Testing social-media-post type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.contain("#");
   });
@@ -107,9 +107,9 @@ describe("Testing social-media-post type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test.split(" ");
     // last word in the array is always a url
     const url = words[words.length - 1];

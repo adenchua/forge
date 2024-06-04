@@ -20,8 +20,12 @@ export function validateObject(fieldName, options, references = {}) {
       flag = checkObjectProperty(property, "type", fieldName) && flag;
       flag = checkObjectProperty(property, "fieldName", fieldName) && flag;
       flag =
-        validateType(property.type, `${fieldName}.${property.options}`, fieldName, references) &&
-        flag;
+        validateType(
+          property.type,
+          property.options,
+          `${fieldName}.${property.fieldName}`,
+          references,
+        ) && flag;
     });
   }
 

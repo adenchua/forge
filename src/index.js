@@ -3,7 +3,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
 import configJson from "../config/config.json" assert { type: "json" };
-import SchemaParser from "./SchemaParserClass.js";
+import DocumentFactory from "./DocumentFactoryClass.js";
 import SchemaValidator from "./SchemaValidatorClass.js";
 
 function getTodayDate() {
@@ -56,7 +56,7 @@ function init() {
   console.info(`Validation successful! Generating ${documentCount} documents to ${targetFolder}`);
 
   for (let i = 0; i < documentCount; i++) {
-    const newDocument = new SchemaParser(
+    const newDocument = new DocumentFactory(
       schema,
       nullablePercentage,
       references,

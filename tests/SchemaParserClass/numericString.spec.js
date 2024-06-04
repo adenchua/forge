@@ -1,18 +1,18 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing numeric-string for SchemaParserClass", function () {
+describe("Testing numeric-string for DocumentFactoryClass", function () {
   it("1. Given no parameters, it should return the correct result document with length 1 numeric string", function () {
     const schema = {
       test: {
         type: "numeric-string",
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.have.lengthOf(1);
@@ -30,9 +30,9 @@ describe("Testing numeric-string for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.have.lengthOf(2);
   });
@@ -52,8 +52,8 @@ describe("Testing numeric-string for SchemaParserClass", function () {
     let foundLeftPaddedZeroes = false;
 
     for (let i = 0; i < sampleSize; i++) {
-      const schemaParser = new SchemaParser(schema, 0, {});
-      const resultDocument = schemaParser.getDocument();
+      const documentFactory = new DocumentFactory(schema, 0, {});
+      const resultDocument = documentFactory.getDocument();
 
       if (resultDocument.test[0] === "0") {
         foundLeftPaddedZeroes = true;
@@ -73,9 +73,9 @@ describe("Testing numeric-string for SchemaParserClass", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });
@@ -90,12 +90,12 @@ describe("Testing numeric-string for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {
+    const documentFactory = new DocumentFactory(schema, 0, {
       key1: 1,
       key2: 1,
     });
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     expect(resultDocument.test).to.have.lengthOf(1);
   });
 
@@ -111,7 +111,7 @@ describe("Testing numeric-string for SchemaParserClass", function () {
     };
     const emptyReference = {};
 
-    expect(() => new SchemaParser(schema, 0, emptyReference)).to.throw(
+    expect(() => new DocumentFactory(schema, 0, emptyReference)).to.throw(
       "REFERENCE_KEY_DOES_NOT_EXIST",
     );
   });

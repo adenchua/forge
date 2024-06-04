@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing format string type for SchemaParserClass", function () {
+describe("Testing format string type for DocumentFactoryClass", function () {
   it("1. Given valid parameters, it should return the correct result document", function () {
     const schema = {
       test: {
@@ -23,9 +23,9 @@ describe("Testing format string type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.equal("apple_pear");
@@ -58,7 +58,7 @@ describe("Testing format string type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {})).to.throw("UNSUPPORTED_FORMAT_STRING_TYPE");
+    expect(() => new DocumentFactory(schema, 0, {})).to.throw("UNSUPPORTED_FORMAT_STRING_TYPE");
   });
 
   it("3. Given 100% nullablePercentage, it should return the correct property with null value", function () {
@@ -84,9 +84,9 @@ describe("Testing format string type for SchemaParserClass", function () {
       },
     };
 
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.null;

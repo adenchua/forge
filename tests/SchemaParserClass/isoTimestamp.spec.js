@@ -1,15 +1,15 @@
 import { expect } from "chai";
 import { isBefore, isValid } from "date-fns";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing iso-timestamp type for SchemaParserClass", function () {
+describe("Testing iso-timestamp type for DocumentFactoryClass", function () {
   it("1. Given a valid iso-timestamp schema, it should return the correct result", function () {
     const schema = { test: { type: "iso-timestamp" } };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("string");
@@ -29,7 +29,7 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {})).to.throw("INVALID_DATE_RANGE");
+    expect(() => new DocumentFactory(schema, 0, {})).to.throw("INVALID_DATE_RANGE");
   });
 
   it("3. Given a null 'dateFrom' option and an valid 'dateTo' option, it should throw 'INVALID_DATE_RANGE' error", function () {
@@ -44,7 +44,7 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {})).to.throw("INVALID_DATE_RANGE");
+    expect(() => new DocumentFactory(schema, 0, {})).to.throw("INVALID_DATE_RANGE");
   });
 
   it("4. Given a null 'datefrom' and a null 'dateTo' option, it should return the correct result", function () {
@@ -57,9 +57,9 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(isValid(new Date(resultDocument.test))).to.be.true;
     expect(isBefore(new Date(resultDocument.test), new Date())).to.be.true;
@@ -76,9 +76,9 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(isValid(new Date(resultDocument.test))).to.be.true;
     expect(resultDocument.test).to.equal("2001-01-01T00:00:00.000Z");
@@ -93,9 +93,9 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });
@@ -111,11 +111,11 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {
+    const documentFactory = new DocumentFactory(schema, 0, {
       date: validDate,
     });
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
     expect(resultDocument.test).to.equal("2001-01-01T00:00:00.000Z");
   });
 
@@ -131,7 +131,7 @@ describe("Testing iso-timestamp type for SchemaParserClass", function () {
     };
     const emptyReference = {};
 
-    expect(() => new SchemaParser(schema, 0, emptyReference)).to.throw(
+    expect(() => new DocumentFactory(schema, 0, emptyReference)).to.throw(
       "REFERENCE_KEY_DOES_NOT_EXIST",
     );
   });

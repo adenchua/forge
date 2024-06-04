@@ -1,18 +1,18 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing full name type for SchemaParserClass", function () {
+describe("Testing full name type for DocumentFactoryClass", function () {
   it("1. Given no parameters, it should return the correct result document", function () {
     const schema = {
       test: {
         type: "full-name",
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("string");
@@ -29,7 +29,7 @@ describe("Testing full name type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {})).to.throw("INVALID_GENDER_PROVIDED");
+    expect(() => new DocumentFactory(schema, 0, {})).to.throw("INVALID_GENDER_PROVIDED");
   });
 
   it("3. Given a valid gender, it should return the correct result document", function () {
@@ -42,9 +42,9 @@ describe("Testing full name type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("string");

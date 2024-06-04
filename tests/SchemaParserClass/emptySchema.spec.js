@@ -1,14 +1,14 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing empty schema for SchemaParserClass", function () {
+describe("Testing empty schema for DocumentFactoryClass", function () {
   it("1. Given an empty schema, the result document should be an empty object", function () {
     const emptySchema = {};
-    const schemaParser = new SchemaParser(emptySchema, 0, {});
+    const documentFactory = new DocumentFactory(emptySchema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.be.eql({});
   });

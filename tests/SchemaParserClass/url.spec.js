@@ -1,19 +1,19 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 import { isValidUrl } from "../testUtils.js";
 
-describe("Testing url type for SchemaParserClass", function () {
+describe("Testing url type for DocumentFactoryClass", function () {
   it("1. Given no parameters, it should generate the correct result document", function () {
     const schema = {
       test: {
         type: "url",
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("string");
@@ -34,8 +34,8 @@ describe("Testing url type for SchemaParserClass", function () {
     const regExpMatchAnyDigits = /\/\d+/;
 
     for (let i = 0; i < sampleSize; i++) {
-      const schemaParser = new SchemaParser(schema, 0, {});
-      const resultDocument = schemaParser.getDocument();
+      const documentFactory = new DocumentFactory(schema, 0, {});
+      const resultDocument = documentFactory.getDocument();
       if (!!resultDocument.test.match(regExpMatchAnyDigits)) {
         consistOfNumbers = true;
         break;
@@ -54,9 +54,9 @@ describe("Testing url type for SchemaParserClass", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });

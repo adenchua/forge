@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { it } from "mocha";
+import { describe, it } from "mocha";
 
-import SchemaParser from "../../src/SchemaParserClass.js";
+import DocumentFactory from "../../src/DocumentFactoryClass.js";
 
-describe("Testing array type for SchemaParserClass", function () {
+describe("Testing array type for DocumentFactoryClass", function () {
   it("1. Given no parameters, it should throw an error 'ARRAY_SCHEMA_NOT_PROVIDED'", function () {
     const schema = {
       test: {
@@ -11,7 +11,7 @@ describe("Testing array type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {})).to.throw("ARRAY_SCHEMA_NOT_PROVIDED");
+    expect(() => new DocumentFactory(schema, 0, {})).to.throw("ARRAY_SCHEMA_NOT_PROVIDED");
   });
 
   it("2. Given a valid schema option, it should return the correct result document", function () {
@@ -25,9 +25,9 @@ describe("Testing array type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
     expect(resultDocument.test).to.be.a("array");
@@ -47,9 +47,9 @@ describe("Testing array type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.have.lengthOf(1);
   });
@@ -68,7 +68,7 @@ describe("Testing array type for SchemaParserClass", function () {
       },
     };
 
-    expect(() => new SchemaParser(schema, 0, {})).to.throw("MIN_MAX_OPTIONS_MUST_BE_A_NUMBER");
+    expect(() => new DocumentFactory(schema, 0, {})).to.throw("MIN_MAX_OPTIONS_MUST_BE_A_NUMBER");
   });
 
   it("5. Given a 100% nullable percentage, it should return the correct property with a null value", function () {
@@ -85,9 +85,9 @@ describe("Testing array type for SchemaParserClass", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });
@@ -108,9 +108,9 @@ describe("Testing array type for SchemaParserClass", function () {
         },
       },
     };
-    const schemaParser = new SchemaParser(schema, 0, {});
+    const documentFactory = new DocumentFactory(schema, 0, {});
 
-    const resultDocument = schemaParser.getDocument();
+    const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.not.be.null;
     expect(resultDocument.test).to.be.a("array");
