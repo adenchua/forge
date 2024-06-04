@@ -1,4 +1,5 @@
-import { validateSchemaField, validateType } from "./utils/validators/schemaValidator.js";
+import { validateSchemaField } from "./utils/validators/validateSchemaField.js";
+import { validateType } from "./utils/validators/validatorHelpers.js";
 
 class SchemaValidator {
   #schemaObject = null;

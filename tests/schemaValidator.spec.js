@@ -1,21 +1,19 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import {
-  validateArray,
-  validateEnum,
-  validateFile,
-  validateFirstName,
-  validateFormatString,
-  validateIsoTimestamp,
-  validateNumber,
-  validateNumericString,
-  validateObject,
-  validateSchemaField,
-  validateSocialMediaPost,
-  validateText,
-  validateUrl,
-} from "../src/utils/validators/schemaValidator.js";
+import { validateArray } from "../src/utils/validators/validateArray.js";
+import { validateEnum } from "../src/utils/validators/validateEnum.js";
+import { validateFile } from "../src/utils/validators/validateFile.js";
+import { validateFirstName } from "../src/utils/validators/validateFirstName.js";
+import { validateFormatString } from "../src/utils/validators/validateFormatString.js";
+import { validateIsoTimestamp } from "../src/utils/validators/validateIsoTimestamp.js";
+import { validateNumber } from "../src/utils/validators/validateNumber.js";
+import { validateNumericString } from "../src/utils/validators/validateNumericString.js";
+import { validateObject } from "../src/utils/validators/validateObject.js";
+import { validateSchemaField } from "../src/utils/validators/validateSchemaField.js";
+import { validateSocialMediaPost } from "../src/utils/validators/validateSocialMediaPost.js";
+import { validateText } from "../src/utils/validators/validateText.js";
+import { validateUrl } from "../src/utils/validators/validateUrl.js";
 
 describe("Testing utility function: validateSchemaField", function () {
   it("1. Given a valid schema object, it should return true", function () {
