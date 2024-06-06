@@ -86,7 +86,8 @@ class FakeDataGenerator {
     return faker.word.words({ count: { min, max } });
   }
 
-  generateNumber(min, max) {
+  // set the max to signed 32-bit integer
+  generateNumber(min, max = 2_147_483_647) {
     return faker.number.int({ min, max });
   }
 
