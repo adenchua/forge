@@ -40,7 +40,7 @@ class SchemaParser {
       case "iso-timestamp":
         return this.getIsoTimestamp(options, references);
       case "object":
-        return this.getObject(options);
+        return this.getObject(options, references);
       case "text":
         return this.getText(options, references);
       case "numeric-string":
@@ -48,7 +48,7 @@ class SchemaParser {
       case "url":
         return this.getUrl(options);
       case "array":
-        return this.getArray(options);
+        return this.getArray(options, references);
       case "number":
         return this.getNumber(options, references);
       case "float":
@@ -80,13 +80,13 @@ class SchemaParser {
       case "id":
         return this.getId();
       case "format-string":
-        return this.getFormattedString(options);
+        return this.getFormattedString(options, references);
       default:
         throw new Error(errorCodes.invalidType);
     }
   }
 
-  getObject(options) {
+  getObject(options, references) {
     const { properties } = options;
     const result = {};
 
@@ -103,6 +103,7 @@ class SchemaParser {
         propertyIsNullable,
         propertyNullablePercentage,
         propertyOptions,
+        references,
       );
     }
 
@@ -269,7 +270,7 @@ class SchemaParser {
     return this.#dataGenerator.generateCountryCode();
   }
 
-  getArray(options) {
+  getArray(options, references) {
     const result = [];
     const { schema, min, max } = options || {};
     if (schema == null) {
@@ -284,7 +285,7 @@ class SchemaParser {
     const numberOfItems = Math.floor(Math.random() * (max - min + 1) + min);
 
     for (let i = 0; i < numberOfItems; i++) {
-      const item = this.parseSchemaType(type, false, 0, schemaOptions);
+      const item = this.parseSchemaType(type, false, 0, schemaOptions, references);
       result.push(item);
     }
 
@@ -327,7 +328,7 @@ class SchemaParser {
     return this.#dataGenerator.generateId();
   }
 
-  getFormattedString(options) {
+  getFormattedString(options, references) {
     const { string, properties } = options || {};
     let result = string;
 
@@ -343,7 +344,7 @@ class SchemaParser {
         throw new Error(errorCodes.unsupportedFormatStringError);
       }
 
-      const value = this.parseSchemaType(type, false, 0, propertyOptions);
+      const value = this.parseSchemaType(type, false, 0, propertyOptions, references);
       result = result.replace("{}", value);
     }
 
