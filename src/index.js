@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import configJson from "../config/config.json" assert { type: "json" };
 import DocumentFactory from "./DocumentFactoryClass.js";
-import SchemaValidator from "./SchemaValidatorClass.js";
+import ConfigValidator from "./ConfigValidatorClass.js";
 
 function getTodayDate() {
   const today = new Date();
@@ -43,8 +43,9 @@ function init() {
   console.info(`Successfully retrieved schema from: '${schemaPath}'. Performing validation...`);
   console.info("-----------------------------------------------------------------------------");
   console.info("Errors found:");
-  const validator = new SchemaValidator(schema, derivatives, references);
+  const validator = new ConfigValidator(schema, derivatives, references);
   validator.validateSchema();
+  validator.validateDerivatives();
   const isValidSchema = validator.getValidity();
   console.info("-----------------------------------------------------------------------------");
 

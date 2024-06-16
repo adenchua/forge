@@ -1,5 +1,8 @@
 import { isValid } from "date-fns";
 
+import { validateCopy } from "./derivative-validators/validateCopy.js";
+import { validateRelativeDate } from "./derivative-validators/validateRelativeDate.js";
+import { validateStringInterpolation } from "./derivative-validators/validateStringInterpolation.js";
 import { validateArray } from "./validateArray.js";
 import { validateEnum } from "./validateEnum.js";
 import { validateEnumArray } from "./validateEnumArray.js";
@@ -17,7 +20,23 @@ import { validateSocialMediaPost } from "./validateSocialMediaPost.js";
 import { validateText } from "./validateText.js";
 import { validateUrl } from "./validateUrl.js";
 
-export function validateType(type, options, fieldName, references) {
+export function validateDerivativeType(type, options, fieldName, referencedObject) {
+  switch (type) {
+    case "string-interpolation":
+      return validateStringInterpolation(fieldName, options, referencedObject);
+    case "copy":
+      return validateCopy(fieldName, options, referencedObject);
+    case "date-before":
+      return validateRelativeDate(fieldName, options, referencedObject);
+    case "date-after":
+      return validateRelativeDate(fieldName, options, referencedObject);
+    default:
+      console.error(`Invalid type '${type}' for field: ${fieldName}`);
+      return false;
+  }
+}
+
+export function validateSchemaType(type, options, fieldName, references) {
   switch (type) {
     case "enum":
       return validateEnum(fieldName, options, references);

@@ -2,7 +2,7 @@ import {
   checkNonEmptyArray,
   checkObjectProperty,
   isValidNonEmptyArray,
-  validateType,
+  validateSchemaType,
 } from "./validatorHelpers.js";
 
 export function validateObject(fieldName, options, references = {}) {
@@ -20,7 +20,7 @@ export function validateObject(fieldName, options, references = {}) {
       flag = checkObjectProperty(property, "type", fieldName) && flag;
       flag = checkObjectProperty(property, "fieldName", fieldName) && flag;
       flag =
-        validateType(
+        validateSchemaType(
           property.type,
           property.options,
           `${fieldName}.${property.fieldName}`,

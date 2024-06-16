@@ -3,7 +3,7 @@ import {
   checkIfMinIsGreaterThanMax,
   checkNumber,
   checkObjectProperty,
-  validateType,
+  validateSchemaType,
 } from "./validatorHelpers.js";
 
 export function validateArray(fieldName, options, references = {}) {
@@ -16,7 +16,7 @@ export function validateArray(fieldName, options, references = {}) {
   flag = checkObjectProperty(options, "max", fieldName) && flag;
 
   flag = checkObjectProperty(schema, "type", fieldName) && flag;
-  flag = validateType(type, schemaOptions, fieldName, references) && flag;
+  flag = validateSchemaType(type, schemaOptions, fieldName, references) && flag;
 
   flag = checkNumber("min", min, fieldName) && flag;
   flag = checkNumber("max", max, fieldName) && flag;
