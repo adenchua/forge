@@ -88,6 +88,8 @@ export function validateSchemaType(type, options, fieldName, references) {
       return true;
     case "user-bio":
       return true;
+    case "url-domain":
+      return true;
     default:
       console.error(`Invalid type '${type}' for field: ${fieldName}`);
       return false;

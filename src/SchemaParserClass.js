@@ -47,6 +47,8 @@ class SchemaParser {
         return this.getNumericString(options, references);
       case "url":
         return this.getUrl(options);
+      case "url-domain":
+        return this.getUrlDomain();
       case "array":
         return this.getArray(options, references);
       case "number":
@@ -181,6 +183,10 @@ class SchemaParser {
   getUrl(options) {
     const { allowNumbers } = options || {};
     return this.#dataGenerator.generateURL(allowNumbers);
+  }
+
+  getUrlDomain() {
+    return this.#dataGenerator.generateUrlDomain();
   }
 
   getNumericString(options, references) {

@@ -26,6 +26,7 @@ const VALID_TYPES = [
   "social-media-post",
   "id",
   "format-string",
+  "url-domain",
 ];
 
 export function validateSchemaField(fieldName, schemaObject) {

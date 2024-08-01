@@ -144,6 +144,10 @@ class FakeDataGenerator {
     return faker.image.url();
   }
 
+  generateUrlDomain() {
+    return faker.internet.domainName();
+  }
+
   generateFile(extension) {
     return faker.system.commonFileName(extension);
   }

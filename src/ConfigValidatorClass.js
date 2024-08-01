@@ -20,6 +20,7 @@ class SchemaValidator {
 
   validateSchema() {
     for (const [fieldName, value] of Object.entries(this.#schemaObject)) {
+      // TODO: is there a need for this check? boolean not assigned
       validateSchemaField(fieldName, value);
       const { type, options } = value;
       const isValid = validateSchemaType(type, options, fieldName, this.#references);
