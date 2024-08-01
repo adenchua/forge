@@ -388,6 +388,20 @@ Generates a URL string. A `allowNumbers` option may be provided to determine if 
 
 ---
 
+### # URL-Domain
+
+Generates a URL domain string. e.g. "slow-timer.info"
+
+```json
+{
+  "type": "url-domain",
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+---
+
 ### # Number
 
 Generates a number. A `min` and `max` option may be provided to generate a number between the minimum and maximum range (inclusive). If no options are provided, a number between `0` and `Number.MAX_SAFE_INTEGER` is returned
