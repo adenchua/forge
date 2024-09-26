@@ -151,4 +151,108 @@ describe("Testing derivatives from DocumentFactoryClass", function () {
       "INVALID_DERIVATIVES_TYPE",
     );
   });
+
+  it("5. Given a nested derivative, it should produce the correct result document", function () {
+    const schema = {
+      test: {
+        type: "object",
+        options: {
+          properties: [
+            {
+              fieldName: "nestedA",
+              type: "object",
+              options: {
+                properties: [
+                  {
+                    fieldName: "nestedAB",
+                    type: "enum",
+                    options: ["one"],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      test2: {
+        type: "enum",
+        options: ["two"],
+      },
+    };
+
+    const derivatives = {
+      "test.nestedA.nestedAC": {
+        type: "copy",
+        options: {
+          referenceKey: "test2",
+        },
+      },
+    };
+
+    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
+
+    const resultDocument = documentFactory.getDocument();
+
+    expect(resultDocument).to.eql({
+      test: {
+        nestedA: {
+          nestedAB: "one",
+          nestedAC: "two",
+        },
+      },
+      test2: "two",
+    });
+  });
+
+  it("6. Given a valid nested referenced key, it should produce the correct result document", function () {
+    const schema = {
+      test: {
+        type: "object",
+        options: {
+          properties: [
+            {
+              fieldName: "nestedA",
+              type: "object",
+              options: {
+                properties: [
+                  {
+                    fieldName: "nestedAB",
+                    type: "enum",
+                    options: ["one"],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      test2: {
+        type: "enum",
+        options: ["two"],
+      },
+    };
+
+    const derivatives = {
+      "test.nestedA.nestedAC": {
+        type: "copy",
+        options: {
+          referenceKey: "test.nestedA.nestedAB",
+        },
+      },
+    };
+
+    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
+
+    const resultDocument = documentFactory.getDocument();
+
+    expect(resultDocument).to.eql({
+      test: {
+        nestedA: {
+          nestedAB: "one",
+          nestedAC: "one",
+        },
+      },
+      test2: "two",
+    });
+  });
 });

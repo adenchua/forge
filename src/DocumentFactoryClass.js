@@ -1,3 +1,5 @@
+import { flatten, unflatten } from "flat";
+
 import DerivativesParserClass from "./DerivativesParserClass.js";
 import SchemaParser from "./SchemaParserClass.js";
 import { errorCodes } from "./utils/errorCodes.js";
@@ -7,15 +9,15 @@ class DocumentFactory {
   #schemaParserClass = null;
   #resultDocument = {};
   #schema = {};
-  #calculatedValues = {};
+  #derivatives = {};
   #globalNullablePercentage = 0;
   #references = {};
 
-  constructor(schema, nullablePercentage, references, calculatedValues) {
+  constructor(schema, nullablePercentage, references, derivatives) {
     this.#schema = schema || {};
     this.#globalNullablePercentage = nullablePercentage;
     this.#references = references || {};
-    this.#calculatedValues = calculatedValues || {};
+    this.#derivatives = derivatives || {};
     this.#schemaParserClass = new SchemaParser(nullablePercentage);
 
     // builds the result document
@@ -45,27 +47,32 @@ class DocumentFactory {
   }
 
   #processDerivatives() {
-    if (this.#calculatedValues == null || Object.keys(this.#calculatedValues).length === 0) {
+    if (this.#derivatives == null || Object.keys(this.#derivatives).length === 0) {
       return;
     }
 
     // deep clone the result document to ensure read-only
     const clonedResultDocument = JSON.parse(JSON.stringify(this.#resultDocument));
+    // need safe parameter to preserve array and their contents
+    const flattenedResultDocument = flatten(clonedResultDocument, { safe: true });
 
-    for (const [fieldName, value] of Object.entries(this.#calculatedValues)) {
+    for (const [delimitedFieldName, value] of Object.entries(this.#derivatives)) {
       const type = value.type;
       const isNullable = value.isNullable;
       const nullablePercentage = value.nullablePercentage;
       const options = value.options;
 
-      this.#resultDocument[fieldName] = this.#parseDerivatives(
+      flattenedResultDocument[delimitedFieldName] = this.#parseDerivatives(
         type,
         isNullable,
         nullablePercentage,
         options,
-        clonedResultDocument,
+        flattenedResultDocument,
       );
     }
+
+    // need safe parameter to preserve array and their contents
+    this.#resultDocument = unflatten(flattenedResultDocument, { safe: true });
   }
 
   #isNullable(isNullable, nullablePercentage) {

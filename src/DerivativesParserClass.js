@@ -3,27 +3,27 @@ import FakeDataGenerator from "./FakeDataGeneratorClass.js";
 class DerivativesParserClass {
   #fakeDataGenerator = new FakeDataGenerator();
 
-  parseStringInterpolation(referenceObject, options) {
+  parseStringInterpolation(flattenedReferenceObject, options) {
     const { string, referenceKeys } = options;
     let result = string;
 
     referenceKeys.forEach((referenceKey) => {
-      const value = referenceObject[referenceKey];
+      const value = flattenedReferenceObject[referenceKey];
       result = result.replace("{}", value);
     });
 
     return result;
   }
 
-  parseCopy(referenceObject, options) {
+  parseCopy(flattenedReferenceObject, options) {
     const { referenceKey } = options;
 
-    return referenceObject[referenceKey];
+    return flattenedReferenceObject[referenceKey];
   }
 
-  parseRelativeDate(referenceObject, options, sequence = "before") {
+  parseRelativeDate(flattenedReferenceObject, options, sequence = "before") {
     const { referenceKey, days } = options;
-    const referenceDate = referenceObject[referenceKey];
+    const referenceDate = flattenedReferenceObject[referenceKey];
 
     if (sequence === "after") {
       return this.#fakeDataGenerator.generateFutureISOTimestamp(days, referenceDate);
