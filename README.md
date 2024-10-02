@@ -21,7 +21,7 @@ Forge was created with the motivation to address a critical need in the data sci
 
 A valid config json file needs to be provided for the application. An example if shown below:
 
-```json
+```javascript
 // /config/config.json
 {
   "schemaPath": "schema.json",
@@ -722,15 +722,17 @@ Invalid `type` include: `object`, `enum-array`, `array` and `format-string`.
 
 ---
 
-### Derived Values Object
+## Derived Values Object
 
-After creating the result document with the `schema` object, each field in the `derivatives` object is derived based on the data generated previously
+After creating the result document with the `schema` object, each field in the `derivatives` object is derived based on the data generated previously from the schema.
 
-```json
+Supports nested object reference and setting of fields
+
+```javascript
 // schema.json
 {
   "schema": {
-   ...
+   // ...
   },
   "derivatives": {
     "sentimentWithText": {
@@ -738,6 +740,21 @@ After creating the result document with the `schema` object, each field in the `
       "options": {
         "string": "{}-{}",
         "referenceKeys": ["sentiment", "randomText"]
+      }
+    },
+    // sets a fieldB in nestedObjectA in the output
+    "nestedObjectA.fieldB": {
+      "type": "string-interpolation",
+      "options": {
+        "string": "{}-{}",
+        "referenceKeys": ["sentiment", "randomText"]
+      }
+    },
+    "nestedObjectA.fieldC": {
+      "type": "copy",
+      "options": {
+        // able to reference a nested object too
+        "referenceKey": "nestedObjectG.fieldF"
       }
     }
   }
