@@ -1,7 +1,7 @@
 {
-  "schemaPath": "schema.json",
-  "outputDir": "data",
-  "nullablePercentage": 0.2,
+  "recipeFilePath": "./recipes/sample-recipe.json",
+  "outputDir": "./output",
+  "nullablePercentage": 0.1,
   "documentCount": 10,
   "references": {}
 }

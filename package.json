@@ -8,7 +8,7 @@
     "test": "mocha 'tests/**/*.spec.js' --exit",
     "start": "node src/index.js"
   },
-  "author": "",
+  "author": "Aden Chua",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.4.0",
