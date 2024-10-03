@@ -6,6 +6,7 @@ import ConfigValidator from "./ConfigValidatorClass.js";
 import DocumentFactory from "./DocumentFactoryClass.js";
 import { getTodayDate } from "./utils/dateUtils.js";
 import { writeDocumentToDir, zipFolder } from "./utils/fileUtils.js";
+import { deleteKeysFromObject } from "./utils/objectUtils.js";
 
 async function init() {
   const uniqueFolderId = uuidv4();
@@ -13,7 +14,7 @@ async function init() {
   const { recipeFilePath, nullablePercentage, documentCount, outputDir, references } = configJson;
 
   const recipeFile = JSON.parse(fs.readFileSync(recipeFilePath));
-  const { schema, derivatives } = recipeFile;
+  const { schema, derivatives, keysToDelete } = recipeFile;
   const destinationFolder = path.join(outputDir, getTodayDate(), uniqueFolderId);
 
   console.info(`Successfully retrieved recipe from: '${recipeFilePath}'. Performing validation...`);
@@ -35,13 +36,17 @@ async function init() {
   );
 
   for (let i = 0; i < documentCount; i++) {
-    const newDocument = new DocumentFactory(
+    let document = new DocumentFactory(
       schema,
       nullablePercentage,
       references,
       derivatives,
     ).getDocument();
-    writeDocumentToDir(destinationFolder, newDocument);
+
+    // delete keys from final object if any
+    document = deleteKeysFromObject(document, keysToDelete);
+
+    writeDocumentToDir(destinationFolder, document);
   }
 
   // zip and delete folder afterwards

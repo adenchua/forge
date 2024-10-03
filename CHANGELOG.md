@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ADDED
 
 - Zip compression of output data folder to save storage space
+- feature to delete temporary referenced keys from the `json` document after derivatives are applied
 
 ### CHANGED
 
