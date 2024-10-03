@@ -1,10 +1,11 @@
 import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import { COMPRESSION_LEVEL, zip } from "zip-a-folder";
 
 import configJson from "../config/config.json" assert { type: "json" };
-import DocumentFactory from "./DocumentFactoryClass.js";
 import ConfigValidator from "./ConfigValidatorClass.js";
+import DocumentFactory from "./DocumentFactoryClass.js";
 
 function getTodayDate() {
   const today = new Date();
@@ -33,7 +34,11 @@ function writeDocument(outputDir, jsonDocument) {
   fs.writeFileSync(outputPath, stringifiedDocument, "utf8");
 }
 
-function init() {
+async function zipFolder(srcDir, destDir) {
+  await zip(srcDir, destDir, { compression: COMPRESSION_LEVEL.high });
+}
+
+async function init() {
   const uniqueFolderId = uuidv4();
   const { schemaPath, nullablePercentage, documentCount, outputDir, references } = configJson;
   const schemaFile = JSON.parse(fs.readFileSync(schemaPath));
@@ -54,7 +59,9 @@ function init() {
     return;
   }
 
-  console.info(`Validation successful! Generating ${documentCount} documents to ${targetFolder}`);
+  console.info(
+    `Validation successful! Generating ${documentCount} documents to ${targetFolder}.zip`,
+  );
 
   for (let i = 0; i < documentCount; i++) {
     const newDocument = new DocumentFactory(
@@ -65,6 +72,10 @@ function init() {
     ).getDocument();
     writeDocument(targetFolder, newDocument);
   }
+
+  // zip and delete folder afterwards
+  await zipFolder(targetFolder, `${targetFolder}.zip`);
+  fs.rmSync(targetFolder, { recursive: true, force: true });
 
   console.info(`Successfully generated ${documentCount} documents!`);
 }
