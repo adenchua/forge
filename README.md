@@ -44,7 +44,7 @@ A valid config json file needs to be provided for the application. An example if
 
 ## Recipe
 
-A valid recipe json file needs to be provided for the application to generate documents, with two keys, `schema` and `derivatives`. An example is shown below:
+A valid recipe json file needs to be provided for the application to generate documents, with three keys, `schema`, `derivatives` and `keysToDelete`. An example is shown below:
 
 ```json
 // recipe.json
@@ -62,6 +62,9 @@ A valid recipe json file needs to be provided for the application to generate do
         "min": 1,
         "max": 5
       }
+    },
+    "temporaryIdForReference": {
+      "type": "id"
     }
   },
   "derivatives": {
@@ -69,10 +72,11 @@ A valid recipe json file needs to be provided for the application to generate do
       "type": "string-interpolation",
       "options": {
         "string": "{}-{}",
-        "referenceKeys": ["sentiment", "randomText"]
+        "referenceKeys": ["sentiment", "temporaryIdForReference"]
       }
     }
-  }
+  },
+  "keysToDelete": ["temporaryIdForReference"]
 }
 ```
 
@@ -82,9 +86,11 @@ The above example may generate the following document:
 {
   "sentiment": "Positive",
   "randomText": "how are you today",
-  "sentimentWithText": "Positive-how are you today"
+  "sentimentWithText": "Positive-ab4p2jW1Qs35Pz"
 }
 ```
+
+For examples of each key, please check out: [Schema](#schema-object), [Derivatives](#derived-values-object), [Keys To Delete](#keys-to-delete)
 
 ### Schema Object
 
@@ -844,3 +850,25 @@ Creates a date after a date field from a reference key:
 The example above creates a date from a range of 0~10 days after the date of `keyA`.
 
 ---
+
+## Keys To Delete
+
+Sometimes it may be required to add a temporary reference for derivatives. To delete these temporary references afterwards, add these keys in the `keysToDelete` array in the `recipe` object.
+
+```javascript
+// recipe.json
+{
+  "schema": {
+    ...
+    "temporaryIdForReference": {
+      "type": "id"
+    }
+  },
+  "derivatives": {
+    ...
+  },
+  "keysToDelete": ["temporaryIdForReference"]
+}
+```
+
+The example above uses a temporary ID for reference: `temporaryIdForReference`. To delete this property after the derivatives are applied, add the field to `keysToDelete` array.
