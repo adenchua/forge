@@ -12,21 +12,20 @@ Forge was created with the motivation to address a critical need in the data sci
 
 1. Ensure `node` and `npm` is installed
 2. Run `npm install` command from your terminal to install the necessary dependencies
-3. Populate `/config/config.json` file. See the section on **Config File** below for more details on how to populate the fields
-4. Create a schema json file and point it from the `config.json`. This schema is required to generate the documents. See the section on **Schema** below for
-   more details on how to populate the fields
-5. Run `npm run start` command from your terminal
+3. Populate `/config/config.json` file. See the section on [**Config File**](#config-file) below for more details on how to populate the fields
+4. Create a recipe json file and point it from the `config.json`. This recipe is required to generate the documents. See the section on [**Recipe**](#recipe) below for more details on how to populate the fields
+5. Run `npm run start` command from your terminal to execute the script
 
 ## Config File
 
 A valid config json file needs to be provided for the application. An example if shown below:
 
 ```javascript
-// /config/config.json
+// ./config/config.json
 {
-  "schemaPath": "schema.json",
-  "outputDir": "data",
-  "nullablePercentage": 0.2,
+  "recipeFilePath": "./recipes/sample-recipe.json",
+  "outputDir": "./output",
+  "nullablePercentage": 0.1,
   "documentCount": 10,
   "references": {
     "sampleArray": ["test", "world", "hello"],
@@ -37,18 +36,18 @@ A valid config json file needs to be provided for the application. An example if
 
 | field                | explanation                                                                                                                                                                                                                                                                                                                                                              |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `schemaPath`         | Where the schema json file is located. Relative from the root of this project                                                                                                                                                                                                                                                                                            |
+| `recipeFilePath`     | Where the recipe json files are located. Relative from the root of this project                                                                                                                                                                                                                                                                                          |
 | `outputDir`          | Directory where the folders and output documents will be generated to. Do note that this is not the final output directory. To ease repeated usage of this application, documents will be saved in the path: `<OUTPUT_DIR>/<DATE_TODAY>/<UNIQUE_ID>/...`. `outputDir` field simply points to the main parent `OUTPUT_DIR` folder. Relative from the root of this project |
 | `nullablePercentage` | Global percentage for a field to be `null` if the schema item sets `isNullable` field to `true`. Accepts a value between `0` and `1`                                                                                                                                                                                                                                     |
 | `documentCount`      | The number of document json files to generate                                                                                                                                                                                                                                                                                                                            |
 | `references`         | Global reference object shared among the schema. Certain schema types allow the usage of references. This allow re-use of certain keys through the application (described below). In the example above, `sampleArray` and `sampleB` reference values may be used through `#ref.sampleArray` and `#ref.sampleB` respectively for some schema types                        |
 
-## Schema
+## Recipe
 
-A valid schema json file needs to be provided for the application to generate documents, with two keys, `schema` and `derivatives`. An example is shown below:
+A valid recipe json file needs to be provided for the application to generate documents, with two keys, `schema` and `derivatives`. An example is shown below:
 
 ```json
-// schema.json
+// recipe.json
 {
   "schema": {
     "sentiment": {
@@ -91,12 +90,12 @@ The above example may generate the following document:
 
 The `schema` object generates the result document with the type of data defined in each field.
 
-| field                | explanation                                                                                                                                                                                 | required                |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `type`               | Must be one of the valid `type` described below                                                                                                                                             | Yes                     |
-| `options`            | Additional options provided for the particular type. Required for some types                                                                                                                | No (Yes for some types) |
-| `isNullable`         | Determines if this field may be `null`. If `nullablePercentage` is not provided, it follows the global `nullablePercentage` defined in the config file. Defaults to `false` if not provided | No                      |
-| `nullablePercentage` | Percentage of this field to be `null`. Overrides the global `nullablePercentage` if provided. Accepts a value from `0` to `1`. If this field is provided, it sets `isNullable` to `true`.   | No                      |
+| field                | explanation                                                                                                                                                                               | required                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `type`               | Must be one of the valid `type` described below                                                                                                                                           | Yes                     |
+| `options`            | Additional options provided for the particular type. Required for some types                                                                                                              | No (Yes for some types) |
+| `isNullable`         | Determines if this field may be `null`. If `nullablePercentage` is not provided, it follows the global `nullablePercentage` defined in the config file. Defaults to `false`               | No                      |
+| `nullablePercentage` | Percentage of this field to be `null`. Overrides the global `nullablePercentage` if provided. Accepts a value from `0` to `1`. If this field is provided, it sets `isNullable` to `true`. | No                      |
 
 ---
 

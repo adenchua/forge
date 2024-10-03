@@ -1,8 +1,7 @@
 # output
-data
 output
-data_output
-schema.json
+recipes
+!recipes/sample-recipe.json
 
 # Logs
 logs
