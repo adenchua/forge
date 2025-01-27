@@ -33,7 +33,7 @@ export default class DerivativesParser {
     }
   }
 
-  getOutput() {
+  getOutput(): object {
     return unflatten(this.flattenedOutput);
   }
 

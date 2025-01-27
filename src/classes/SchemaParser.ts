@@ -40,6 +40,10 @@ export default class SchemaParser {
     }
   }
 
+  getOutput() {
+    return this.outputDocument;
+  }
+
   private isNull(nullablePercentage?: number): boolean {
     let finalNullablePercentage = this.globalNullablePercentage;
 

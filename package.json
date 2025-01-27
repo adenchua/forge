@@ -6,7 +6,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "mocha 'tests/**/*.spec.ts' --exit",
-    "start": "node --env-file=.env --import=tsx ./src/index.ts",
+    "start": "node --import=tsx ./src/index.ts",
     "format": "prettier ./src/**/* --write",
     "lint": "eslint ./src/**/* && tsc --noEmit"
   },

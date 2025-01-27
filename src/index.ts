@@ -2,11 +2,11 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-import { getTodayDate } from "./utils/dateUtils";
-import { writeDocumentToDir, zipFolder } from "./utils/fileUtils";
-import { deleteKeysFromObject } from "./utils/objectUtils";
 import ConfigValidator from "./classes/ConfigValidator";
 import DocumentFactory from "./classes/DocumentFactory";
+import { Config } from "./interfaces/documentFactory";
+import { getTodayDate } from "./utils/dateUtils";
+import { writeDocumentToDir, zipFolder } from "./utils/fileUtils";
 
 async function init() {
   const uniqueFolderId = uuidv4();
@@ -35,16 +35,17 @@ async function init() {
     `Validation successful! Generating ${documentCount} documents to ${destinationFolder}`,
   );
 
-  for (let i = 0; i < documentCount; i++) {
-    let document = new DocumentFactory(
-      schema,
-      nullablePercentage,
-      references,
-      derivatives,
-    ).getDocument();
+  const config: Config = {
+    globalNullablePercentage: nullablePercentage,
+    recipe: recipeFile,
+    references: references,
+  };
 
-    // delete keys from final object if any
-    document = deleteKeysFromObject(document, keysToDelete);
+  for (let i = 0; i < documentCount; i++) {
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
+    const document = documentFactory.getDocument();
+    console.log(document);
 
     writeDocumentToDir(destinationFolder, document);
   }
