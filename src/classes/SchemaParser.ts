@@ -1,33 +1,60 @@
+import { MAX_COUNT, MIN_COUNT } from "../constants";
+import InvalidDateRangeError from "../errors/InvalidDateRangeError";
+import InvalidSchemaTypeError from "../errors/InvalidSchemaTypeError";
+import {
+  ArrayOption,
+  DateRangeOption,
+  FileOption,
+  FormatStringOption,
+  GenderOption,
+  Language,
+  MinMaxOption,
+  NumericStringOption,
+  ObjectOption,
+  SocialMediaPostOption,
+  UrlOption,
+} from "../interfaces/schemaOptions";
+import { Schema, SchemaValue } from "../interfaces/schema";
+import { randomIntFromInterval } from "../utils/mathRandomUtils";
+import { parseReferenceValue } from "../utils/referenceUtils";
 import FakeDataGenerator from "./FakeDataGenerator";
-import { errorCodes } from "../utils/errorCodes";
-import { containsReferenceString, getReferenceValue } from "../utils/referenceUtils";
 
 export default class SchemaParser {
-  #dataGenerator: FakeDataGenerator;
-  #globalNullablePercentage = 0;
+  private fakeDataGenerator: FakeDataGenerator;
+  private schema: Schema;
+  private globalNullablePercentage: number = 0;
+  private references: object;
+  private outputDocument: object = {};
 
-  constructor(nullablePercentage: number) {
-    this.#globalNullablePercentage = nullablePercentage;
-    this.#dataGenerator = new FakeDataGenerator();
+  constructor(schema: Schema, globalNullablePercentage: number, references: object) {
+    this.schema = schema;
+    this.globalNullablePercentage = globalNullablePercentage;
+    this.references = references;
+    this.fakeDataGenerator = new FakeDataGenerator();
   }
 
-  #isNullable(isNullable: boolean, nullablePercentage: number) {
-    const _isNullable = isNullable || !!nullablePercentage || false;
-    // if provided, override global nullablePercentage value
-    const _nullablePercentage = nullablePercentage || this.#globalNullablePercentage;
+  init() {
+    // process each field of the schema, populate outputDocument
+    for (const [field, schemaValue] of Object.entries(this.schema)) {
+      this.outputDocument[field] = this.processSchemaValue(schemaValue);
+    }
+  }
 
-    if (_isNullable) {
-      // code that runs _nullablePercentage of the time
-      if (Math.random() < _nullablePercentage) {
-        return true;
-      }
+  private isNull(nullablePercentage?: number): boolean {
+    let finalNullablePercentage = this.globalNullablePercentage;
+
+    if (nullablePercentage !== undefined) {
+      finalNullablePercentage = nullablePercentage;
     }
 
-    return false;
+    return Math.random() < finalNullablePercentage;
   }
 
-  parseSchemaType(type, isNullable, nullablePercentage, options, references = {}) {
-    if (this.#isNullable(isNullable, nullablePercentage)) {
+  /** Process a schema value and returns the generated */
+  private processSchemaValue(schemaValue: SchemaValue) {
+    const { type, isNullable, nullablePercentage, options = {} } = schemaValue;
+
+    if (isNullable && this.isNull(nullablePercentage)) {
       return null;
     }
 
@@ -35,27 +62,27 @@ export default class SchemaParser {
       case "boolean":
         return this.getBoolean();
       case "enum":
-        return this.getEnum(options, references);
+        return this.getEnum(options as string | unknown[]);
       case "enum-array":
-        return this.getEnumArray(options, references);
+        return this.getEnumArray(options as string | unknown[]);
       case "iso-timestamp":
-        return this.getIsoTimestamp(options, references);
+        return this.getIsoTimestamp(options as DateRangeOption);
       case "object":
-        return this.getObject(options, references);
+        return this.getObject(options as ObjectOption);
       case "text":
-        return this.getText(options, references);
+        return this.getText(options as MinMaxOption);
       case "numeric-string":
-        return this.getNumericString(options, references);
+        return this.getNumericString(options as NumericStringOption);
       case "url":
-        return this.getUrl(options);
+        return this.getUrl(options as UrlOption);
       case "url-domain":
         return this.getUrlDomain();
       case "array":
-        return this.getArray(options, references);
+        return this.getArray(options as ArrayOption);
       case "number":
-        return this.getNumber(options, references);
+        return this.getNumber(options as MinMaxOption);
       case "float":
-        return this.getFloat(options, references);
+        return this.getFloat(options as MinMaxOption);
       case "username":
         return this.getPersonUsername();
       case "gender":
@@ -63,11 +90,11 @@ export default class SchemaParser {
       case "user-bio":
         return this.getPersonBio();
       case "first-name":
-        return this.getPersonFirstName(options);
+        return this.getPersonFirstName(options as GenderOption);
       case "last-name":
-        return this.getPersonLastName(options);
+        return this.getPersonLastName(options as GenderOption);
       case "full-name":
-        return this.getPersonFullName(options);
+        return this.getPersonFullName(options as GenderOption);
       case "email":
         return this.getEmail();
       case "country":
@@ -77,253 +104,185 @@ export default class SchemaParser {
       case "url-image":
         return this.getImageUrl();
       case "file":
-        return this.getFile(options);
+        return this.getFile(options as FileOption);
       case "social-media-post":
-        return this.getSocialMediaPost(options);
+        return this.getSocialMediaPost(options as SocialMediaPostOption);
       case "id":
         return this.getId();
       case "format-string":
-        return this.getFormattedString(options, references);
+        return this.getFormattedString(options as FormatStringOption);
       default:
-        throw new Error(errorCodes.invalidType);
+        throw InvalidSchemaTypeError;
     }
   }
 
-  getObject(options, references) {
-    const { properties } = options;
-    const result = {};
-
-    for (let property of properties) {
-      const {
-        fieldName,
-        type,
-        isNullable: propertyIsNullable,
-        nullablePercentage: propertyNullablePercentage,
-        options: propertyOptions,
-      } = property;
-      result[fieldName] = this.parseSchemaType(
-        type,
-        propertyIsNullable,
-        propertyNullablePercentage,
-        propertyOptions,
-        references,
-      );
-    }
-
-    return result;
+  private getBoolean() {
+    return this.fakeDataGenerator.generateBoolean();
   }
 
-  getBoolean() {
-    return this.#dataGenerator.generateBoolean();
+  private getEnum<T>(options: T[] | string) {
+    const parsedOptions = parseReferenceValue(options, this.references);
+    return this.fakeDataGenerator.generateEnum(parsedOptions as T[]);
   }
 
-  getEnum(enumOptions, references) {
-    if (enumOptions == null) {
-      throw new Error(errorCodes.nullEnumOptionsError);
-    }
-
-    if (containsReferenceString(enumOptions)) {
-      const referenceValue = getReferenceValue(enumOptions, references);
-      return this.#dataGenerator.generateEnum(referenceValue);
-    }
-
-    return this.#dataGenerator.generateEnum(enumOptions);
+  private getEnumArray<T>(options: T[] | string) {
+    const parsedOptions = parseReferenceValue(options, this.references);
+    return this.fakeDataGenerator.generateEnumArray(parsedOptions as T[]);
   }
 
-  getEnumArray(enumOptions, references) {
-    if (enumOptions == null) {
-      throw new Error(errorCodes.nullEnumOptionsError);
-    }
-
-    if (containsReferenceString(enumOptions)) {
-      const referenceValue = getReferenceValue(enumOptions, references);
-      return this.#dataGenerator.generateEnumArray(referenceValue);
-    }
-    return this.#dataGenerator.generateEnumArray(enumOptions);
-  }
-
-  getIsoTimestamp(options, references) {
-    const { dateFrom, dateTo } = options || {};
+  private getIsoTimestamp(options: DateRangeOption) {
+    const { dateFrom, dateTo } = options;
     const missingDateFrom = dateFrom == null && dateTo != null;
     const missingDateTo = dateFrom != null && dateTo == null;
 
     if (missingDateFrom || missingDateTo) {
-      throw new Error(errorCodes.invalidDateRange);
+      throw new InvalidDateRangeError();
     }
 
-    let df = dateFrom;
-    let dt = dateTo;
+    let finalDateFrom = parseReferenceValue(dateFrom, this.references);
+    let finalDateTo = parseReferenceValue(dateTo, this.references);
 
-    if (containsReferenceString(df)) {
-      df = getReferenceValue(dateFrom, references);
+    return this.fakeDataGenerator.generateISOTimestamp(finalDateFrom, finalDateTo);
+  }
+
+  private getText(options: MinMaxOption) {
+    const { min, max } = options;
+    let minWordCount = MIN_COUNT;
+    let maxWordCount = MAX_COUNT;
+
+    if (min != undefined) {
+      minWordCount = parseReferenceValue(min, this.references) as number;
     }
 
-    if (containsReferenceString(dt)) {
-      dt = getReferenceValue(dateTo, references);
+    if (max != undefined) {
+      maxWordCount = parseReferenceValue(max, this.references) as number;
     }
 
-    return this.#dataGenerator.generateISOTimestamp(df, dt);
+    return this.fakeDataGenerator.generateText(minWordCount, maxWordCount);
   }
 
-  getText(options, references) {
-    const { min, max } = options || {};
-    let minWordCount = min ?? 5;
-    let maxWordCount = max ?? 120;
+  private getUrl(options: UrlOption) {
+    const { allowNumbers } = options;
+    return this.fakeDataGenerator.generateURL(allowNumbers);
+  }
 
-    if (containsReferenceString(minWordCount)) {
-      minWordCount = getReferenceValue(minWordCount, references);
+  private getUrlDomain() {
+    return this.fakeDataGenerator.generateUrlDomain();
+  }
+
+  private getNumericString(options: NumericStringOption) {
+    const { min, max, allowLeadingZeros } = options;
+    let minLength = MIN_COUNT;
+    let maxLength = MAX_COUNT;
+
+    if (min != undefined) {
+      minLength = parseReferenceValue(min, this.references) as number;
     }
 
-    if (containsReferenceString(maxWordCount)) {
-      maxWordCount = getReferenceValue(maxWordCount, references);
+    if (max != undefined) {
+      maxLength = parseReferenceValue(max, this.references) as number;
     }
 
-    return this.#dataGenerator.generateText(minWordCount, maxWordCount);
+    return this.fakeDataGenerator.generateNumericString(minLength, maxLength, allowLeadingZeros);
   }
 
-  getUrl(options) {
-    const { allowNumbers } = options || {};
-    return this.#dataGenerator.generateURL(allowNumbers);
+  private getNumber(options: MinMaxOption) {
+    const { min, max } = options;
+
+    const minNumber = parseReferenceValue(min, this.references);
+    const maxNumber = parseReferenceValue(max, this.references);
+
+    return this.fakeDataGenerator.generateNumber(minNumber, maxNumber);
   }
 
-  getUrlDomain() {
-    return this.#dataGenerator.generateUrlDomain();
+  private getFloat(options: MinMaxOption) {
+    const { min, max } = options;
+    const minNumber = parseReferenceValue(min, this.references);
+    const maxNumber = parseReferenceValue(max, this.references);
+
+    return this.fakeDataGenerator.generateFloat(minNumber, maxNumber);
   }
 
-  getNumericString(options, references) {
-    const { min, max, allowLeadingZeros } = options || {};
-    let minLength = min;
-    let maxLength = max;
-
-    if (containsReferenceString(minLength)) {
-      minLength = getReferenceValue(minLength, references);
-    }
-
-    if (containsReferenceString(maxLength)) {
-      maxLength = getReferenceValue(maxLength, references);
-    }
-
-    return this.#dataGenerator.generateNumericString(minLength, maxLength, allowLeadingZeros);
+  private getPersonUsername() {
+    return this.fakeDataGenerator.generatePersonUsername();
   }
 
-  getNumber(options, references) {
-    const { min, max } = options || {};
-    let minNumber = min;
-    let maxNumber = max;
-
-    if (containsReferenceString(minNumber)) {
-      minNumber = getReferenceValue(minNumber, references);
-    }
-
-    if (containsReferenceString(maxNumber)) {
-      maxNumber = getReferenceValue(maxNumber, references);
-    }
-
-    return this.#dataGenerator.generateNumber(minNumber, maxNumber);
+  private getPersonGender() {
+    return this.fakeDataGenerator.generatePersonGender();
   }
 
-  getFloat(options, references) {
-    const { min, max } = options || {};
-    let minNumber = min;
-    let maxNumber = max;
-
-    if (containsReferenceString(minNumber)) {
-      minNumber = getReferenceValue(minNumber, references);
-    }
-
-    if (containsReferenceString(maxNumber)) {
-      maxNumber = getReferenceValue(maxNumber, references);
-    }
-
-    return this.#dataGenerator.generateFloat(minNumber, maxNumber);
+  private getPersonBio() {
+    return this.fakeDataGenerator.generatePersonBio();
   }
 
-  getPersonUsername() {
-    return this.#dataGenerator.generatePersonUsername();
+  private getPersonFirstName(options: GenderOption) {
+    const { gender } = options;
+    return this.fakeDataGenerator.generatePersonFirstName(gender);
   }
 
-  getPersonGender() {
-    return this.#dataGenerator.generatePersonGender();
+  private getPersonLastName(options: GenderOption) {
+    const { gender } = options;
+    return this.fakeDataGenerator.generatePersonLastName(gender);
   }
 
-  getPersonBio() {
-    return this.#dataGenerator.generatePersonBio();
+  private getPersonFullName(options: GenderOption) {
+    const { gender } = options;
+    return this.fakeDataGenerator.generatePersonFullName(gender);
   }
 
-  getPersonFirstName(options) {
-    const { gender } = options || {};
-    return this.#dataGenerator.generatePersonFirstName(gender);
+  private getEmail() {
+    return this.fakeDataGenerator.generateEmail();
   }
 
-  getPersonLastName(options) {
-    const { gender } = options || {};
-    return this.#dataGenerator.generatePersonLastName(gender);
+  private getCountry() {
+    return this.fakeDataGenerator.generateCountry();
   }
 
-  getPersonFullName(options) {
-    const { gender } = options || {};
-    return this.#dataGenerator.generatePersonFullName(gender);
+  private getCountryCode() {
+    return this.fakeDataGenerator.generateCountryCode();
   }
 
-  getEmail() {
-    return this.#dataGenerator.generateEmail();
-  }
-
-  getCountry() {
-    return this.#dataGenerator.generateCountry();
-  }
-
-  getCountryCode() {
-    return this.#dataGenerator.generateCountryCode();
-  }
-
-  getArray(options, references) {
-    const result = [];
-    const { schema, min, max } = options || {};
-    if (schema == null) {
-      throw new Error(errorCodes.invalidArraySchema);
-    }
-
-    if (min === null || max === null) {
-      throw new Error(errorCodes.invalidMinMax);
-    }
-
-    const { type, options: schemaOptions } = schema;
-    const numberOfItems = Math.floor(Math.random() * (max - min + 1) + min);
+  private getArray(options: ArrayOption) {
+    const result: unknown[] = [];
+    const { schema, min, max } = options;
+    const numberOfItems = randomIntFromInterval(min, max);
 
     for (let i = 0; i < numberOfItems; i++) {
-      const item = this.parseSchemaType(type, false, 0, schemaOptions, references);
+      const item = this.processSchemaValue(schema);
       result.push(item);
     }
 
     return result;
   }
 
-  getImageUrl() {
-    return this.#dataGenerator.generateImageUrl();
-  }
+  private getObject(options: ObjectOption) {
+    const result = {};
+    const { properties } = options;
 
-  getFile(options) {
-    const { extension } = options || {};
-
-    return this.#dataGenerator.generateFile(extension);
-  }
-
-  getSocialMediaPost(options) {
-    const { languages = ["EN"], min, max, hashtagPercentage, urlPercentage } = options || {};
-
-    if (languages === null) {
-      throw new Error(errorCodes.nullLanguageError);
+    for (const [field, schemaValue] of Object.entries(properties)) {
+      result[field] = this.processSchemaValue(schemaValue);
     }
 
-    if (languages.length === 0) {
-      throw new Error(errorCodes.emptyLanguagesError);
-    }
+    return result;
+  }
 
-    const selectedLanguage = this.#dataGenerator.generateEnum(languages);
+  private getImageUrl() {
+    return this.fakeDataGenerator.generateImageUrl();
+  }
 
-    return this.#dataGenerator.generateSocialMediaPost(
-      selectedLanguage,
+  private getFile(options: FileOption) {
+    const { extension } = options;
+
+    return this.fakeDataGenerator.generateFile(extension);
+  }
+
+  private getSocialMediaPost(options: SocialMediaPostOption) {
+    const { languages = ["EN"], min, max, hashtagPercentage, urlPercentage } = options;
+
+    const selectedLanguage = this.fakeDataGenerator.generateEnum(languages);
+
+    return this.fakeDataGenerator.generateSocialMediaPost(
+      selectedLanguage as Language,
       min,
       max,
       hashtagPercentage,
@@ -331,28 +290,22 @@ export default class SchemaParser {
     );
   }
 
-  getId() {
-    return this.#dataGenerator.generateId();
+  private getId() {
+    return this.fakeDataGenerator.generateId();
   }
 
-  getFormattedString(options, references) {
-    const { string, properties } = options || {};
-    let result = string;
+  private getFormattedString(options: FormatStringOption) {
+    const { pattern, properties } = options || {};
+    let result = pattern;
 
     for (let property of properties) {
       const { type, options: propertyOptions } = property;
 
-      if (
-        type === "format-string" ||
-        type === "enum-array" ||
-        type === "array" ||
-        type === "object"
-      ) {
-        throw new Error(errorCodes.unsupportedFormatStringError);
-      }
-
-      const value = this.parseSchemaType(type, false, 0, propertyOptions, references);
-      result = result.replace("{}", value);
+      const stringValue = this.processSchemaValue({
+        type,
+        options: propertyOptions,
+      });
+      result = result.replace("{}", String(stringValue));
     }
 
     return result;

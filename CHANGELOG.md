@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2024-01-26
+
+### CHANGED
+
+- schema `format-string` type will now take in `pattern` instead of `string` in options
+- `object` type will now take in properties as an object instead of an array of options. The field of each property will be used as the `fieldName`
+- derivatives `string-interpolation` type will now take in `pattern` instead of `string` in options
+
 ## [1.1.0] - 2024-10-03
 
 ### ADDED

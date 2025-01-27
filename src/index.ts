@@ -10,10 +10,10 @@ import DocumentFactory from "./classes/DocumentFactory";
 
 async function init() {
   const uniqueFolderId = uuidv4();
-  const configJson = JSON.parse(fs.readFileSync("./config/config.json"));
+  const configJson = JSON.parse(fs.readFileSync("./config/config.json", { encoding: "utf8" }));
   const { recipeFilePath, nullablePercentage, documentCount, outputDir, references } = configJson;
 
-  const recipeFile = JSON.parse(fs.readFileSync(recipeFilePath));
+  const recipeFile = JSON.parse(fs.readFileSync(recipeFilePath, { encoding: "utf8" }));
   const { schema, derivatives, keysToDelete } = recipeFile;
   const destinationFolder = path.join(outputDir, getTodayDate(), uniqueFolderId);
 

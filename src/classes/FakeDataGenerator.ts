@@ -4,23 +4,23 @@ import { faker as fakerFR } from "@faker-js/faker/locale/fr";
 import { faker as fakerKO } from "@faker-js/faker/locale/ko";
 import { faker as fakerCN } from "@faker-js/faker/locale/zh_CN";
 
-import Gender from "../interfaces/Gender";
+import { Gender, Language } from "../interfaces/schemaOptions";
 import { randomIntFromInterval } from "../utils/mathRandomUtils";
 
 /**
  * Wrapper class of faker library to generate fake data
  */
 export default class FakeDataGenerator {
-  #isValidNonEmptyArray(value: unknown) {
+  private isValidNonEmptyArray(value: unknown) {
     return value != null && Array.isArray(value) && value.length > 0;
   }
 
-  generateISOTimestamp(dateFrom: string, dateTo: string) {
+  generateISOTimestamp(dateFrom?: string, dateTo?: string) {
     if (dateFrom == null && dateTo == null) {
       return faker.date.past().toISOString();
     }
 
-    return faker.date.between({ from: dateFrom, to: dateTo }).toISOString();
+    return faker.date.between({ from: dateFrom as string, to: dateTo as string }).toISOString();
   }
 
   generatePastISOTimestamp(days: number, referenceISODate: string) {
@@ -32,14 +32,14 @@ export default class FakeDataGenerator {
   }
 
   generateEnum(enumOptions: unknown[]) {
-    if (!this.#isValidNonEmptyArray(enumOptions)) {
+    if (!this.isValidNonEmptyArray(enumOptions)) {
       throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");
     }
     return faker.helpers.arrayElement(enumOptions);
   }
 
   generateEnumArray(enumOptions: unknown[]) {
-    if (!this.#isValidNonEmptyArray(enumOptions)) {
+    if (!this.isValidNonEmptyArray(enumOptions)) {
       throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");
     }
 
@@ -85,11 +85,11 @@ export default class FakeDataGenerator {
   }
 
   // set the max to signed 32-bit integer
-  generateNumber(min: number, max = 2_147_483_647) {
+  generateNumber(min = 0, max = 2_147_483_647) {
     return faker.number.int({ min, max });
   }
 
-  generateFloat(min: number, max: number) {
+  generateFloat(min = 0.0, max = 1.0) {
     return faker.number.float({ min, max, fractionDigits: 2 });
   }
 
@@ -142,7 +142,7 @@ export default class FakeDataGenerator {
   }
 
   generateSocialMediaPost(
-    language: string,
+    language: Language,
     min = 1,
     max = 120,
     hashtagPercentage = 0.3,

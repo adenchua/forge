@@ -721,9 +721,29 @@ Takes in two compulsory options, a `string` value and `properties` array, with a
 
 The example above generates a `{numeric-string}_{enum}` result, e.g. `12345678_apple`.
 
-`string` takes in a formatted string where each `{}` represents the generated property (ordered item in `properties`) to be replaced with, while each item in the `properties` array takes in `type` and `options` key.
+`pattern` takes in a formatted string where each `{}` represents the generated property (ordered item in `properties`) to be replaced with, while each item in the `properties` array takes in `type` and `options` key.
 
-Invalid `type` include: `object`, `enum-array`, `array` and `format-string`.
+Supports the following `type`:
+
+- `boolean`
+- `country`
+- `country-code`
+- `email`
+- `enum`
+- `file`
+- `first-name`
+- `float`
+- `full-name`
+- `gender`
+- `id`
+- `iso-timestamp`
+- `last-name`
+- `number`
+- `numeric-string`
+- `url`
+- `url-domain`
+- `url-image`
+- `username`
 
 ---
 
