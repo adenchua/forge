@@ -1,14 +1,24 @@
-import { checkNumber, checkObjectProperty } from "../validatorHelpers";
-import { checkReferenceKeys } from "./checkReferenceKeys";
+import { ValidationResult } from "../../../classes/SchemaValidator";
+import { RelativeDateOptions } from "../../../interfaces/derivativesOptions";
+import { checkObjectProperty, wrapValidationResult } from "../validatorHelpers";
 
-export function validateRelativeDate(fieldName, options, referencedObject) {
-  let flag = true;
-  const { referenceKey, days } = options || {};
+export function validateRelativeDate(
+  options: Partial<RelativeDateOptions>,
+  reference: Record<string, any>,
+): ValidationResult {
+  const errors: string[] = [];
+  const { referenceKey } = options;
 
-  flag = checkObjectProperty(options, "referenceKey", fieldName) && flag;
-  flag = checkObjectProperty(options, "days", fieldName) && flag;
-  flag = checkNumber("days", days, fieldName) && flag;
-  flag = checkReferenceKeys([referenceKey], fieldName, referencedObject) && flag;
+  const referenceKeyError = checkObjectProperty(options, "referenceKey", ["string"]);
+  referenceKeyError && errors.push(referenceKeyError);
 
-  return flag;
+  const daysError = checkObjectProperty(options, "days", ["number"]);
+  daysError && errors.push(daysError);
+
+  if (referenceKey != undefined) {
+    const referenceKeyError2 = checkObjectProperty(reference, referenceKey);
+    referenceKeyError2 && errors.push(referenceKeyError2);
+  }
+
+  return wrapValidationResult(errors);
 }

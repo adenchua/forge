@@ -1,32 +1,34 @@
+import { ValidationResult } from "../../../classes/SchemaValidator";
+import { StringInterpolationOptions } from "../../../interfaces/derivativesOptions";
 import {
-  checkObjectProperty,
-  checkString,
+  checkFormatStringPattern,
   checkNonEmptyArray,
-  isString,
-  isValidNonEmptyArray,
+  checkObjectProperty,
+  wrapValidationResult,
 } from "../validatorHelpers";
-import { checkReferenceKeys } from "./checkReferenceKeys";
 
-export function validateStringInterpolation(fieldName, options, referencedObject) {
-  let flag = true;
-  const { string, referenceKeys } = options || {};
+export function validateStringInterpolation(
+  options: Partial<StringInterpolationOptions>,
+  reference: Record<string, any>,
+): ValidationResult {
+  const errors: string[] = [];
+  const { pattern, referenceKeys } = options;
 
-  flag = checkObjectProperty(options, "string", fieldName) && flag;
-  flag = checkObjectProperty(options, "referenceKeys", fieldName) && flag;
-  flag = checkString("string", string, fieldName) && flag;
-  flag = checkNonEmptyArray("referenceKeys", referenceKeys, fieldName) && flag;
-  flag = checkReferenceKeys(referenceKeys, fieldName, referencedObject) && flag;
+  const patternError = checkObjectProperty(options, "pattern", ["string"]);
+  const referenceKeysError = checkObjectProperty(options, "referenceKeys", ["object"]);
 
-  if (isString(string) && isValidNonEmptyArray(referenceKeys)) {
-    const numberOfVariables = (string.match(/{}/g) || []).length;
+  patternError && errors.push(patternError);
+  referenceKeysError && errors.push(referenceKeysError);
 
-    if (numberOfVariables !== referenceKeys.length) {
-      console.error(
-        `number of '{}' in string format does not match the number of reference keys for field: ${fieldName}`,
-      );
-      flag = false;
-    }
+  if (referenceKeys != undefined) {
+    const referenceKeysArrayError = checkNonEmptyArray(referenceKeys);
+    referenceKeysArrayError && errors.push(referenceKeysArrayError);
   }
 
-  return flag;
+  if (pattern != undefined && referenceKeys != undefined) {
+    const patternFormatError = checkFormatStringPattern(pattern, referenceKeys);
+    patternFormatError && errors.push(patternFormatError);
+  }
+
+  return wrapValidationResult(errors);
 }

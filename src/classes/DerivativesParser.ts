@@ -11,12 +11,16 @@ import FakeDataGenerator from "./FakeDataGenerator";
 
 export default class DerivativesParser {
   private fakeDataGenerator: FakeDataGenerator;
-  private flattenedReference: object;
-  private flattenedOutput: object;
+  private flattenedReference: Record<string, any>;
+  private flattenedOutput: Record<string, any>;
   private globalNullablePercentage: number = 0;
   private derivatives: Derivatives;
 
-  constructor(derivatives: Derivatives, globalNullablePercentage: number, reference: object) {
+  constructor(
+    derivatives: Derivatives,
+    globalNullablePercentage: number,
+    reference: Record<string, any>,
+  ) {
     this.fakeDataGenerator = new FakeDataGenerator();
     this.globalNullablePercentage = globalNullablePercentage;
     this.derivatives = derivatives;
@@ -26,7 +30,7 @@ export default class DerivativesParser {
     this.flattenedOutput = JSON.parse(JSON.stringify(this.flattenedReference));
   }
 
-  init() {
+  parse() {
     // run through each derivative key, set to output
     for (const [delimitedFieldName, derivativesValue] of Object.entries(this.derivatives)) {
       this.flattenedOutput[delimitedFieldName] = this.processDerivatives(derivativesValue);

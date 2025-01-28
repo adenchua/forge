@@ -8,7 +8,7 @@ export default class DocumentFactory {
   private recipe: Recipe;
   private references: object;
   private globalNullablePercentage: number;
-  private document: object;
+  private document: Record<string, any> = {};
 
   constructor(config: Config) {
     const { recipe, references, globalNullablePercentage } = config;

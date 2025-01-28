@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { isBefore, isValid } from "date-fns";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/DocumentFactoryClass";
+import DocumentFactory from "../../src/classes/DocumentFactory";
 
 describe("Testing iso-timestamp type for DocumentFactoryClass", function () {
   it("1. Given a valid iso-timestamp schema, it should return the correct result", function () {

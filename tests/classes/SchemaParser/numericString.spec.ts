@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/DocumentFactoryClass";
+import DocumentFactory from "../../src/classes/DocumentFactory";
 
 describe("Testing numeric-string for DocumentFactoryClass", function () {
   it("1. Given no parameters, it should return the correct result document with length 1 numeric string", function () {

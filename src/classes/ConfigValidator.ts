@@ -1,4 +1,4 @@
-import { validateDerivativeField } from "../utils/validators/derivative-validators/validateDerivativeField";
+import { validateDerivativeField } from "../utils/validators/derivative-validators/validateDerivativesValue";
 import { validateSchemaField } from "../utils/validators/validateSchemaField";
 import { validateDerivativeType, validateSchemaType } from "../utils/validators/validatorHelpers";
 

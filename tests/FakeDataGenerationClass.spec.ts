@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { isAfter, isBefore, isValid, differenceInCalendarDays } from "date-fns";
 import { describe, it } from "mocha";
 
-import FakeDataGenerator from "../src/FakeDataGeneratorClass";
+import FakeDataGenerator from "../src/classes/DocumentFactory";
 import { isValidEmail, isValidUrl } from "./testUtils";
 
 describe("Testing function generateISOTimestamp from FakeDataGenerationClass", function () {

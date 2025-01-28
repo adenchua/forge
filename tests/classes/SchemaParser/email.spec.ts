@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/DocumentFactoryClass";
+import DocumentFactory from "../../src/classes/DocumentFactory";
 import { isValidEmail } from "../testUtils";
 
 describe("Testing email type for DocumentFactoryClass", function () {

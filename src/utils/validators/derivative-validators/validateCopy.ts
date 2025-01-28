@@ -1,12 +1,21 @@
-import { checkObjectProperty } from "../validatorHelpers";
-import { checkReferenceKeys } from "./checkReferenceKeys";
+import { ValidationResult } from "../../../classes/SchemaValidator";
+import { CopyOptions } from "../../../interfaces/derivativesOptions";
+import { checkObjectProperty, wrapValidationResult } from "../validatorHelpers";
 
-export function validateCopy(fieldName, options, referencedObject) {
-  let flag = true;
-  const { referenceKey } = options || {};
+export function validateCopy(
+  options: Partial<CopyOptions>,
+  reference: Record<string, any>,
+): ValidationResult {
+  const errors: string[] = [];
+  const { referenceKey } = options;
 
-  flag = checkObjectProperty(options, "referenceKey", fieldName) && flag;
-  flag = checkReferenceKeys([referenceKey], fieldName, referencedObject) && flag;
+  const refrenceKeyError = checkObjectProperty(options, "referenceKey", ["string"]);
+  refrenceKeyError && errors.push(refrenceKeyError);
 
-  return flag;
+  if (referenceKey != undefined) {
+    const referenceKeyError2 = checkObjectProperty(reference, referenceKey);
+    referenceKeyError2 && errors.push(referenceKeyError2);
+  }
+
+  return wrapValidationResult(errors);
 }

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/DocumentFactoryClass";
+import DocumentFactory from "../../src/classes/DocumentFactory";
 
 describe("Testing format string type for DocumentFactoryClass", function () {
   it("1. Given valid parameters, it should return the correct result document", function () {

@@ -1,45 +1,47 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import { validateArray } from "../src/utils/validators/validateArray";
-import { validateEnum } from "../src/utils/validators/validateEnum";
-import { validateFile } from "../src/utils/validators/validateFile";
-import { validateFirstName } from "../src/utils/validators/validateFirstName";
-import { validateFormatString } from "../src/utils/validators/validateFormatString";
-import { validateIsoTimestamp } from "../src/utils/validators/validateIsoTimestamp";
-import { validateNumber } from "../src/utils/validators/validateNumber";
-import { validateNumericString } from "../src/utils/validators/validateNumericString";
-import { validateObject } from "../src/utils/validators/validateObject";
-import { validateSchemaField } from "../src/utils/validators/validateSchemaField";
-import { validateSocialMediaPost } from "../src/utils/validators/validateSocialMediaPost";
-import { validateText } from "../src/utils/validators/validateText";
-import { validateUrl } from "../src/utils/validators/validateUrl";
+import {
+  validateArray,
+  validateEnum,
+  validateFile,
+  validateFirstName,
+  validateFormatString,
+  validateIsoTimestamp,
+  validateNumber,
+  validateNumericString,
+  validateObject,
+  validateSchemaValue,
+  validateSocialMediaPost,
+  validateText,
+  validateUrl,
+} from "../src/utils/validators/schema-validators";
 
-describe("Testing utility function: validateSchemaField", function () {
+describe("Testing utility function: validateSchemaValue", function () {
   it("1. Given a valid schema object, it should return true", function () {
     const validSchema = { type: "enum" };
-    const result = validateSchemaField("test", validSchema);
+    const result = validateSchemaValue("test", validSchema);
 
     expect(result).to.be.true;
   });
 
   it("2. Given an empty schema object, it should return false", function () {
     const emptySchema = {};
-    const result = validateSchemaField("test", emptySchema);
+    const result = validateSchemaValue("test", emptySchema);
 
     expect(result).to.be.false;
   });
 
   it("3. Given an invalid schema object type, it should return false", function () {
     const invalidSchemaType = { type: "invalid" };
-    const result = validateSchemaField("test", invalidSchemaType);
+    const result = validateSchemaValue("test", invalidSchemaType);
 
     expect(result).to.be.false;
   });
 
   it("4. Given an null schema object type, it should return false", function () {
     const invalidSchema = null;
-    const result = validateSchemaField("test", invalidSchema);
+    const result = validateSchemaValue("test", invalidSchema);
 
     expect(result).to.be.false;
   });

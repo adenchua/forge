@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/DocumentFactoryClass";
+import DocumentFactory from "../../src/classes/DocumentFactory";
 import { isValidUrl } from "../testUtils";
 
 describe("Testing url-image type for DocumentFactoryClass", function () {

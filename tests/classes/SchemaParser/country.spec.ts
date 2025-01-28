@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/DocumentFactoryClass";
+import DocumentFactory from "../../src/classes/DocumentFactory";
 
 describe("Testing country type for DocumentFactoryClass", function () {
   it("1. Given a valid schema, it should return the correct response", function () {

@@ -1,3 +1,5 @@
+import { VALID_SCHEMA_TYPES } from "../constants";
+
 export type Schema = Record<string, SchemaValue>;
 
 export interface SchemaValue {
@@ -7,30 +9,4 @@ export interface SchemaValue {
   options?: unknown;
 }
 
-export type SchemaType =
-  | "array"
-  | "boolean"
-  | "country"
-  | "country-code"
-  | "email"
-  | "enum"
-  | "enum-array"
-  | "format-string"
-  | "file"
-  | "first-name"
-  | "float"
-  | "full-name"
-  | "gender"
-  | "id"
-  | "iso-timestamp"
-  | "last-name"
-  | "number"
-  | "numeric-string"
-  | "object"
-  | "social-media-post"
-  | "text"
-  | "url"
-  | "url-domain"
-  | "url-image"
-  | "username"
-  | "user-bio";
+export type SchemaType = (typeof VALID_SCHEMA_TYPES)[number];

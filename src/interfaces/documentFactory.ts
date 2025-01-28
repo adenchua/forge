@@ -9,6 +9,6 @@ export interface Recipe {
 
 export interface Config {
   recipe: Recipe;
-  references?: object;
+  references?: Record<string, any>;
   globalNullablePercentage: number;
 }

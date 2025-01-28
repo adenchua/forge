@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/DocumentFactoryClass";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
 describe("Testing array type for DocumentFactoryClass", function () {
   it("1. Given no parameters, it should throw an error 'ARRAY_SCHEMA_NOT_PROVIDED'", function () {

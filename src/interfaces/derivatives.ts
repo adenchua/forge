@@ -1,3 +1,5 @@
+import { VALID_DERIVATIVE_TYPES } from "../constants";
+
 export type Derivatives = Record<string, DerivativesValue>;
 
 export interface DerivativesValue {
@@ -7,4 +9,4 @@ export interface DerivativesValue {
   nullablePercentage?: number;
 }
 
-export type DerivativesType = "string-interpolation" | "copy" | "date-before" | "date-after";
+export type DerivativesType = (typeof VALID_DERIVATIVE_TYPES)[number];

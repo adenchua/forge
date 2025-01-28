@@ -1,6 +1,7 @@
 import { MAX_COUNT, MIN_COUNT } from "../constants";
 import InvalidDateRangeError from "../errors/InvalidDateRangeError";
 import InvalidSchemaTypeError from "../errors/InvalidSchemaTypeError";
+import { Schema, SchemaValue } from "../interfaces/schema";
 import {
   ArrayOption,
   DateRangeOption,
@@ -14,7 +15,6 @@ import {
   SocialMediaPostOption,
   UrlOption,
 } from "../interfaces/schemaOptions";
-import { Schema, SchemaValue } from "../interfaces/schema";
 import { randomIntFromInterval } from "../utils/mathRandomUtils";
 import { parseReferenceValue } from "../utils/referenceUtils";
 import FakeDataGenerator from "./FakeDataGenerator";
@@ -23,17 +23,17 @@ export default class SchemaParser {
   private fakeDataGenerator: FakeDataGenerator;
   private schema: Schema;
   private globalNullablePercentage: number = 0;
-  private references: object;
-  private outputDocument: object = {};
+  private references: Record<string, any>;
+  private outputDocument: Record<string, any> = {};
 
-  constructor(schema: Schema, globalNullablePercentage: number, references: object) {
+  constructor(schema: Schema, globalNullablePercentage: number, references: Record<string, any>) {
     this.schema = schema;
     this.globalNullablePercentage = globalNullablePercentage;
     this.references = references;
     this.fakeDataGenerator = new FakeDataGenerator();
   }
 
-  init() {
+  parse() {
     // process each field of the schema, populate outputDocument
     for (const [field, schemaValue] of Object.entries(this.schema)) {
       this.outputDocument[field] = this.processSchemaValue(schemaValue);
@@ -260,7 +260,7 @@ export default class SchemaParser {
   }
 
   private getObject(options: ObjectOption) {
-    const result = {};
+    const result: Record<string, any> = {};
     const { properties } = options;
 
     for (const [field, schemaValue] of Object.entries(properties)) {
