@@ -1,7 +1,6 @@
 {
-  "recipeFilePath": "./recipes/sample-recipe.json",
-  "outputDir": "./output",
-  "nullablePercentage": 0.1,
+  "recipeFilepath": "./recipes/sample-recipe.json",
+  "globalNullablePercentage": 0.1,
   "documentCount": 10,
   "references": {}
 }

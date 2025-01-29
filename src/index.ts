@@ -5,17 +5,32 @@ import { v4 as uuidv4 } from "uuid";
 import DerivativesValidator from "./classes/DerivativesValidator";
 import DocumentFactory from "./classes/DocumentFactory";
 import SchemaValidator from "./classes/SchemaValidator";
+import { Config, RawConfig, Recipe } from "./interfaces/core";
 import { Derivatives } from "./interfaces/derivatives";
-import { Config, Recipe } from "./interfaces/documentFactory";
 import { Schema } from "./interfaces/schema";
 import { getTodayDate } from "./utils/dateUtils";
-import { writeDocumentToDir, zipFolder } from "./utils/fileUtils";
+import { chunkArray, createDirectory, saveAsJsonLine, zipFolder } from "./utils/fileUtils";
 
 function isValidRecipe(
-  schema: Schema,
-  derivatives: Derivatives,
-  reference: Record<string, any>,
+  schema?: Schema,
+  derivatives?: Derivatives,
+  reference?: Record<string, any>,
 ): boolean {
+  if (schema == undefined) {
+    console.error("schema must be provided");
+    return false;
+  }
+
+  if (derivatives == undefined) {
+    console.error("derivatives must be provided, or left as an empty object");
+    return false;
+  }
+
+  if (reference == undefined) {
+    console.error("references must be provided, or left as an empty object");
+    return false;
+  }
+
   const schemaValidator = new SchemaValidator(schema, reference);
   const derivativesValidator = new DerivativesValidator(derivatives, schema);
 
@@ -28,44 +43,71 @@ function isValidRecipe(
   return schemaValid && derivativesValid;
 }
 
+async function saveDocuments(destDir: string, documents: object[]) {
+  createDirectory(destDir);
+
+  // each file should contain at most 10,000 items
+  const chunkedDocumentsList = chunkArray(documents, 10_000);
+  let counter = 1;
+  const filename = uuidv4();
+  for (const chunkedDocuments of chunkedDocumentsList) {
+    await saveAsJsonLine(chunkedDocuments, path.join(destDir, `${filename}-${counter}.jsonl`));
+    counter++;
+  }
+
+  // zip and delete folder afterwards
+  await zipFolder(destDir, destDir);
+  fs.rmSync(destDir, { recursive: true, force: true });
+}
+
+function loadConfig(): RawConfig {
+  const result = JSON.parse(
+    fs.readFileSync("./configs/config.json", { encoding: "utf8" }),
+  ) as RawConfig;
+
+  return result;
+}
+
+function loadRecipe(filepath: string): Recipe {
+  const result = JSON.parse(fs.readFileSync(filepath, { encoding: "utf8" })) as Recipe;
+
+  return result;
+}
+
 async function run() {
-  const uniqueFolderId = uuidv4();
-  const configJson = JSON.parse(fs.readFileSync("./config/config.json", { encoding: "utf8" }));
-  const { recipeFilePath, nullablePercentage, documentCount, outputDir, references } = configJson;
-  const recipeFile = JSON.parse(fs.readFileSync(recipeFilePath, { encoding: "utf8" })) as Recipe;
-  const { schema, derivatives = {}, keysToDelete = [] } = recipeFile;
-  const destinationFolder = path.join(outputDir, getTodayDate(), uniqueFolderId);
-  console.info(`Successfully retrieved recipe from: '${recipeFilePath}'. Performing validation...`);
+  const { recipeFilepath, globalNullablePercentage, documentCount, references } = loadConfig();
+  const recipe = loadRecipe(recipeFilepath);
+  const { schema, derivatives } = recipe;
+  const destinationDir = path.join("output", getTodayDate(), uuidv4());
+
+  console.info(`Successfully retrieved recipe from: '${recipeFilepath}'. Performing validation...`);
 
   if (!isValidRecipe(schema, derivatives, references)) {
     console.error("Something is wrong with the provided recipe, exiting program...");
     return;
+  } else {
+    console.info(`Validation successful! Generating ${documentCount} documents...`);
   }
 
-  console.info(
-    `Validation successful! Generating ${documentCount} documents to ${destinationFolder}`,
-  );
-
   const config: Config = {
-    globalNullablePercentage: nullablePercentage,
-    recipe: recipeFile,
-    references: references,
+    globalNullablePercentage,
+    recipe,
+    references,
   };
+  const outputDocuments: object[] = [];
 
   for (let i = 0; i < documentCount; i++) {
     const documentFactory = new DocumentFactory(config);
     documentFactory.generateDocument();
     const document = documentFactory.getDocument();
-    console.log(document);
-
-    writeDocumentToDir(destinationFolder, document);
+    outputDocuments.push(document);
   }
+  console.info(
+    `Successfully generated ${documentCount} documents! Saving to ${destinationDir}.zip...`,
+  );
 
-  // zip and delete folder afterwards
-  await zipFolder(destinationFolder, `${destinationFolder}`);
-  fs.rmSync(destinationFolder, { recursive: true, force: true });
-
-  console.info(`Successfully generated ${documentCount} documents!`);
+  await saveDocuments(destinationDir, outputDocuments);
+  console.info("Operation completed!");
 }
 
 run();

@@ -1,21 +1,27 @@
 import fs from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
+import fsPromises from "fs/promises";
 import { COMPRESSION_LEVEL, zip } from "zip-a-folder";
 
-export function writeDocumentToDir(outputDir, jsonDocument) {
+export async function zipFolder(srcDir: string, destDir: string, fileType = "zip") {
+  await zip(srcDir, `${destDir}.${fileType}`, { compression: COMPRESSION_LEVEL.high });
+}
+
+export function chunkArray(list: object[], chunkSize: number) {
+  const result = [...Array(Math.ceil(list.length / chunkSize))].map(() =>
+    list.splice(0, chunkSize),
+  );
+  return result;
+}
+
+export function createDirectory(outputDir: string) {
   // if folder doesn't exist, create one
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
-
-  const uniqueFileId = uuidv4();
-  const outputPath = path.join(outputDir, `${Date.now()}-${uniqueFileId}on`);
-
-  const stringifiedDocument = JSON.stringify(jsonDocument);
-  fs.writeFileSync(outputPath, stringifiedDocument, "utf8");
 }
 
-export async function zipFolder(srcDir, destDir, fileType = "zip") {
-  await zip(srcDir, `${destDir}.${fileType}`, { compression: COMPRESSION_LEVEL.high });
+export async function saveAsJsonLine(documents: object[], destFilepath: string) {
+  for (const document of documents) {
+    await fsPromises.appendFile(destFilepath, JSON.stringify(document) + "\n", "utf8");
+  }
 }

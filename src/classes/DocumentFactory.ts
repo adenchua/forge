@@ -1,6 +1,6 @@
 import { Derivatives } from "../interfaces/derivatives";
-import { Config, Recipe } from "../interfaces/documentFactory";
-import { SchemaReference } from "../interfaces/schema";
+import { Config, Recipe } from "../interfaces/core";
+import { Schema, SchemaReference } from "../interfaces/schema";
 import { deleteKeysFromObject } from "../utils/objectUtils";
 import DerivativesParser from "./DerivativesParser";
 import SchemaParser from "./SchemaParser";
@@ -19,9 +19,8 @@ export default class DocumentFactory {
   }
 
   generateDocument() {
-    this.processSchema();
-
-    const { derivatives, keysToDelete } = this.recipe;
+    const { schema, derivatives, keysToDelete } = this.recipe;
+    this.processSchema(schema);
 
     // if derived keys are defined, process derivatives
     if (derivatives != null) {
@@ -34,8 +33,7 @@ export default class DocumentFactory {
     }
   }
 
-  private processSchema() {
-    const { schema } = this.recipe;
+  private processSchema(schema: Schema) {
     const schemaParser = new SchemaParser(schema, this.globalNullablePercentage, this.references);
     schemaParser.parse();
     this.document = schemaParser.getOutput();

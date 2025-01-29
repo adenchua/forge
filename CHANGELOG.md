@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `object` type will now take in properties as an object instead of an array of options. The field of each property will be used as the `fieldName`
 - derivatives `string-interpolation` type will now take in `pattern` instead of `string` in options
 - for range min-max options, both `min` and `max` values must be provided
+- `nullablePercentage` in config.json is now changed to `globalNullablePercentage` to increase clarity
+- `recipeFilePath` changed to `recipeFilepath` in config.json
+
+### REMOVED
+
+- ability to change output directory. It will now save under `./output` for simplicity
 
 ## [1.1.0] - 2024-10-03
 

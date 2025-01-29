@@ -12,3 +12,10 @@ export interface Config {
   references?: SchemaReference;
   globalNullablePercentage: number;
 }
+
+export interface RawConfig {
+  recipeFilepath: string;
+  globalNullablePercentage: number;
+  documentCount: number;
+  references: SchemaReference;
+}

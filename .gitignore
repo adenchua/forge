@@ -3,6 +3,8 @@ output
 recipes
 !recipes/sample-recipe.json
 
+.DS_Store
+
 # Logs
 logs
 *.log
