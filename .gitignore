@@ -1,7 +1,11 @@
-# output
+# output/input
 output
-recipes
+/recipes/*
+/references/*
 !recipes/sample-recipe.json
+!references/sample-reference.json
+
+.DS_Store
 
 # Logs
 logs

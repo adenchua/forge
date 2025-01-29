@@ -1,27 +1,38 @@
 {
-  "name": "data-generator",
+  "name": "forge",
+  "version": "1.2.0",
   "type": "module",
-  "version": "1.0.0",
   "description": "Fake (but realistic) data generator for testing &amp; development",
-  "main": "src/index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "mocha 'tests/**/*.spec.js' --exit",
-    "start": "node src/index.js"
+    "test": "mocha 'tests/utils/validators/**/*.spec.ts' --exit",
+    "start": "node --import=tsx ./src/index.ts",
+    "format": "prettier ./src/**/* --write",
+    "lint": "eslint ./src/**/* && tsc --noEmit"
   },
   "author": "Aden Chua",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.4.0",
-    "@faker-js/faker": "^8.4.1",
+    "@faker-js/faker": "^9.4.0",
+    "@types/chai": "^5.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.12.0",
     "chai": "^5.1.1",
     "eslint": "^9.4.0",
+    "eslint-config-prettier": "^10.0.1",
     "globals": "^15.3.0",
-    "mocha": "^10.4.0"
+    "mocha": "^11.1.0",
+    "prettier": "3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.22.0"
   },
   "dependencies": {
-    "date-fns": "^3.6.0",
+    "@inquirer/prompts": "^7.2.4",
+    "date-fns": "^4.1.0",
     "flat": "^6.0.1",
-    "uuid": "^9.0.1",
+    "uuid": "^11.0.5",
     "zip-a-folder": "^3.1.7"
   }
 }

@@ -1,0 +1,30 @@
+{
+  "schema": {
+    "sentiment": {
+      "type": "enum",
+      "options": ["Negative", "Neutral", "Positive"],
+      "isNullable": false,
+      "nullablePercentage": 0
+    },
+    "randomText": {
+      "type": "text",
+      "options": {
+        "min": 1,
+        "max": 5
+      }
+    },
+    "temporaryIdForReference": {
+      "type": "id"
+    }
+  },
+  "derivatives": {
+    "sentimentWithText": {
+      "type": "string-interpolation",
+      "options": {
+        "pattern": "{}-{}",
+        "referenceKeys": ["sentiment", "temporaryIdForReference"]
+      }
+    }
+  },
+  "keysToDelete": ["temporaryIdForReference"]
+}

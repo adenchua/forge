@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2024-01-26
+
+### ADDED
+
+- references folder to store all references. A prompt selection is included during runtime to select the reference
+
+### CHANGED
+
+- schema `format-string` type will now take in `pattern` instead of `string` in options
+- schema `object` type will now take in properties as an object instead of an array of options. The field of each property will be used as the `fieldName` from the previous format
+- derivatives `string-interpolation` type will now take in `pattern` instead of `string` in options
+- for range min-max options, both `min` and `max` values must be provided
+
+### REMOVED
+
+- ability to change output directory. It will now save under `./output` for simplicity
+- config file. It will now read from the command line prompt for simplicity
+
 ## [1.1.0] - 2024-10-03
 
 ### ADDED

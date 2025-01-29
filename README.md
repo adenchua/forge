@@ -12,35 +12,19 @@ Forge was created with the motivation to address a critical need in the data sci
 
 1. Ensure `node` and `npm` is installed
 2. Run `npm install` command from your terminal to install the necessary dependencies
-3. Populate `/config/config.json` file. See the section on [**Config File**](#config-file) below for more details on how to populate the fields
-4. Create a recipe json file and point it from the `config.json`. This recipe is required to generate the documents. See the section on [**Recipe**](#recipe) below for more details on how to populate the fields
+3. Create a recipe json file and place it under `/recipes`. This recipe is required to generate the documents. See the section on [**Recipe**](#recipe) below for more details on how to populate the fields
+4. (optional) Create a reference json file and place it under `/references`. References are objects that schema uses to share certain key-values through the script. In the example [**Reference**](#reference), `sampleArray` and `sampleB` reference values may be used through `#ref.sampleArray` and `#ref.sampleB` respectively for some schema types.
 5. Run `npm run start` command from your terminal to execute the script
 
-## Config File
+## Reference
 
-A valid config json file needs to be provided for the application. An example if shown below:
-
-```javascript
-// ./config/config.json
+```json
+// reference.json
 {
-  "recipeFilePath": "./recipes/sample-recipe.json",
-  "outputDir": "./output",
-  "nullablePercentage": 0.1,
-  "documentCount": 10,
-  "references": {
-    "sampleArray": ["test", "world", "hello"],
-    "sampleB": "B"
-  }
+  "sampleArray": ["test", "world", "hello"],
+  "sampleB": "B"
 }
 ```
-
-| field                | explanation                                                                                                                                                                                                                                                                                                                                                              |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `recipeFilePath`     | Where the recipe json files are located. Relative from the root of this project                                                                                                                                                                                                                                                                                          |
-| `outputDir`          | Directory where the folders and output documents will be generated to. Do note that this is not the final output directory. To ease repeated usage of this application, documents will be saved in the path: `<OUTPUT_DIR>/<DATE_TODAY>/<UNIQUE_ID>/...`. `outputDir` field simply points to the main parent `OUTPUT_DIR` folder. Relative from the root of this project |
-| `nullablePercentage` | Global percentage for a field to be `null` if the schema item sets `isNullable` field to `true`. Accepts a value between `0` and `1`                                                                                                                                                                                                                                     |
-| `documentCount`      | The number of document json files to generate                                                                                                                                                                                                                                                                                                                            |
-| `references`         | Global reference object shared among the schema. Certain schema types allow the usage of references. This allow re-use of certain keys through the application (described below). In the example above, `sampleArray` and `sampleB` reference values may be used through `#ref.sampleArray` and `#ref.sampleB` respectively for some schema types                        |
 
 ## Recipe
 
@@ -209,47 +193,42 @@ You may also use a referenced date for the options. The following example uses `
 
 ### # Object
 
-Generates a nested object with recursive type properties. Allows you to generate infinitely-nested objects until this it crashes the call stack (TODO: will limit the nesting next time)
+Generates a nested object with recursive type properties. Allows you to generate nested objects
 
 ```json
 {
   "type": "object",
   "options": {
-    "properties": [
-      {
-        "fieldName": "isSingle",
+    "properties": {
+      "isSingle": {
         "type": "boolean",
         "isNullable": true,
         "nullablePercentage": 0.6
       },
-      {
-        "fieldName": "dateOfBirth",
+      "dateOfBirth": {
         "type": "iso-timestamp",
         "isNullable": false,
         "nullablePercentage": 0
       },
-      {
-        "fieldName": "address",
+      "address": {
         "type": "object",
         "options": {
-          "properties": [
-            {
-              "fieldName": "zipCode",
+          "properties": {
+            "zipCode": {
               "type": "numeric-string",
               "isNullable": true,
               "nullablePercentage": 0.2
             },
-            {
-              "fieldName": "city",
+            "city": {
               "type": "country",
               "isNullable": true,
               "nullablePercentage": 0.4
             }
-          ]
+          }
         },
         "isNullable": false
       }
-    ]
+    }
   },
   "isNullable": false,
   "nullablePercentage": 0
@@ -352,20 +331,18 @@ The following example generates an array of object of random length 0~5:
     "schema": {
       "type": "object",
       "options": {
-        "properties": [
-          {
-            "fieldName": "zipCode",
+        "properties": {
+          "zipCode": {
             "type": "numeric-string",
             "isNullable": true,
             "nullablePercentage": 0.2
           },
-          {
-            "fieldName": "city",
+          "city": {
             "type": "country",
             "isNullable": true,
             "nullablePercentage": 0.4
           }
-        ]
+        }
       }
     }
   },
@@ -693,13 +670,13 @@ Returns a random alphanumeric ID. e.g `b171cac326a79abdd0ad3afb`
 
 Replaces a string format with generated values.
 
-Takes in two compulsory options, a `string` value and `properties` array, with an example below:
+Takes in two compulsory options, a `pattern` value and `properties` array, with an example below:
 
 ```json
 {
   "type": "format-string",
   "options": {
-    "string": "{}_{}",
+    "pattern": "{}_{}",
     "properties": [
       {
         "type": "numeric-string",
@@ -721,9 +698,29 @@ Takes in two compulsory options, a `string` value and `properties` array, with a
 
 The example above generates a `{numeric-string}_{enum}` result, e.g. `12345678_apple`.
 
-`string` takes in a formatted string where each `{}` represents the generated property (ordered item in `properties`) to be replaced with, while each item in the `properties` array takes in `type` and `options` key.
+`pattern` takes in a formatted string where each `{}` represents the generated property (ordered item in `properties`) to be replaced with, while each item in the `properties` array takes in `type` and `options` key.
 
-Invalid `type` include: `object`, `enum-array`, `array` and `format-string`.
+Supports the following `type`:
+
+- `boolean`
+- `country`
+- `country-code`
+- `email`
+- `enum`
+- `file`
+- `first-name`
+- `float`
+- `full-name`
+- `gender`
+- `id`
+- `iso-timestamp`
+- `last-name`
+- `number`
+- `numeric-string`
+- `url`
+- `url-domain`
+- `url-image`
+- `username`
 
 ---
 
@@ -734,7 +731,7 @@ After creating the result document with the `schema` object, each field in the `
 Supports nested object reference and setting of fields
 
 ```javascript
-// schema.json
+// recipe.json
 {
   "schema": {
    // ...
@@ -762,7 +759,8 @@ Supports nested object reference and setting of fields
         "referenceKey": "nestedObjectG.fieldF"
       }
     }
-  }
+  },
+  "keysToDelete": []
 }
 ```
 
@@ -770,13 +768,13 @@ Supports nested object reference and setting of fields
 
 Replaces a string format with reference values.
 
-Takes in two compulsory options, a `string` value and `referenceKeys` array, with an example below:
+Takes in two compulsory options, a `pattern` value and `referenceKeys` array, with an example below:
 
 ```json
 {
   "type": "string-interpolation",
   "options": {
-    "string": "{}_{}",
+    "pattern": "{}_{}",
     "referenceKeys": ["keyA", "keyB"]
   },
   "isNullable": false,
