@@ -1,10 +1,10 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 import { isValidUrl } from "../testUtils";
 
-describe("Testing url type for DocumentFactoryClass", function () {
+describe("Testing url type for DocumentFactory", function () {
   it("1. Given no parameters, it should generate the correct result document", function () {
     const schema = {
       test: {

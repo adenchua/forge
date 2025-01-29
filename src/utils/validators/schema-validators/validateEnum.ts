@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { containsReferenceString, parseReferenceValue } from "../../referenceUtils";
 import { checkNonEmptyArray, checkReferenceKey, wrapValidationResult } from "../validatorHelpers";
 

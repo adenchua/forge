@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing text type for DocumentFactoryClass", function () {
+describe("Testing text type for DocumentFactory", function () {
   it("1. Given no parameters with type text, it should return the correct result document with minimum of 5 words and maximum of 120 words", function () {
     const schema = {
       test: { type: "text" },

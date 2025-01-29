@@ -1,10 +1,10 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 import { isValidUrl } from "../testUtils";
 
-describe("Testing url-image type for DocumentFactoryClass", function () {
+describe("Testing url-image type for DocumentFactory", function () {
   it("1. Given a valid schema, it should return the correct response", function () {
     const schema = {
       test: {

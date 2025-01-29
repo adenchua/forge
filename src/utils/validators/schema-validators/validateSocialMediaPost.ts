@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { SocialMediaPostOption } from "../../../interfaces/schemaOptions";
 import {
   checkNonEmptyArray,

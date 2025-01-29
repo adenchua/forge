@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { StringInterpolationOptions } from "../../../interfaces/derivativesOptions";
 import {
   checkFormatStringPattern,

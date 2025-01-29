@@ -36,7 +36,7 @@ export default class DocumentFactory {
   private processSchema() {
     const { schema } = this.recipe;
     const schemaParser = new SchemaParser(schema, this.globalNullablePercentage, this.references);
-    schemaParser.init();
+    schemaParser.parse();
     this.document = schemaParser.getOutput();
   }
 
@@ -46,7 +46,7 @@ export default class DocumentFactory {
       this.globalNullablePercentage,
       this.document,
     );
-    derivativeParser.init();
+    derivativeParser.parse();
     this.document = derivativeParser.getOutput();
   }
 

@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { GenderOption } from "../../../interfaces/schemaOptions";
 import { validateFirstName } from "./validateFirstName";
 

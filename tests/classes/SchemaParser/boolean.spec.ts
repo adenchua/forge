@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing boolean type for DocumentFactoryClass", function () {
+describe("Testing boolean type for DocumentFactory", function () {
   it("1. Given a schema Given boolean type, the result document should have the boolean property", function () {
     const schemaGivenBoolean = {
       test: {

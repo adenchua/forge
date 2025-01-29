@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing enum type for DocumentFactoryClass", function () {
+describe("Testing enum type for DocumentFactory", function () {
   it("1. Given a schema with enum type with a valid options array, the result document should have the enum property", function () {
     const validOptions = ["apple", "banana", "pear"];
     const schemaWithEnum = {

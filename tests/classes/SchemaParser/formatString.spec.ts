@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing format string type for DocumentFactoryClass", function () {
+describe("Testing format string type for DocumentFactory", function () {
   it("1. Given valid parameters, it should return the correct result document", function () {
     const schema = {
       test: {

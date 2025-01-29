@@ -3,7 +3,7 @@ import { describe, it } from "mocha";
 
 import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing array type for DocumentFactoryClass", function () {
+describe("Testing array type for DocumentFactory", function () {
   it("1. Given no parameters, it should throw an error 'ARRAY_SCHEMA_NOT_PROVIDED'", function () {
     const schema = {
       test: {

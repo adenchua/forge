@@ -299,7 +299,7 @@ export default class SchemaParser {
   }
 
   private getFormattedString(options: FormatStringOption) {
-    const { pattern, properties } = options || {};
+    const { pattern, properties } = options;
     let result = pattern;
 
     for (let property of properties) {

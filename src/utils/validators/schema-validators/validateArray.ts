@@ -1,5 +1,5 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
 import { ArrayOption } from "../../../interfaces/schemaOptions";
+import { ValidationResult } from "../../../interfaces/validators";
 import { checkObjectProperty, checkRange, wrapValidationResult } from "../validatorHelpers";
 import { validateSchemaValue } from "./validateSchemaValue";
 

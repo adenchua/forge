@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { DateRangeOption } from "../../../interfaces/schemaOptions";
 import { containsReferenceString, parseReferenceValue } from "../../referenceUtils";
 import { checkISODateRange, checkReferenceKey, wrapValidationResult } from "../validatorHelpers";

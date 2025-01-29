@@ -28,6 +28,11 @@ export const VALID_SCHEMA_TYPES = [
   "url-image",
   "username",
   "user-bio",
-];
+] as const;
 
-export const VALID_DERIVATIVE_TYPES = ["string-interpolation", "copy", "date-before", "date-after"];
+export const VALID_DERIVATIVE_TYPES = [
+  "string-interpolation",
+  "copy",
+  "date-before",
+  "date-after",
+] as const;

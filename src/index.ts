@@ -2,31 +2,42 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-import ConfigValidator from "./classes/ConfigValidator";
+import DerivativesValidator from "./classes/DerivativesValidator";
 import DocumentFactory from "./classes/DocumentFactory";
-import { Config } from "./interfaces/documentFactory";
+import SchemaValidator from "./classes/SchemaValidator";
+import { Derivatives } from "./interfaces/derivatives";
+import { Config, Recipe } from "./interfaces/documentFactory";
+import { Schema } from "./interfaces/schema";
 import { getTodayDate } from "./utils/dateUtils";
 import { writeDocumentToDir, zipFolder } from "./utils/fileUtils";
 
-async function init() {
+function isValidRecipe(
+  schema: Schema,
+  derivatives: Derivatives,
+  reference: Record<string, any>,
+): boolean {
+  const schemaValidator = new SchemaValidator(schema, reference);
+  const derivativesValidator = new DerivativesValidator(derivatives, schema);
+
+  schemaValidator.validateSchema();
+  derivativesValidator.validateDerivatives();
+
+  const schemaValid = schemaValidator.getValidity();
+  const derivativesValid = derivativesValidator.getValidity();
+
+  return schemaValid && derivativesValid;
+}
+
+async function run() {
   const uniqueFolderId = uuidv4();
   const configJson = JSON.parse(fs.readFileSync("./config/config.json", { encoding: "utf8" }));
   const { recipeFilePath, nullablePercentage, documentCount, outputDir, references } = configJson;
-
-  const recipeFile = JSON.parse(fs.readFileSync(recipeFilePath, { encoding: "utf8" }));
-  const { schema, derivatives, keysToDelete } = recipeFile;
+  const recipeFile = JSON.parse(fs.readFileSync(recipeFilePath, { encoding: "utf8" })) as Recipe;
+  const { schema, derivatives = {}, keysToDelete = [] } = recipeFile;
   const destinationFolder = path.join(outputDir, getTodayDate(), uniqueFolderId);
-
   console.info(`Successfully retrieved recipe from: '${recipeFilePath}'. Performing validation...`);
-  console.info("-----------------------------------------------------------------------------");
-  console.info("Errors found:");
-  const validator = new ConfigValidator(schema, derivatives, references);
-  validator.validateSchema();
-  validator.validateDerivatives();
-  const isValidRecipe = validator.getValidity();
-  console.info("-----------------------------------------------------------------------------");
 
-  if (!isValidRecipe) {
+  if (!isValidRecipe(schema, derivatives, references)) {
     console.error("Something is wrong with the provided recipe, exiting program...");
     return;
   }
@@ -57,4 +68,4 @@ async function init() {
   console.info(`Successfully generated ${documentCount} documents!`);
 }
 
-init();
+run();

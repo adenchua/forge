@@ -2,9 +2,9 @@ import { expect } from "chai";
 import { describe, it } from "mocha";
 import { differenceInCalendarDays } from "date-fns";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing derivatives from DocumentFactoryClass", function () {
+describe("Testing derivatives from DocumentFactory", function () {
   it("1. Given a valid schema and a valid derivatives 'string-interpolation' type, it should return the correct response", function () {
     const schema = {
       field1: {

@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing float type for DocumentFactoryClass", function () {
+describe("Testing float type for DocumentFactory", function () {
   it("1. Given no parameters, it should return the correct property with a float value", function () {
     const schema = {
       test: {

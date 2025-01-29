@@ -14,10 +14,34 @@ export interface SocialMediaPostOption {
   urlPercentage?: number;
 }
 
+export const FORMAT_STRING_ALLOWED_TYPES: Array<SchemaValue["type"]> = [
+  "boolean",
+  "country",
+  "country-code",
+  "email",
+  "enum",
+  "file",
+  "first-name",
+  "float",
+  "full-name",
+  "gender",
+  "id",
+  "iso-timestamp",
+  "last-name",
+  "number",
+  "numeric-string",
+  "url",
+  "url-domain",
+  "url-image",
+  "username",
+] as const;
+
+export type FormatStringAllowedTypes = (typeof FORMAT_STRING_ALLOWED_TYPES)[number];
+
 export interface FormatStringOption {
   pattern: string;
   properties: Array<{
-    type: SchemaValue["type"];
+    type: FormatStringAllowedTypes;
     options?: SchemaValue["options"];
   }>;
 }

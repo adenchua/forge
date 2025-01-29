@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { RelativeDateOptions } from "../../../interfaces/derivativesOptions";
 import { checkObjectProperty, wrapValidationResult } from "../validatorHelpers";
 

@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing url-domain type for DocumentFactoryClass", function () {
+describe("Testing url-domain type for DocumentFactory", function () {
   it("1. Given no parameters, it should generate the correct result document", function () {
     const schema = {
       test: {

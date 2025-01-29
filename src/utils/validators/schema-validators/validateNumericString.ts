@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { NumericStringOption } from "../../../interfaces/schemaOptions";
 import { containsReferenceString, parseReferenceValue } from "../../referenceUtils";
 import {

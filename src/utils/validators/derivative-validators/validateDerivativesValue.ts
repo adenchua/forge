@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { VALID_DERIVATIVE_TYPES } from "../../../constants";
 import { DerivativesValue } from "../../../interfaces/derivatives";
 import { checkObjectProperty, wrapValidationResult } from "../validatorHelpers";

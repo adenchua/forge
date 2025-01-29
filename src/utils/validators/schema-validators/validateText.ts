@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { MinMaxOption } from "../../../interfaces/schemaOptions";
 import { containsReferenceString, parseReferenceValue } from "../../referenceUtils";
 import { checkRange, checkReferenceKey, wrapValidationResult } from "../validatorHelpers";

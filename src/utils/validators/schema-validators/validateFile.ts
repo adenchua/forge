@@ -1,4 +1,4 @@
-import { ValidationResult } from "../../../classes/SchemaValidator";
+import { ValidationResult } from "../../../interfaces/validators";
 import { FileOption } from "../../../interfaces/schemaOptions";
 import { checkObjectProperty, wrapValidationResult } from "../validatorHelpers";
 

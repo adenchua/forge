@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import DocumentFactory from "../../src/classes/DocumentFactory";
+import DocumentFactory from "../../../src/classes/DocumentFactory";
 
-describe("Testing enum-array type for DocumentFactoryClass", function () {
+describe("Testing enum-array type for DocumentFactory", function () {
   it("1. Given a valid options array, it should return the correct response", function () {
     const validOptions = ["apple"];
     const schema = {
