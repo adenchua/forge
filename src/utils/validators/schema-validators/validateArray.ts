@@ -12,7 +12,9 @@ export function validateArray(options: Partial<ArrayOption>): ValidationResult {
   const maxError = checkObjectProperty(options, "max", ["number"]);
 
   const rangeError = checkRange(min, max);
-  rangeError && errors.push(rangeError);
+  if (rangeError != null) {
+    errors.push(rangeError);
+  }
 
   if (schema != undefined) {
     const schemaValidation = validateSchemaValue(schema);
@@ -21,10 +23,16 @@ export function validateArray(options: Partial<ArrayOption>): ValidationResult {
       errors.push(...schemaErrors);
     }
   }
+  if (schemaError != null) {
+    errors.push(schemaError);
+  }
 
-  schemaError && errors.push(schemaError);
-  minError && errors.push(minError);
-  maxError && errors.push(maxError);
+  if (minError != null) {
+    errors.push(minError);
+  }
+  if (maxError != null) {
+    errors.push(maxError);
+  }
 
   return wrapValidationResult(errors);
 }

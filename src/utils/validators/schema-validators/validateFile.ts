@@ -8,7 +8,9 @@ export function validateFile(options: Partial<FileOption>): ValidationResult {
 
   if (extension != undefined) {
     const extensionError = checkObjectProperty(options, "extension", ["string"]);
-    extensionError && errors.push(extensionError);
+    if (extensionError != null) {
+      errors.push(extensionError);
+    }
   }
 
   return wrapValidationResult(errors);

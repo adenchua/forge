@@ -8,7 +8,9 @@ export function validateDerivativesValue(derivativesValue: DerivativesValue): Va
   const { type, isNullable, nullablePercentage } = derivativesValue;
 
   const typeError = checkObjectProperty(derivativesValue, "type", ["string"]);
-  typeError && errors.push(typeError);
+  if (typeError !== null) {
+    errors.push(typeError);
+  }
 
   if (!VALID_DERIVATIVE_TYPES.includes(type)) {
     errors.push(`Invalid type '${type}' supplied`);
@@ -16,14 +18,18 @@ export function validateDerivativesValue(derivativesValue: DerivativesValue): Va
 
   if (isNullable != undefined) {
     const isNullableError = checkObjectProperty(derivativesValue, "isNullable", ["boolean"]);
-    isNullableError && errors.push(isNullableError);
+    if (isNullableError != null) {
+      errors.push(isNullableError);
+    }
   }
 
   if (nullablePercentage != undefined) {
     const nullablePercentageError = checkObjectProperty(derivativesValue, "nullablePercentage", [
       "number",
     ]);
-    nullablePercentageError && errors.push(nullablePercentageError);
+    if (nullablePercentageError != null) {
+      errors.push(nullablePercentageError);
+    }
   }
 
   // TODO: check whether options is provided for some compulsory ones

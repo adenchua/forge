@@ -19,10 +19,10 @@ import { wrapValidationResult } from "../utils/validators/validatorHelpers";
  */
 export default class DerivativesValidator {
   private derivatives: Derivatives;
-  private reference: Record<string, any>;
+  private reference: Record<string, unknown>;
   private isValid: boolean = true;
 
-  constructor(derivatives: Derivatives, reference: Record<string, any>) {
+  constructor(derivatives: Derivatives, reference: Record<string, unknown>) {
     this.derivatives = derivatives;
     this.reference = reference;
   }

@@ -1,7 +1,7 @@
 import { MAX_COUNT, MIN_COUNT } from "../constants";
 import InvalidDateRangeError from "../errors/InvalidDateRangeError";
 import InvalidSchemaTypeError from "../errors/InvalidSchemaTypeError";
-import { Schema, SchemaValue } from "../interfaces/schema";
+import { Schema, SchemaReference, SchemaValue } from "../interfaces/schema";
 import {
   ArrayOption,
   DateRangeOption,
@@ -23,10 +23,10 @@ export default class SchemaParser {
   private fakeDataGenerator: FakeDataGenerator;
   private schema: Schema;
   private globalNullablePercentage: number = 0;
-  private references: Record<string, any>;
-  private outputDocument: Record<string, any> = {};
+  private references: SchemaReference;
+  private outputDocument: Record<string, unknown> = {};
 
-  constructor(schema: Schema, globalNullablePercentage: number, references: Record<string, any>) {
+  constructor(schema: Schema, globalNullablePercentage: number, references: SchemaReference) {
     this.schema = schema;
     this.globalNullablePercentage = globalNullablePercentage;
     this.references = references;
@@ -143,8 +143,8 @@ export default class SchemaParser {
       throw new InvalidDateRangeError();
     }
 
-    let finalDateFrom = parseReferenceValue(dateFrom, this.references);
-    let finalDateTo = parseReferenceValue(dateTo, this.references);
+    const finalDateFrom = parseReferenceValue(dateFrom, this.references);
+    const finalDateTo = parseReferenceValue(dateTo, this.references);
 
     return this.fakeDataGenerator.generateISOTimestamp(finalDateFrom, finalDateTo);
   }
@@ -260,7 +260,7 @@ export default class SchemaParser {
   }
 
   private getObject(options: ObjectOption) {
-    const result: Record<string, any> = {};
+    const result: Record<string, unknown> = {};
     const { properties } = options;
 
     for (const [field, schemaValue] of Object.entries(properties)) {
@@ -302,7 +302,7 @@ export default class SchemaParser {
     const { pattern, properties } = options;
     let result = pattern;
 
-    for (let property of properties) {
+    for (const property of properties) {
       const { type, options: propertyOptions } = property;
 
       const stringValue = this.processSchemaValue({

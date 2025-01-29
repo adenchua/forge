@@ -11,15 +11,15 @@ import FakeDataGenerator from "./FakeDataGenerator";
 
 export default class DerivativesParser {
   private fakeDataGenerator: FakeDataGenerator;
-  private flattenedReference: Record<string, any>;
-  private flattenedOutput: Record<string, any>;
+  private flattenedReference: Record<string, unknown>;
+  private flattenedOutput: Record<string, unknown>;
   private globalNullablePercentage: number = 0;
   private derivatives: Derivatives;
 
   constructor(
     derivatives: Derivatives,
     globalNullablePercentage: number,
-    reference: Record<string, any>,
+    reference: Record<string, unknown>,
   ) {
     this.fakeDataGenerator = new FakeDataGenerator();
     this.globalNullablePercentage = globalNullablePercentage;
@@ -78,7 +78,7 @@ export default class DerivativesParser {
 
     referenceKeys.forEach((referenceKey) => {
       const value = this.flattenedReference[referenceKey];
-      result = result.replace("{}", value);
+      result = result.replace("{}", value as string);
     });
 
     return result;
@@ -95,9 +95,9 @@ export default class DerivativesParser {
     const referenceDate = this.flattenedReference[referenceKey];
 
     if (sequence === "after") {
-      return this.fakeDataGenerator.generateFutureISOTimestamp(days, referenceDate);
+      return this.fakeDataGenerator.generateFutureISOTimestamp(days, referenceDate as string);
     }
 
-    return this.fakeDataGenerator.generatePastISOTimestamp(days, referenceDate);
+    return this.fakeDataGenerator.generatePastISOTimestamp(days, referenceDate as string);
   }
 }

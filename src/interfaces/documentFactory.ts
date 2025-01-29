@@ -1,5 +1,5 @@
 import { Derivatives } from "./derivatives";
-import { Schema } from "./schema";
+import { Schema, SchemaReference } from "./schema";
 
 export interface Recipe {
   schema: Schema;
@@ -9,6 +9,6 @@ export interface Recipe {
 
 export interface Config {
   recipe: Recipe;
-  references?: Record<string, any>;
+  references?: SchemaReference;
   globalNullablePercentage: number;
 }

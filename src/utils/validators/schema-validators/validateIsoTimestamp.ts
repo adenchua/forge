@@ -1,11 +1,12 @@
-import { ValidationResult } from "../../../interfaces/validators";
+import { SchemaReference } from "../../../interfaces/schema";
 import { DateRangeOption } from "../../../interfaces/schemaOptions";
+import { ValidationResult } from "../../../interfaces/validators";
 import { containsReferenceString, parseReferenceValue } from "../../referenceUtils";
 import { checkISODateRange, checkReferenceKey, wrapValidationResult } from "../validatorHelpers";
 
 export function validateIsoTimestamp(
   options: DateRangeOption,
-  reference: Record<string, any>,
+  reference: SchemaReference,
 ): ValidationResult {
   const errors: string[] = [];
   const { dateFrom, dateTo } = options;
@@ -15,16 +16,22 @@ export function validateIsoTimestamp(
 
   if (containsReferenceString(dateFrom)) {
     const dateFromReferenceError = checkReferenceKey(dateFrom as string, reference, ["string"]);
-    dateFromReferenceError && errors.push(dateFromReferenceError);
+    if (dateFromReferenceError != null) {
+      errors.push(dateFromReferenceError);
+    }
   }
 
   if (containsReferenceString(dateTo)) {
     const dateToReferenceError = checkReferenceKey(dateTo as string, reference, ["string"]);
-    dateToReferenceError && errors.push(dateToReferenceError);
+    if (dateToReferenceError != null) {
+      errors.push(dateToReferenceError);
+    }
   }
 
   const rangeError = checkISODateRange(tempDateFrom, tempDateTo);
-  rangeError && errors.push(rangeError);
+  if (rangeError != null) {
+    errors.push(rangeError);
+  }
 
   return wrapValidationResult(errors);
 }

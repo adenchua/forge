@@ -8,7 +8,9 @@ export function validateSchemaValue(schemaValue: SchemaValue): ValidationResult 
   const { type, isNullable, nullablePercentage } = schemaValue;
 
   const typeError = checkObjectProperty(schemaValue, "type", ["string"]);
-  typeError && errors.push(typeError);
+  if (typeError != null) {
+    errors.push(typeError);
+  }
 
   if (!VALID_SCHEMA_TYPES.includes(type)) {
     errors.push(`Invalid type '${type}' supplied`);
@@ -16,14 +18,18 @@ export function validateSchemaValue(schemaValue: SchemaValue): ValidationResult 
 
   if (isNullable != undefined) {
     const isNullableError = checkObjectProperty(schemaValue, "isNullable", ["boolean"]);
-    isNullableError && errors.push(isNullableError);
+    if (isNullableError != null) {
+      errors.push(isNullableError);
+    }
   }
 
   if (nullablePercentage != undefined) {
     const nullablePercentageError = checkObjectProperty(schemaValue, "nullablePercentage", [
       "number",
     ]);
-    nullablePercentageError && errors.push(nullablePercentageError);
+    if (nullablePercentageError != null) {
+      errors.push(nullablePercentageError);
+    }
   }
 
   // TODO: check whether options is provided for some compulsory ones

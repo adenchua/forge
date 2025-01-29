@@ -1,13 +1,33 @@
-import { ValidationResult } from "../../../interfaces/validators";
+import { SchemaReference } from "../../../interfaces/schema";
 import { ObjectOption } from "../../../interfaces/schemaOptions";
-import { checkObjectProperty, wrapValidationResult } from "../validatorHelpers";
+import { ValidationResult } from "../../../interfaces/validators";
+import {
+  checkObjectProperty,
+  getSchemaValidationResult,
+  wrapValidationResult,
+} from "../validatorHelpers";
 
-export function validateObject(options: Partial<ObjectOption>): ValidationResult {
+export function validateObject(
+  options: Partial<ObjectOption>,
+  reference: SchemaReference = {},
+): ValidationResult {
   const errors: string[] = [];
+  const { properties } = options;
 
   const propertiesError = checkObjectProperty(options, "properties", ["object"]);
-  propertiesError && errors.push(propertiesError);
+  if (propertiesError != null) {
+    errors.push(propertiesError);
+  }
 
-  // TODO: check contents of properties
+  // go through each properties key and check the value is a valid schema value
+  if (properties != null) {
+    for (const [, schemaValue] of Object.entries(properties)) {
+      const { errors: propertyErrors } = getSchemaValidationResult(schemaValue, reference);
+      if (propertyErrors != null) {
+        errors.push(...propertyErrors);
+      }
+    }
+  }
+
   return wrapValidationResult(errors);
 }

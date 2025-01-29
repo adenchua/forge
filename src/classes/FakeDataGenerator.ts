@@ -78,8 +78,8 @@ export default class FakeDataGenerator {
   }
 
   generateText(minWordCount = 5, maxWordCount = 120) {
-    let min = Math.min(minWordCount, maxWordCount);
-    let max = Math.max(minWordCount, maxWordCount);
+    const min = Math.min(minWordCount, maxWordCount);
+    const max = Math.max(minWordCount, maxWordCount);
 
     return faker.word.words({ count: { min, max } });
   }
@@ -148,8 +148,8 @@ export default class FakeDataGenerator {
     hashtagPercentage = 0.3,
     urlPercentage = 0.05,
   ) {
-    let minWordCount = Math.min(min, max);
-    let maxWordCount = Math.max(min, max);
+    const minWordCount = Math.min(min, max);
+    const maxWordCount = Math.max(min, max);
 
     // only faker with correctly working locales are added to this map
     const languagesToFakerMap = {

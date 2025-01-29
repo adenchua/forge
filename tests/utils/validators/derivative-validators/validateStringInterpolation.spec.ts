@@ -20,8 +20,6 @@ describe("Testing utility function validateStringInterpolation", function () {
       },
     });
 
-    console.log(result.errors);
-
     expect(result.isValid).to.be.true;
   });
 

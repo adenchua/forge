@@ -14,17 +14,25 @@ export function validateFormatString(options: Partial<FormatStringOption>): Vali
   const patternError = checkObjectProperty(options, "pattern", ["string"]);
   const propertiesError = checkObjectProperty(options, "properties", ["object"]);
 
-  patternError && errors.push(patternError);
-  propertiesError && errors.push(propertiesError);
+  if (patternError != null) {
+    errors.push(patternError);
+  }
+  if (propertiesError != null) {
+    errors.push(propertiesError);
+  }
 
   if (propertiesError != undefined) {
     const propertiesArrayError = checkNonEmptyArray(properties);
-    propertiesArrayError && errors.push(propertiesArrayError);
+    if (propertiesArrayError != null) {
+      errors.push(propertiesArrayError);
+    }
   }
 
   if (pattern != undefined && properties != undefined) {
     const patternFormatError = checkFormatStringPattern(pattern, properties);
-    patternFormatError && errors.push(patternFormatError);
+    if (patternFormatError != null) {
+      errors.push(patternFormatError);
+    }
     properties.forEach((property) => {
       if (!FORMAT_STRING_ALLOWED_TYPES.includes(property.type)) {
         errors.push(`Invalid type '${property.type}' supplied`);

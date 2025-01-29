@@ -13,31 +13,43 @@ export function validateSocialMediaPost(options: Partial<SocialMediaPostOption>)
 
   if (languages !== undefined) {
     const languagesError = checkNonEmptyArray(languages);
-    languagesError && errors.push(languagesError);
+    if (languagesError != null) {
+      errors.push(languagesError);
+    }
   }
 
   if (min !== undefined) {
     const minError = checkObjectProperty(options, "min", ["number"]);
-    minError && errors.push(minError);
+    if (minError != null) {
+      errors.push(minError);
+    }
   }
 
   if (max !== undefined) {
     const maxError = checkObjectProperty(options, "max", ["number"]);
-    maxError && errors.push(maxError);
+    if (maxError != null) {
+      errors.push(maxError);
+    }
   }
 
   if (hashtagPercentage !== undefined) {
     const hashtagPercentageError = checkObjectProperty(options, "hashtagPercentage", ["number"]);
-    hashtagPercentageError && errors.push(hashtagPercentageError);
+    if (hashtagPercentageError != null) {
+      errors.push(hashtagPercentageError);
+    }
   }
 
   if (urlPercentage !== undefined) {
     const urlPercentageError = checkObjectProperty(options, "urlPercentage", ["number"]);
-    urlPercentageError && errors.push(urlPercentageError);
+    if (urlPercentageError != null) {
+      errors.push(urlPercentageError);
+    }
   }
 
   const rangeError = checkRange(min, max);
-  rangeError && errors.push(rangeError);
+  if (rangeError != null) {
+    errors.push(rangeError);
+  }
 
   return wrapValidationResult(errors);
 }

@@ -1,14 +1,15 @@
 import { Derivatives } from "../interfaces/derivatives";
 import { Config, Recipe } from "../interfaces/documentFactory";
+import { SchemaReference } from "../interfaces/schema";
 import { deleteKeysFromObject } from "../utils/objectUtils";
 import DerivativesParser from "./DerivativesParser";
 import SchemaParser from "./SchemaParser";
 
 export default class DocumentFactory {
   private recipe: Recipe;
-  private references: object;
+  private references: SchemaReference;
   private globalNullablePercentage: number;
-  private document: Record<string, any> = {};
+  private document: Record<string, unknown> = {};
 
   constructor(config: Config) {
     const { recipe, references, globalNullablePercentage } = config;
@@ -47,7 +48,7 @@ export default class DocumentFactory {
       this.document,
     );
     derivativeParser.parse();
-    this.document = derivativeParser.getOutput();
+    this.document = derivativeParser.getOutput() as Record<string, unknown>;
   }
 
   private processKeyDeletion(keysToDelete: string[]) {

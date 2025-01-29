@@ -8,7 +8,9 @@ export function validateFirstName(options: Partial<GenderOption>): ValidationRes
 
   if (gender != undefined) {
     const genderError = checkGender(gender);
-    genderError && errors.push(genderError);
+    if (genderError != null) {
+      errors.push(genderError);
+    }
   }
 
   return wrapValidationResult(errors);

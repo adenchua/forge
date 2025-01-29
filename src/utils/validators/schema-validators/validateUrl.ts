@@ -8,7 +8,9 @@ export function validateUrl(options: Partial<UrlOption>): ValidationResult {
 
   if (allowNumbers != undefined) {
     const allowNumbersError = checkObjectProperty(options, "allowNumbers", ["boolean"]);
-    allowNumbersError && errors.push(allowNumbersError);
+    if (allowNumbersError != null) {
+      errors.push(allowNumbersError);
+    }
   }
 
   return wrapValidationResult(errors);
