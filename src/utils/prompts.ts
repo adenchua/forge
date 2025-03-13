@@ -53,8 +53,9 @@ export async function runGlobalNullablePercentagePrompt(): Promise<number> {
       default: DEFAULT,
       min: 0,
       max: 1,
+      step: 0.01,
       message:
-        "Select a global nullable percentage (0.0 ~ 1.0). Properties with 'isNullable' set to 'true' will have this percentage to be null",
+        "Select a global nullable percentage (0.00 ~ 1.00). Properties with 'isNullable' set to 'true' will have this percentage to be null",
     })) || DEFAULT;
 
   return answer;

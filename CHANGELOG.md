@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2025-03-13
+
+### FIXED
+
+- bug where nullable percentage prompt does not take in a float value
+
 ## [1.2.0] - 2024-01-26
 
 ### ADDED
