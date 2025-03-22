@@ -1,12 +1,15 @@
 import { expect } from "chai";
-import { describe, it } from "mocha";
 import { differenceInCalendarDays } from "date-fns";
+import { describe, it } from "mocha";
 
 import DocumentFactory from "../../../src/classes/DocumentFactory";
+import { Config } from "../../../src/interfaces/core";
+import { Derivatives } from "../../../src/interfaces/derivatives";
+import { Schema } from "../../../src/interfaces/schema";
 
 describe("Testing derivatives from DocumentFactory", function () {
   it("1. Given a valid schema and a valid derivatives 'string-interpolation' type, it should return the correct response", function () {
-    const schema = {
+    const schema: Schema = {
       field1: {
         type: "enum",
         options: ["one"],
@@ -17,18 +20,26 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const derivatives = {
+    const derivatives: Derivatives = {
       combinedFields: {
         type: "string-interpolation",
         options: {
-          string: "{}-{}",
+          pattern: "{}-{}",
           referenceKeys: ["field1", "field2"],
         },
       },
     };
 
-    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
+    const config: Config = {
+      recipe: {
+        schema: schema,
+        derivatives: derivatives,
+      },
+      globalNullablePercentage: 0,
+    };
 
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("combinedFields");
@@ -36,14 +47,14 @@ describe("Testing derivatives from DocumentFactory", function () {
   });
 
   it("2. Given a valid schema and a valid derivatives 'copy' type, it should return the correct response", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "enum",
         options: ["one"],
       },
     };
 
-    const derivatives = {
+    const derivatives: Derivatives = {
       copiedField: {
         type: "copy",
         options: {
@@ -52,8 +63,16 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
+    const config: Config = {
+      recipe: {
+        schema: schema,
+        derivatives: derivatives,
+      },
+      globalNullablePercentage: 0,
+    };
 
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("copiedField");
@@ -61,7 +80,7 @@ describe("Testing derivatives from DocumentFactory", function () {
   });
 
   it("3. Given a valid schema and a valid derivatives 'date-before' type, it should return the correct response", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -71,7 +90,7 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const derivatives = {
+    const derivatives: Derivatives = {
       dateField: {
         type: "date-before",
         options: {
@@ -81,8 +100,16 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
+    const config: Config = {
+      recipe: {
+        schema: schema,
+        derivatives: derivatives,
+      },
+      globalNullablePercentage: 0,
+    };
 
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("dateField");
@@ -94,7 +121,7 @@ describe("Testing derivatives from DocumentFactory", function () {
   });
 
   it("4. Given a valid schema and a valid derivatives 'date-after' type, it should return the correct response", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -104,7 +131,7 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const derivatives = {
+    const derivatives: Derivatives = {
       dateField: {
         type: "date-after",
         options: {
@@ -114,8 +141,16 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
+    const config: Config = {
+      recipe: {
+        schema: schema,
+        derivatives: derivatives,
+      },
+      globalNullablePercentage: 0,
+    };
 
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("dateField");
@@ -127,7 +162,7 @@ describe("Testing derivatives from DocumentFactory", function () {
 
   it("4. Given a valid schema and an invalid derivatives type, it should throw an error 'INVALID_DERIVATIVES_TYPE'", function () {
     const invalidDerivativeType = "hfff";
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -137,7 +172,7 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const derivatives = {
+    const derivatives: Derivatives = {
       dateField: {
         type: invalidDerivativeType,
         options: {
@@ -145,33 +180,39 @@ describe("Testing derivatives from DocumentFactory", function () {
           days: 10,
         },
       },
+    } as unknown as Derivatives;
+
+    const config: Config = {
+      recipe: {
+        schema: schema,
+        derivatives: derivatives,
+      },
+      globalNullablePercentage: 0,
     };
 
-    expect(() => new DocumentFactory(schema, 0, {}, derivatives)).to.throw(
-      "INVALID_DERIVATIVES_TYPE",
+    expect(() => new DocumentFactory(config).generateDocument()).to.throw(
+      "invalid derivatives type",
     );
   });
 
   it("5. Given a nested derivative, it should produce the correct result document", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "object",
         options: {
-          properties: [
-            {
-              fieldName: "nestedA",
+          properties: {
+            nestedA: {
               type: "object",
               options: {
-                properties: [
-                  {
-                    fieldName: "nestedAB",
+                properties: {
+                  nestedAB: {
                     type: "enum",
                     options: ["one"],
                   },
-                ],
+                },
               },
             },
-          ],
+          },
         },
       },
       test2: {
@@ -180,7 +221,7 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const derivatives = {
+    const derivatives: Derivatives = {
       "test.nestedA.nestedAC": {
         type: "copy",
         options: {
@@ -189,8 +230,16 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
+    const config: Config = {
+      recipe: {
+        schema: schema,
+        derivatives: derivatives,
+      },
+      globalNullablePercentage: 0,
+    };
 
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.eql({
@@ -205,25 +254,23 @@ describe("Testing derivatives from DocumentFactory", function () {
   });
 
   it("6. Given a valid nested referenced key, it should produce the correct result document", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "object",
         options: {
-          properties: [
-            {
-              fieldName: "nestedA",
+          properties: {
+            nestedA: {
               type: "object",
               options: {
-                properties: [
-                  {
-                    fieldName: "nestedAB",
+                properties: {
+                  nestedAB: {
                     type: "enum",
                     options: ["one"],
                   },
-                ],
+                },
               },
             },
-          ],
+          },
         },
       },
       test2: {
@@ -232,7 +279,7 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const derivatives = {
+    const derivatives: Derivatives = {
       "test.nestedA.nestedAC": {
         type: "copy",
         options: {
@@ -241,8 +288,16 @@ describe("Testing derivatives from DocumentFactory", function () {
       },
     };
 
-    const documentFactory = new DocumentFactory(schema, 0, {}, derivatives);
+    const config: Config = {
+      recipe: {
+        schema: schema,
+        derivatives: derivatives,
+      },
+      globalNullablePercentage: 0,
+    };
 
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.eql({

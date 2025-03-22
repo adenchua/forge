@@ -6,13 +6,13 @@ import { SchemaValue } from "../../../../src/interfaces/schema";
 
 describe("Testing utility function: validateArray", function () {
   it("1. Given a valid min, max and schema, it should return true", function () {
-    const validInput = {
+    const validOptions = {
       min: 0,
       max: 0,
-      schema: { type: "iso-timestamp" } as SchemaValue,
+      schema: { type: "iso-timestamp" } satisfies SchemaValue,
     };
 
-    const response = validateArray(validInput);
+    const response = validateArray(validOptions);
 
     expect(response.isValid).to.be.true;
   });
@@ -55,6 +55,18 @@ describe("Testing utility function: validateArray", function () {
     };
 
     const response = validateArray(minGreaterThanMaxInput);
+
+    expect(response.isValid).to.be.false;
+  });
+
+  it("6. Given a schema with empty type, it should return false", function () {
+    const invalidSchemaOptions = {
+      min: 1,
+      max: 0,
+      schema: { type: undefined } as unknown as SchemaValue,
+    };
+
+    const response = validateArray(invalidSchemaOptions);
 
     expect(response.isValid).to.be.false;
   });

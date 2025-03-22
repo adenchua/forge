@@ -2,14 +2,22 @@ import { expect } from "chai";
 import { describe, it } from "mocha";
 
 import DocumentFactory from "../../../src/classes/DocumentFactory";
+import { Schema } from "../../../src/interfaces/schema";
+import { Config } from "../../../src/interfaces/core";
 
 describe("Testing text type for DocumentFactory", function () {
   it("1. Given no parameters with type text, it should return the correct result document with minimum of 5 words and maximum of 120 words", function () {
-    const schema = {
+    const schema: Schema = {
       test: { type: "text" },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test?.split(" ");
 
@@ -19,7 +27,7 @@ describe("Testing text type for DocumentFactory", function () {
   });
 
   it("2. Given a min and max of 1 with type text, it should return the correct result document with 1 word", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "text",
         options: {
@@ -28,8 +36,14 @@ describe("Testing text type for DocumentFactory", function () {
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test?.split(" ");
 
@@ -37,7 +51,7 @@ describe("Testing text type for DocumentFactory", function () {
   });
 
   it("3. Given null parameters for min and max, it should return the correct result document with minimum of 5 words and maximum of 120 words", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "text",
         options: {
@@ -46,8 +60,14 @@ describe("Testing text type for DocumentFactory", function () {
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test?.split(" ");
 
@@ -56,7 +76,7 @@ describe("Testing text type for DocumentFactory", function () {
 
   it("4. Given maximum nullablePercentage, it should return a property with a value null", function () {
     const maxNullablePercentage = 1;
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "text",
         options: {
@@ -67,15 +87,21 @@ describe("Testing text type for DocumentFactory", function () {
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
   });
 
   it("5. Given a valid reference 'min' and 'max' option, it should return the text of correct length", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "text",
         options: {
@@ -84,18 +110,25 @@ describe("Testing text type for DocumentFactory", function () {
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {
-      key1: 1,
-      key2: 1,
-    });
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+      references: {
+        key1: 1,
+        key2: 1,
+      },
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
     const words = resultDocument.test.split(" ");
     expect(words).to.have.lengthOf(1);
   });
 
-  it("6. Given a invalid reference 'min' and 'max' option, it should throw an error 'REFERENCE_KEY_DOES_NOT_EXIST'", function () {
-    const schema = {
+  it("6. Given a invalid reference 'min' and 'max' option, it should throw an error 'invalid reference key'", function () {
+    const schema: Schema = {
       test: {
         type: "text",
         options: {
@@ -105,9 +138,14 @@ describe("Testing text type for DocumentFactory", function () {
       },
     };
     const emptyReference = {};
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+      references: emptyReference,
+    };
 
-    expect(() => new DocumentFactory(schema, 0, emptyReference)).to.throw(
-      "REFERENCE_KEY_DOES_NOT_EXIST",
-    );
+    expect(() => new DocumentFactory(config).generateDocument()).to.throw("invalid reference key");
   });
 });

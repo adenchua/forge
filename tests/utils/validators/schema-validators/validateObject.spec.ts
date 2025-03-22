@@ -57,4 +57,53 @@ describe("Testing utility function: validateObject", function () {
 
     expect(response.isValid).to.be.false;
   });
+
+  it("6. Given properties with invalid 'type', it should return false", function () {
+    const input: ObjectOption = {
+      properties: {
+        testField: {
+          type: "invalid-type",
+        } as unknown as SchemaValue,
+      },
+    };
+
+    const response = validateObject(input);
+
+    expect(response.isValid).to.be.false;
+  });
+
+  it("7. Given properties with undefined 'type', it should return false", function () {
+    const input: ObjectOption = {
+      properties: {
+        testField: {
+          type: undefined,
+        } as unknown as SchemaValue,
+      },
+    };
+
+    const response = validateObject(input);
+
+    expect(response.isValid).to.be.false;
+  });
+
+  it("7. Given properties with nested undefined 'type', it should return false", function () {
+    const input: ObjectOption = {
+      properties: {
+        testField: {
+          type: "object",
+          options: {
+            properties: {
+              invalidField: {
+                type: undefined,
+              },
+            },
+          },
+        } as unknown as SchemaValue,
+      },
+    };
+
+    const response = validateObject(input);
+
+    expect(response.isValid).to.be.false;
+  });
 });

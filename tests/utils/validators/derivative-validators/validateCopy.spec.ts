@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { describe, it } from "mocha";
 
 import { validateCopy } from "../../../../src/utils/validators/derivative-validators";
-import InvalidReferenceKeyError from "../../../../src/errors/InvalidReferenceKeyError";
 
 describe("Testing utility function: validateCopy", function () {
   it("1. Given an empty option, it should return false", function () {
