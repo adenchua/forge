@@ -5,7 +5,7 @@
   "description": "Fake (but realistic) data generator for testing &amp; development",
   "main": "index.ts",
   "scripts": {
-    "test": "mocha 'tests/utils/validators/**/*.spec.ts' --exit",
+    "test": "mocha 'tests/**/*.spec.ts' --exit",
     "start": "node --import=tsx ./src/index.ts",
     "format": "prettier ./src/**/* --write",
     "lint": "eslint ./src/**/* && tsc --noEmit"

@@ -6,7 +6,7 @@ import { Schema } from "../../interfaces/schema";
 export function isValidRecipe(
   schema?: Schema,
   derivatives?: Derivatives,
-  reference?: Record<string, any>,
+  reference?: Record<string, unknown>,
 ): boolean {
   if (schema == undefined) {
     console.error("schema must be provided");

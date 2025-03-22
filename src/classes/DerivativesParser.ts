@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import { flatten, unflatten } from "flat";
 
 import InvalidDerivativesTypeError from "../errors/InvalidDerivativesTypeError";
@@ -74,6 +75,14 @@ export default class DerivativesParser {
 
   private parseStringInterpolation(options: StringInterpolationOptions) {
     const { pattern, referenceKeys } = options;
+
+    // defensive programming to ensure provided schema is correct
+    assert(pattern != undefined, "derivatives string-interpolation type, pattern not defined");
+    assert(
+      referenceKeys != undefined,
+      "derivatives string-interpolation type, referenceKeys not defined",
+    );
+
     let result = pattern;
 
     referenceKeys.forEach((referenceKey) => {

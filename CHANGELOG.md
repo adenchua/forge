@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2024-03-22
+
+### ADDED
+
+- assertions for some types in case validations fail
+
+### FIXED
+
+- error thrown incorrectly when schema is invalid
+
 ## [1.2.1] - 2025-03-13
 
 ### FIXED

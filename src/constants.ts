@@ -1,6 +1,6 @@
 export const MIN_COUNT = 5;
 export const MAX_COUNT = 120;
-export const VERSION_NUMBER = "1.2.1";
+export const VERSION_NUMBER = "1.2.2";
 
 export const VALID_SCHEMA_TYPES = [
   "array",

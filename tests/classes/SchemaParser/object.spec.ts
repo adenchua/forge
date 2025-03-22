@@ -2,28 +2,35 @@ import { expect } from "chai";
 import { describe, it } from "mocha";
 
 import DocumentFactory from "../../../src/classes/DocumentFactory";
+import { Schema } from "../../../src/interfaces/schema";
+import { Config } from "../../../src/interfaces/core";
 
 describe("Testing object type for DocumentFactory", function () {
   it("1. Given a schema with two object properties, it should return the correct result document", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "object",
         options: {
-          properties: [
-            {
-              fieldName: "field1",
+          properties: {
+            field1: {
               type: "boolean",
             },
-            {
-              fieldName: "field2",
+            field2: {
               type: "boolean",
             },
-          ],
+          },
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
 
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
@@ -34,29 +41,33 @@ describe("Testing object type for DocumentFactory", function () {
   });
 
   it("2. Given a schema with nested object property, it should return the correct result document", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "object",
         options: {
-          properties: [
-            {
-              fieldName: "field1",
+          properties: {
+            field1: {
               type: "object",
               options: {
-                properties: [
-                  {
-                    fieldName: "nestedField1",
+                properties: {
+                  nestedField1: {
                     type: "boolean",
                   },
-                ],
+                },
               },
             },
-          ],
+          },
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.haveOwnProperty("field1");
@@ -66,23 +77,28 @@ describe("Testing object type for DocumentFactory", function () {
 
   it("3. Given a schema with object property with 100% null, it should return the correct result document", function () {
     const maxNullablePercentage = 1;
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "object",
         options: {
-          properties: [
-            {
-              fieldName: "field1",
+          properties: {
+            field1: {
               type: "boolean",
               isNullable: true,
               nullablePercentage: maxNullablePercentage,
             },
-          ],
+          },
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.haveOwnProperty("field1");
@@ -91,23 +107,28 @@ describe("Testing object type for DocumentFactory", function () {
 
   it("4. Given a 100% nullable percentage, it should return a property with null value", function () {
     const maxNullablePercentage = 1;
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "object",
         options: {
-          properties: [
-            {
-              fieldName: "field1",
+          properties: {
+            field1: {
               type: "boolean",
             },
-          ],
+          },
         },
         isNullable: true,
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;

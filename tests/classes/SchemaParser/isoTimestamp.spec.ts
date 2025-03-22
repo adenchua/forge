@@ -3,12 +3,20 @@ import { isBefore, isValid } from "date-fns";
 import { describe, it } from "mocha";
 
 import DocumentFactory from "../../../src/classes/DocumentFactory";
+import { Schema } from "../../../src/interfaces/schema";
+import { Config } from "../../../src/interfaces/core";
 
 describe("Testing iso-timestamp type for DocumentFactory", function () {
   it("1. Given a valid iso-timestamp schema, it should return the correct result", function () {
-    const schema = { test: { type: "iso-timestamp" } };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const schema: Schema = { test: { type: "iso-timestamp" } };
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument).to.haveOwnProperty("test");
@@ -17,9 +25,9 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
     expect(isBefore(new Date(resultDocument.test), new Date())).to.be.true;
   });
 
-  it("2. Given a valid 'dateFrom' option and an null 'dateTo' option, it should throw 'INVALID_DATE_RANGE' error", function () {
+  it("2. Given a valid 'dateFrom' option and an null 'dateTo' option, it should throw 'invalid date range provided' error", function () {
     const validDateFrom = "2000-01-01";
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -28,13 +36,21 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
         },
       },
     };
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
 
-    expect(() => new DocumentFactory(schema, 0, {})).to.throw("INVALID_DATE_RANGE");
+    expect(() => new DocumentFactory(config).generateDocument()).to.throw(
+      "invalid date range provided",
+    );
   });
 
-  it("3. Given a null 'dateFrom' option and an valid 'dateTo' option, it should throw 'INVALID_DATE_RANGE' error", function () {
+  it("3. Given a null 'dateFrom' option and an valid 'dateTo' option, it should throw 'invalid date range provided' error", function () {
     const validDateTo = "2000-01-01";
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -43,12 +59,20 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
         },
       },
     };
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
 
-    expect(() => new DocumentFactory(schema, 0, {})).to.throw("INVALID_DATE_RANGE");
+    expect(() => new DocumentFactory(config).generateDocument()).to.throw(
+      "invalid date range provided",
+    );
   });
 
   it("4. Given a null 'datefrom' and a null 'dateTo' option, it should return the correct result", function () {
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -57,8 +81,14 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(isValid(new Date(resultDocument.test))).to.be.true;
@@ -67,7 +97,7 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
 
   it("5. Given a valid 'dateFrom' and a valid 'dateTo' option, it should return the correct date between the two dates", function () {
     const validDate = "2001-01-01T00:00:00.000Z";
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -76,8 +106,14 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(isValid(new Date(resultDocument.test))).to.be.true;
@@ -86,15 +122,21 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
 
   it("6. Given a 100% null percentage, it should return the correct key with a null value", function () {
     const maxNullablePercentage = 1;
-    const schema = {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         isNullable: true,
         nullablePercentage: maxNullablePercentage,
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {});
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
 
     expect(resultDocument.test).to.be.null;
@@ -102,7 +144,10 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
 
   it("7. Given a valid reference 'dateFrom' and 'dateTo' option, it should return the correct date", function () {
     const validDate = "2001-01-01T00:00:00.000Z";
-    const schema = {
+    const reference = {
+      date: validDate,
+    };
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -111,16 +156,21 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
         },
       },
     };
-    const documentFactory = new DocumentFactory(schema, 0, {
-      date: validDate,
-    });
-
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+      references: reference,
+    };
+    const documentFactory = new DocumentFactory(config);
+    documentFactory.generateDocument();
     const resultDocument = documentFactory.getDocument();
     expect(resultDocument.test).to.equal("2001-01-01T00:00:00.000Z");
   });
 
-  it("8. Given a invalid reference 'dateFrom' and 'dateTo' option, it should throw an error 'REFERENCE_KEY_DOES_NOT_EXIST'", function () {
-    const schema = {
+  it("8. Given a invalid reference 'dateFrom' and 'dateTo' option, it should throw an error 'invalid reference key'", function () {
+    const schema: Schema = {
       test: {
         type: "iso-timestamp",
         options: {
@@ -130,9 +180,14 @@ describe("Testing iso-timestamp type for DocumentFactory", function () {
       },
     };
     const emptyReference = {};
+    const config: Config = {
+      recipe: {
+        schema,
+      },
+      globalNullablePercentage: 0,
+      references: emptyReference,
+    };
 
-    expect(() => new DocumentFactory(schema, 0, emptyReference)).to.throw(
-      "REFERENCE_KEY_DOES_NOT_EXIST",
-    );
+    expect(() => new DocumentFactory(config).generateDocument()).to.throw("invalid reference key");
   });
 });

@@ -1,3 +1,5 @@
+import assert from "node:assert";
+
 import { MAX_COUNT, MIN_COUNT } from "../constants";
 import InvalidDateRangeError from "../errors/InvalidDateRangeError";
 import InvalidSchemaTypeError from "../errors/InvalidSchemaTypeError";
@@ -66,12 +68,15 @@ export default class SchemaParser {
       case "boolean":
         return this.getBoolean();
       case "enum":
+        assert(options != undefined, "enum type options is not provided");
         return this.getEnum(options as string | unknown[]);
       case "enum-array":
+        assert(options != undefined, "enum-array type options is not provided");
         return this.getEnumArray(options as string | unknown[]);
       case "iso-timestamp":
         return this.getIsoTimestamp(options as DateRangeOption);
       case "object":
+        assert(options != undefined, "object type options is not provided");
         return this.getObject(options as ObjectOption);
       case "text":
         return this.getText(options as MinMaxOption);
@@ -82,6 +87,7 @@ export default class SchemaParser {
       case "url-domain":
         return this.getUrlDomain();
       case "array":
+        assert(options != undefined, "array type options is not provided");
         return this.getArray(options as ArrayOption);
       case "number":
         return this.getNumber(options as MinMaxOption);
@@ -114,9 +120,10 @@ export default class SchemaParser {
       case "id":
         return this.getId();
       case "format-string":
+        assert(options != undefined, "format-string type options is not provided");
         return this.getFormattedString(options as FormatStringOption);
       default:
-        throw InvalidSchemaTypeError;
+        throw new InvalidSchemaTypeError();
     }
   }
 
@@ -126,6 +133,10 @@ export default class SchemaParser {
 
   private getEnum<T>(options: T[] | string) {
     const parsedOptions = parseReferenceValue(options, this.references);
+
+    // defensive programming to ensure provided schema is correct
+    assert(Array.isArray(parsedOptions), "enum type options must be a valid array");
+
     return this.fakeDataGenerator.generateEnum(parsedOptions as T[]);
   }
 
@@ -221,16 +232,38 @@ export default class SchemaParser {
 
   private getPersonFirstName(options: GenderOption) {
     const { gender } = options;
+
+    if (gender != undefined) {
+      assert(
+        ["male", "female"].includes(gender),
+        `firstName type provided gender '${gender}' is invalid`,
+      );
+    }
+
     return this.fakeDataGenerator.generatePersonFirstName(gender);
   }
 
   private getPersonLastName(options: GenderOption) {
     const { gender } = options;
+
+    if (gender != undefined) {
+      assert(
+        ["male", "female"].includes(gender),
+        `lastName type provided gender '${gender}' is invalid`,
+      );
+    }
     return this.fakeDataGenerator.generatePersonLastName(gender);
   }
 
   private getPersonFullName(options: GenderOption) {
     const { gender } = options;
+
+    if (gender != undefined) {
+      assert(
+        ["male", "female"].includes(gender),
+        `fullName type provided gender '${gender}' is invalid`,
+      );
+    }
     return this.fakeDataGenerator.generatePersonFullName(gender);
   }
 
@@ -249,6 +282,12 @@ export default class SchemaParser {
   private getArray(options: ArrayOption) {
     const result: unknown[] = [];
     const { schema, min, max } = options;
+
+    // defensive programming to ensure provided schema is correct
+    assert(min != undefined, "array type, min not defined");
+    assert(max != undefined, "array type, max not defined");
+    assert(schema != undefined, "array type, schema not defined");
+
     const numberOfItems = randomIntFromInterval(min, max);
 
     for (let i = 0; i < numberOfItems; i++) {
@@ -262,6 +301,9 @@ export default class SchemaParser {
   private getObject(options: ObjectOption) {
     const result: Record<string, unknown> = {};
     const { properties } = options;
+
+    // defensive programming to ensure provided schema is correct
+    assert(properties != undefined, "object type, properties not defined");
 
     for (const [field, schemaValue] of Object.entries(properties)) {
       result[field] = this.processSchemaValue(schemaValue);
@@ -300,6 +342,11 @@ export default class SchemaParser {
 
   private getFormattedString(options: FormatStringOption) {
     const { pattern, properties } = options;
+
+    // defensive programming to ensure provided schema is correct
+    assert(pattern != undefined, "format-string type, pattern not defined");
+    assert(properties != undefined, "format-string type, properties not defined");
+
     let result = pattern;
 
     for (const property of properties) {

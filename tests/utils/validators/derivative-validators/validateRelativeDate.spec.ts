@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { describe, it } from "mocha";
 
 import { validateRelativeDate } from "../../../../src/utils/validators/derivative-validators";
-import InvalidReferenceKeyError from "../../../../src/errors/InvalidReferenceKeyError";
 
 describe("Testing utility function validateRelativeDate", function () {
   it("1. Given valid reference key and days option, it should return true", function () {
