@@ -55,7 +55,7 @@ A valid recipe json file needs to be provided for the application to generate do
     "sentimentWithText": {
       "type": "string-interpolation",
       "options": {
-        "string": "{}-{}",
+        "pattern": "{}-{}",
         "referenceKeys": ["sentiment", "temporaryIdForReference"]
       }
     }
@@ -740,7 +740,7 @@ Supports nested object reference and setting of fields
     "sentimentWithText": {
       "type": "string-interpolation",
       "options": {
-        "string": "{}-{}",
+        "pattern": "{}-{}",
         "referenceKeys": ["sentiment", "randomText"]
       }
     },
@@ -748,7 +748,7 @@ Supports nested object reference and setting of fields
     "nestedObjectA.fieldB": {
       "type": "string-interpolation",
       "options": {
-        "string": "{}-{}",
+        "pattern": "{}-{}",
         "referenceKeys": ["sentiment", "randomText"]
       }
     },
