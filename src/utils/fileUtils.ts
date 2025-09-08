@@ -28,7 +28,7 @@ export async function saveAsJsonLine(documents: object[], destFilepath: string) 
   }
 }
 
-export async function saveDocuments(destDir: string, documents: object[]) {
+export async function zipDocuments(destDir: string, documents: object[]) {
   createDirectory(destDir);
 
   // each file should contain at most 10,000 items

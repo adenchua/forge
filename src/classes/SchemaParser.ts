@@ -1,6 +1,6 @@
 import assert from "node:assert";
 
-import { MAX_COUNT, MIN_COUNT } from "../constants";
+import { DEFAULT_MAX_WORD_LENGTH_OR_COUNT, DEFAULT_MIN_WORD_LENGTH_OR_COUNT } from "../constants";
 import InvalidDateRangeError from "../errors/InvalidDateRangeError";
 import InvalidSchemaTypeError from "../errors/InvalidSchemaTypeError";
 import { Schema, SchemaReference, SchemaValue } from "../interfaces/schema";
@@ -21,6 +21,10 @@ import { randomIntFromInterval } from "../utils/mathRandomUtils";
 import { parseReferenceValue } from "../utils/referenceUtils";
 import FakeDataGenerator from "./FakeDataGenerator";
 
+/**
+ * Parses the schema object and populates each field with the
+ * actual fake data
+ */
 export default class SchemaParser {
   private fakeDataGenerator: FakeDataGenerator;
   private schema: Schema;
@@ -162,8 +166,8 @@ export default class SchemaParser {
 
   private getText(options: MinMaxOption) {
     const { min, max } = options;
-    let minWordCount = MIN_COUNT;
-    let maxWordCount = MAX_COUNT;
+    let minWordCount = DEFAULT_MIN_WORD_LENGTH_OR_COUNT;
+    let maxWordCount = DEFAULT_MAX_WORD_LENGTH_OR_COUNT;
 
     if (min != undefined) {
       minWordCount = parseReferenceValue(min, this.references) as number;
@@ -187,8 +191,8 @@ export default class SchemaParser {
 
   private getNumericString(options: NumericStringOption) {
     const { min, max, allowLeadingZeros } = options;
-    let minLength = MIN_COUNT;
-    let maxLength = MAX_COUNT;
+    let minLength = DEFAULT_MIN_WORD_LENGTH_OR_COUNT;
+    let maxLength = DEFAULT_MAX_WORD_LENGTH_OR_COUNT;
 
     if (min != undefined) {
       minLength = parseReferenceValue(min, this.references) as number;

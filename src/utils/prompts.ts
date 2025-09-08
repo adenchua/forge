@@ -1,6 +1,7 @@
 import { number, select } from "@inquirer/prompts";
 import fs from "fs";
 import path from "path";
+
 import { Recipe } from "../interfaces/core";
 import { SchemaReference } from "../interfaces/schema";
 

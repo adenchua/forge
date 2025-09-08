@@ -10,6 +10,10 @@ import {
 } from "../interfaces/derivativesOptions";
 import FakeDataGenerator from "./FakeDataGenerator";
 
+/**
+ * Parses the derivative object and add the properties to
+ * the document
+ */
 export default class DerivativesParser {
   private fakeDataGenerator: FakeDataGenerator;
   private flattenedReference: Record<string, unknown>;

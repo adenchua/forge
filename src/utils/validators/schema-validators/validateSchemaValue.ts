@@ -3,7 +3,11 @@ import { VALID_SCHEMA_TYPES } from "../../../constants";
 import { SchemaValue } from "../../../interfaces/schema";
 import { checkObjectProperty, wrapValidationResult } from "../validatorHelpers";
 
-export function validateSchemaValue(schemaValue: SchemaValue): ValidationResult {
+/**
+ * Does a check to see if the 'type', 'isNullable' and 'nullablePercentage'
+ * is valid
+ */
+export function validateSchemaValueProperties(schemaValue: SchemaValue): ValidationResult {
   const errors: string[] = [];
   const { type, isNullable, nullablePercentage } = schemaValue;
 
@@ -31,8 +35,6 @@ export function validateSchemaValue(schemaValue: SchemaValue): ValidationResult 
       errors.push(nullablePercentageError);
     }
   }
-
-  // TODO: check whether options is provided for some compulsory ones
 
   return wrapValidationResult(errors);
 }

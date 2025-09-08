@@ -29,25 +29,33 @@ import {
   validateNumber,
   validateNumericString,
   validateObject,
-  validateSchemaValue,
+  validateSchemaValueProperties,
   validateSocialMediaPost,
   validateText,
   validateUrl,
 } from "./schema-validators";
 
+/**
+ * Checks if a schema property is valid.
+ * Does a check on the basic 'type', 'nullablePercentage' and 'isNullable,
+ * then check for each 'type', the compulsory properties needed
+ * @returns a ValidationResult object
+ */
 export function getSchemaValidationResult(
   schemaValue: SchemaValue,
   reference: SchemaReference,
 ): ValidationResult {
   const { type, options = {} } = schemaValue;
   // check if valid type, nullablePercentage and isNullable
-  const { isValid, errors } = validateSchemaValue(schemaValue);
+  const { isValid, errors } = validateSchemaValueProperties(schemaValue);
 
-  // provided schema type has error
+  // provided schema type/nullablePercentage/isNullable has error
+  // early return
   if (!isValid) {
     return wrapValidationResult(errors!);
   }
 
+  // check for each type, the provided options if valid
   switch (type) {
     case "enum":
       return validateEnum(options as string[] | string, reference);
@@ -62,7 +70,7 @@ export function getSchemaValidationResult(
     case "url":
       return validateUrl(options as UrlOption);
     case "array":
-      return validateArray(options as ArrayOption);
+      return validateArray(options as ArrayOption, reference);
     case "number":
       return validateNumber(options as MinMaxOption, reference);
     case "float":
@@ -112,7 +120,7 @@ export function isValidNonEmptyArray(value: unknown) {
 
 export function checkGender(value: string): string | null {
   if (!["male", "female"].includes(value)) {
-    return `Invalid gender '${value} provided`;
+    return `Invalid gender '${value}' provided`;
   }
 
   return null;
@@ -131,7 +139,7 @@ export function checkReferenceKey(
   }
 
   if (!referencedValueType.includes(typeof references[referenceKey])) {
-    return `Invalid type for property ${referenceString}`;
+    return `Invalid type for property '${referenceString}'`;
   }
 
   return null;
@@ -170,7 +178,7 @@ export function checkObjectProperty(
   }
 
   if (valueTypes != undefined && !valueTypes.includes(typeof object[property])) {
-    return `Invalid type for property ${property}`;
+    return `Invalid type for property '${property}'`;
   }
 
   return null;

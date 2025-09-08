@@ -11,7 +11,7 @@ import { validateLastName } from "./validateLastName";
 import { validateNumber } from "./validateNumber";
 import { validateNumericString } from "./validateNumericString";
 import { validateObject } from "./validateObject";
-import { validateSchemaValue } from "./validateSchemaValue";
+import { validateSchemaValueProperties } from "./validateSchemaValue";
 import { validateSocialMediaPost } from "./validateSocialMediaPost";
 import { validateText } from "./validateText";
 import { validateUrl } from "./validateUrl";
@@ -30,7 +30,7 @@ export {
   validateNumber,
   validateNumericString,
   validateObject,
-  validateSchemaValue,
+  validateSchemaValueProperties,
   validateSocialMediaPost,
   validateText,
   validateUrl,

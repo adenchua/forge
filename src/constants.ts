@@ -1,6 +1,7 @@
-export const MIN_COUNT = 5;
-export const MAX_COUNT = 120;
-export const VERSION_NUMBER = "1.2.2";
+export const FORGE_VERSION_NUMBER = "1.2.3";
+
+export const DEFAULT_MIN_WORD_LENGTH_OR_COUNT = 5;
+export const DEFAULT_MAX_WORD_LENGTH_OR_COUNT = 120;
 
 export const VALID_SCHEMA_TYPES = [
   "array",

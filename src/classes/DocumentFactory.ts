@@ -5,6 +5,9 @@ import { deleteKeysFromObject } from "../utils/objectUtils";
 import DerivativesParser from "./DerivativesParser";
 import SchemaParser from "./SchemaParser";
 
+/**
+ * Takes in the recipe, references and outputs the fake data document
+ */
 export default class DocumentFactory {
   private recipe: Recipe;
   private references: SchemaReference;

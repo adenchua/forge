@@ -1,9 +1,17 @@
+import { SchemaReference } from "../../../interfaces/schema";
 import { ArrayOption } from "../../../interfaces/schemaOptions";
 import { ValidationResult } from "../../../interfaces/validators";
-import { checkObjectProperty, checkRange, wrapValidationResult } from "../validatorHelpers";
-import { validateSchemaValue } from "./validateSchemaValue";
+import {
+  checkObjectProperty,
+  checkRange,
+  getSchemaValidationResult,
+  wrapValidationResult,
+} from "../validatorHelpers";
 
-export function validateArray(options: Partial<ArrayOption>): ValidationResult {
+export function validateArray(
+  options: Partial<ArrayOption>,
+  references: SchemaReference,
+): ValidationResult {
   const errors: string[] = [];
 
   const { schema, min, max } = options;
@@ -16,9 +24,10 @@ export function validateArray(options: Partial<ArrayOption>): ValidationResult {
     errors.push(rangeError);
   }
 
+  // check the type defined in the array schema if its valid
   if (schema != undefined) {
-    const schemaValidation = validateSchemaValue(schema);
-    const { errors: schemaErrors } = schemaValidation;
+    const validationResult = getSchemaValidationResult(schema, references);
+    const { errors: schemaErrors } = validationResult;
     if (schemaErrors) {
       errors.push(...schemaErrors);
     }

@@ -2,10 +2,10 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
 import DocumentFactory from "./classes/DocumentFactory";
-import { VERSION_NUMBER } from "./constants";
+import { FORGE_VERSION_NUMBER } from "./constants";
 import { Config } from "./interfaces/core";
 import { getTodayDate } from "./utils/dateUtils";
-import { saveDocuments } from "./utils/fileUtils";
+import { zipDocuments } from "./utils/fileUtils";
 import {
   runDocumentCountPrompt,
   runGlobalNullablePercentagePrompt,
@@ -14,8 +14,8 @@ import {
 } from "./utils/prompts";
 import { isValidRecipe } from "./utils/validators/recipe-validator";
 
-async function run() {
-  console.info(`Running Forge version: ${VERSION_NUMBER}...`);
+(async function run() {
+  console.info(`Running Forge version: ${FORGE_VERSION_NUMBER}...`);
   const recipe = await runRecipeSelectionPrompt();
   const references = await runReferenceSelectionPrompt();
   const documentCount = await runDocumentCountPrompt();
@@ -24,10 +24,10 @@ async function run() {
   const { schema, derivatives } = recipe;
   const destinationDir = path.join("output", getTodayDate(), uuidv4());
 
-  console.info(`Performing recipe and reference validation...`);
+  console.info(`Performing recipe and reference validation...\n`);
 
   if (!isValidRecipe(schema, derivatives, references)) {
-    console.error("Something is wrong with the provided recipe/reference, exiting program...");
+    console.error("\nSomething is wrong with the provided recipe/reference, exiting program...");
     return;
   } else {
     console.info(`Validation successful! Generating ${documentCount} documents...`);
@@ -50,8 +50,6 @@ async function run() {
     `Successfully generated ${documentCount} documents! Saving to ${destinationDir}.zip...`,
   );
 
-  await saveDocuments(destinationDir, outputDocuments);
+  await zipDocuments(destinationDir, outputDocuments);
   console.info("Operation completed!");
-}
-
-run();
+})();
