@@ -78,6 +78,8 @@ export interface MinMaxOption {
 }
 
 export interface DateRangeOption {
+  mode?: "between" | "past" | "future" | "now";
   dateFrom?: string | ReferenceString;
   dateTo?: string | ReferenceString;
+  days?: number;
 }

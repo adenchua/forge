@@ -118,9 +118,29 @@ export function isValidNonEmptyArray(value: unknown) {
   return value !== null && Array.isArray(value) && value.length > 0;
 }
 
+export function isValidNumber(value: unknown) {
+  return typeof value === "number" && !isNaN(value) && Number.isFinite(value);
+}
+
+export function checkNumber(value: unknown): string | null {
+  if (isValidNumber(value)) {
+    return null;
+  }
+
+  return `Invalid number '${value}' provided`;
+}
+
 export function checkGender(value: string): string | null {
   if (!["male", "female"].includes(value)) {
     return `Invalid gender '${value}' provided`;
+  }
+
+  return null;
+}
+
+export function checkTimestampModes(value: string): string | null {
+  if (!["between", "future", "past", "now"].includes(value)) {
+    return `Invalid timestamp mode '${value}' provided`;
   }
 
   return null;

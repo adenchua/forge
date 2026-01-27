@@ -150,7 +150,20 @@ export default class SchemaParser {
   }
 
   private getIsoTimestamp(options: DateRangeOption) {
-    const { dateFrom, dateTo } = options;
+    const { dateFrom, dateTo, days, mode } = options;
+
+    if (mode === "now") {
+      return new Date().toISOString();
+    }
+
+    if (mode === "future") {
+      return this.fakeDataGenerator.generateFutureISOTimestamp(days);
+    }
+
+    if (mode === "past") {
+      return this.fakeDataGenerator.generatePastISOTimestamp(days);
+    }
+
     const missingDateFrom = dateFrom == null && dateTo != null;
     const missingDateTo = dateFrom != null && dateTo == null;
 

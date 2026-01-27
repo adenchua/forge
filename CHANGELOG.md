@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-01-27
+
+### CHANGED
+
+- add support for future/past/now options for schema type `iso-timestamp`
+
 ## [1.2.3] - 2025-09-08
 
 ### FIXED

@@ -80,12 +80,13 @@ For examples of each key, please check out: [Schema](#schema-object), [Derivativ
 
 The `schema` object generates the result document with the type of data defined in each field.
 
-| field                | explanation                                                                                                                                                                               | required                |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `type`               | Must be one of the valid `type` described below                                                                                                                                           | Yes                     |
-| `options`            | Additional options provided for the particular type. Required for some types                                                                                                              | No (Yes for some types) |
-| `isNullable`         | Determines if this field may be `null`. If `nullablePercentage` is not provided, it follows the global `nullablePercentage` defined in the config file. Defaults to `false`               | No                      |
-| `nullablePercentage` | Percentage of this field to be `null`. Overrides the global `nullablePercentage` if provided. Accepts a value from `0` to `1`. If this field is provided, it sets `isNullable` to `true`. | No                      |
+<!-- prettier-ignore -->
+| field | explanation | required |
+| --- | --- | --- |
+| `type`| Must be one of the valid `type` described below | Yes|
+| `options`| Additional options provided for the particular type. Required for some types| No (Yes for some types) |
+| `isNullable` | Determines if this field may be `null`. If `nullablePercentage` is not provided, it follows the global `nullablePercentage` defined in the config file. Defaults to `false`| No |
+| `nullablePercentage` | Percentage of this field to be `null`. Overrides the global `nullablePercentage` if provided. Accepts a value from `0` to `1`. If this field is provided, it sets `isNullable` to `true`. | No |
 
 ---
 
@@ -161,12 +162,24 @@ The reference array must not be an empty array
 
 ### # ISO8601 Date String
 
-Generates an `ISO8601` date string. When no options are provided, it generates a date from the past. You may provide `dateFrom` and `dateTo` options to return a date within the range. Note that both `dateFrom` and `dateTo` options must be provided for a date range to work:
+Generates an `ISO8601` date string. When no options are provided, it generates a date from the past. Takes in the following modes in the options:
+
+| mode                | explanation                                                                                           |
+| ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `between` (default) | Generates a date within a range. Provide `dateFrom` and `dateTo` in the options to specify the range  |
+| `past`              | Generates a date in the near past (within ~1 day) Provide `days` in the option to specify the range   |
+| `future`            | Generates a date in the near future (within ~1 day) Provide `days` in the option to specify the range |
+| `now`               | Generates a timestamp of the current time when the script runs                                        |
+
+#### mode = "between"
+
+You must provide `dateFrom` and `dateTo` options to return a date within the range:
 
 ```json
 {
   "type": "iso-timestamp",
   "options": {
+    "mode": "between",
     "dateFrom": "2018-06-13T12:11:13+05:00",
     "dateTo": "2019-06-13T12:11:13+05:00"
   },
@@ -183,6 +196,38 @@ You may also use a referenced date for the options. The following example uses `
   "options": {
     "dateFrom": "#ref.date",
     "dateTo": "#ref.date"
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+#### mode = "past"
+
+You may provide a `days` option to return a date from `now - x` days:
+
+```json
+{
+  "type": "iso-timestamp",
+  "options": {
+    "mode": "past",
+    "days": 7
+  },
+  "isNullable": false,
+  "nullablePercentage": 0
+}
+```
+
+#### mode = "future"
+
+You may provide a `days` option to return a date from `now + x` days:
+
+```json
+{
+  "type": "iso-timestamp",
+  "options": {
+    "mode": "future",
+    "days": 7
   },
   "isNullable": false,
   "nullablePercentage": 0

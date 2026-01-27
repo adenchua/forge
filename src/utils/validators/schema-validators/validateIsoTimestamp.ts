@@ -2,14 +2,34 @@ import { SchemaReference } from "../../../interfaces/schema";
 import { DateRangeOption } from "../../../interfaces/schemaOptions";
 import { ValidationResult } from "../../../interfaces/validators";
 import { containsReferenceString, parseReferenceValue } from "../../referenceUtils";
-import { checkISODateRange, checkReferenceKey, wrapValidationResult } from "../validatorHelpers";
+import {
+  checkISODateRange,
+  checkNumber,
+  checkReferenceKey,
+  checkTimestampModes,
+  wrapValidationResult,
+} from "../validatorHelpers";
 
 export function validateIsoTimestamp(
   options: DateRangeOption,
   reference: SchemaReference,
 ): ValidationResult {
   const errors: string[] = [];
-  const { dateFrom, dateTo } = options;
+  const { dateFrom, dateTo, days, mode } = options;
+
+  if (mode !== undefined) {
+    const modeError = checkTimestampModes(mode);
+    if (modeError != null) {
+      errors.push(modeError);
+    }
+  }
+
+  if ((mode === "future" || mode === "past") && days !== undefined) {
+    const daysError = checkNumber(days);
+    if (daysError != null) {
+      errors.push(daysError);
+    }
+  }
 
   const tempDateFrom = parseReferenceValue(dateFrom, reference);
   const tempDateTo = parseReferenceValue(dateTo, reference);

@@ -6,15 +6,12 @@ import { faker as fakerCN } from "@faker-js/faker/locale/zh_CN";
 
 import { Gender, Language } from "../interfaces/schemaOptions";
 import { randomIntFromInterval } from "../utils/mathRandomUtils";
+import { isValidNonEmptyArray } from "../utils/validators/validatorHelpers";
 
 /**
  * Wrapper class of faker library to generate fake data
  */
 export default class FakeDataGenerator {
-  private isValidNonEmptyArray(value: unknown) {
-    return value != null && Array.isArray(value) && value.length > 0;
-  }
-
   generateISOTimestamp(dateFrom?: string, dateTo?: string) {
     if (dateFrom == null && dateTo == null) {
       return faker.date.past().toISOString();
@@ -23,23 +20,23 @@ export default class FakeDataGenerator {
     return faker.date.between({ from: dateFrom as string, to: dateTo as string }).toISOString();
   }
 
-  generatePastISOTimestamp(days: number, referenceISODate: string) {
+  generatePastISOTimestamp(days?: number, referenceISODate?: string) {
     return faker.date.recent({ days, refDate: referenceISODate }).toISOString();
   }
 
-  generateFutureISOTimestamp(days: number, referenceISODate: string) {
+  generateFutureISOTimestamp(days?: number, referenceISODate?: string) {
     return faker.date.soon({ days, refDate: referenceISODate }).toISOString();
   }
 
   generateEnum(enumOptions: unknown[]) {
-    if (!this.isValidNonEmptyArray(enumOptions)) {
+    if (!isValidNonEmptyArray(enumOptions)) {
       throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");
     }
     return faker.helpers.arrayElement(enumOptions);
   }
 
   generateEnumArray(enumOptions: unknown[]) {
-    if (!this.isValidNonEmptyArray(enumOptions)) {
+    if (!isValidNonEmptyArray(enumOptions)) {
       throw new Error("ENUM_OPTIONS_MUST_NOT_BE_EMPTY");
     }
 
